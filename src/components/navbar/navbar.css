@@ -1,0 +1,67 @@
+.navbar{
+    height: 60px;
+    display: flex;
+    background-color: #1c89cc;
+    align-items: center;
+    position: sticky;
+    z-index: 10;
+}
+
+.navbar-link{
+    width: 12%;
+    margin: 0 10px;
+    padding: 5px 10px;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 25px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s linear;
+    border-radius: 5px;
+}
+
+.navbar-link:hover{
+    color: #1c89cc;
+    background-color: #fff;
+}
+
+.navbar-categories{
+    flex: 3;
+}
+
+.navbar-settings{
+    flex: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navbar-profile{
+    height: 60px;
+    width: 60px;
+    margin-right: 20%;
+}
+
+.navbar-profile-image{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.navbar-cart{
+    font-size: 25px;
+    text-transform: uppercase;
+    color: #fff;
+    margin-right: 15px;
+    transition: 0.2s linear;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.navbar-cart:hover{
+    color: #1c89cc;
+    background-color: #fff;
+}
