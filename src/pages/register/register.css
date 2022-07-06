@@ -1,0 +1,44 @@
+.register{
+    display: flex;
+    height: 500px;
+    width: 80%;
+    flex-direction: row;
+    align-self: center;
+    margin: 40px auto;
+}
+
+.register-form
+{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 10px 20px;
+}
+
+.register-input
+{
+    margin: 20px 0px;
+    height: 30px;
+    padding: 0 5px;
+}
+
+.register-button
+{
+    height: 30px;
+    width: 100px;
+    margin: 0px auto;
+}
+.section-image
+{
+    height: 300px;
+    width: 100%;
+}
+.section-image-preview
+{
+    height: 100%;
+    width: 100%;
+}
+.section-input-file
+{
+    margin: 10px 0px;
+}
