@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
-import "../login.css";
+import { useGlobalContext } from "../../context/Context";
+import "./login.css";
 
 const Login = () => {
   const [login, setLogin] = useState({
@@ -8,12 +9,16 @@ const Login = () => {
     password: "",
   });
 
+  const { setUser } = useGlobalContext();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const response = await axios.post(
-      "https://localhost:5001/User/FetchUser",
+      "https://localhost:7113/User/FetchUser",
       login
     );
+    setUser(response.data);
+    setTimeout(() => window.location.replace("/"), 500);
   };
 
   return (

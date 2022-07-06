@@ -14,8 +14,8 @@ const Register = () => {
     e.preventDefault();
     const { username, email, password, picture } = registeredUser;
     console.log(registeredUser);
-    /*const newUser = { username, email, password, picture, products: [] };
-    await axios.post("https://localhost:7113/User/InputUser", newUser);*/
+    const newUser = { username, email, password, picture, products: [] };
+    await axios.post("https://localhost:7113/User/InputUser", newUser);
   };
 
   const readFileDataAsBase64 = (e) => {

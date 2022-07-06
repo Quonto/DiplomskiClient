@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Categories from "./pages/categories/Categories";
 import CategorySettings from "./pages/categorySettings/CategorySettings";
 import Register from "./pages/register/Register";
+import Login from "./pages/login/Login";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/category" element={<CategorySettings />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
