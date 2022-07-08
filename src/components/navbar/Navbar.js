@@ -4,11 +4,11 @@ import { useGlobalContext } from "../../context/Context";
 
 const Navbar = () => {
   const { user, setUser } = useGlobalContext();
-  console.log(`Pribavljen user u navbar iz context: ${user}`);
 
   const handleLogout = () => {
     localStorage.setItem("user", null);
     setUser(null);
+    window.location.replace("/");
   };
 
   return (

@@ -1,6 +1,7 @@
 import './home.css'
 
 const Home = () => {
+
     return <main className="home">
         {/* Most wanted products*/}
         <section className="wanted">

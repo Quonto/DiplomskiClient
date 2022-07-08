@@ -1,6 +1,24 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./categorySettings.css";
 
 const CategorySettings = () => {
+  const [products, setProducts] = useState([]);
+
+  const { id_group } = useParams();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const response = await axios.get(
+        `https://localhost:7113/User/FetchProduct?id_group=${id_group}`
+      );
+      console.log(response);
+      setProducts(response.data);
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <section className="category-settings">
       <section className="product-filter">filter</section>
@@ -17,182 +35,28 @@ const CategorySettings = () => {
           <button className="subscribe-btn">Prati</button>
         </div>
         <div className="products">
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
-          <article className="product">
-            <img
-              className="product-image"
-              src="https://cdn2.emmezeta.rs/media/catalog/product/cache/01cb2cb658d395381faf29e7336ee183/g/1/g1nienburg-nienburg-spavaca-soba_1.jpg"
-              alt=""
-            />
-            <div className="product-details">
-              <h4>Naslov proizvoda</h4>
-              <label>Cena:</label>
-              <label>Stanje:</label>
-              <div className="product-user-info">
-                {/* Ikona */}
-                <p>Ime korisnika</p>
-              </div>
-            </div>
-            <div className="button-list">
-              <button className="wishlist-btn">Dodaj</button>
-              <div className="button-info">{/* Ikona */}1 zeli</div>
-              <div className="button-info">{/* Ikona */}2 dana</div>
-              <div className="button-info">{/* Ikona */}0 ponuda</div>
-            </div>
-          </article>
+          {products.map((product) => {
+            return (
+              <article className="product">
+                <img
+                  className="product-image"
+                  src={product.picture[0]?.data}
+                  alt=""
+                />
+                <div className="product-details">
+                  <h4>{product.name}</h4>
+                  <label>Cena:</label>
+                  <span>{product.price}</span>
+                </div>
+                <div className="button-list">
+                  <button className="wishlist-btn">Dodaj</button>
+                  <div className="button-info">{`${product.numberOfWish} zeli ovaj proizvod`}</div>
+                  <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
+                  <div className="button-info">{`${product.numberOfLike} lajkova`}</div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
     </section>

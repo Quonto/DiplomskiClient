@@ -11,7 +11,6 @@ const getLocalStorage = () => {
 
 const AppProvider = ({ children }) => {
   const [user, setUser] = useState(getLocalStorage());
-  console.log(`Pribavljen user iz localStorage: ${user}`);
 
   useEffect(() => {
     if (user) {
