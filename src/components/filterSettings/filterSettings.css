@@ -1,0 +1,15 @@
+.filter-btn{
+    cursor: pointer;
+    border: none;
+    border: 1px solid teal;
+    padding: 5px 10px;
+    margin: 10px 5px;
+    background-color: #fff;
+    color: teal;
+    border-radius: 5px;
+}
+
+.filter-btn:hover{
+    color: #fff;
+    background-color: teal;
+}

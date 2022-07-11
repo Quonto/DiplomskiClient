@@ -16,27 +16,20 @@
 }
 .login-input
 {
+    border: 1px solid #111;
     width: 80%;
     height: 30px;
     padding: 0px 5px;
     border-radius: 5px;
-    border: 1px solid #b65311;
 }
 .login-button
 {
+    border: 1px solid #111;
     width: 40%;
     height: 30px;
     margin-top: 10px;
-    border: 1px solid #b65311;
     border-radius: 5px;
-    color: #b65311;
     background-color: #fff;
     transition: 0.2s linear;
     cursor: pointer;
-}
-.login-button:hover
-{
-    
-    color:#fff;
-    background-color: #b65311;
 }

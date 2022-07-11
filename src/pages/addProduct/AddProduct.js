@@ -57,13 +57,14 @@ const AddProduct = () => {
       details: product.details,
       data: productInformation,
     };
-    console.log(newProduct);
     const response = await axios.post(
       `https://localhost:7113/User/InputProduct?id_user=${user.id}&id_group=${selectedGroup.id}`,
       newProduct
     );
-
-    console.log(response);
+    response &&
+      window.location.replace(
+        `/categories/group/${selectedGroup.id}/product/${response?.data}`
+      );
   };
 
   const handleChangeCategory = (e) => {

@@ -15,7 +15,7 @@ const Navbar = () => {
     <header className="navbar">
       <div className="navbar-links">
         <Link to="/" className="navbar-link">
-          Zileshop
+          Webshop
         </Link>
         <Link to="/categories" className="navbar-link">
           Kategorije

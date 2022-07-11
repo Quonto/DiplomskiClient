@@ -53,6 +53,7 @@ const AdminPanel = () => {
       const response = await axios.get(
         "https://localhost:7113/Category/FetchCategoriesAndGroups"
       );
+      console.log(response.data);
       response && setCategories([{ name: "" }, ...response.data]);
     };
     fetchCategories();

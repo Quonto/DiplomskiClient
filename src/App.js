@@ -8,6 +8,7 @@ import Login from "./pages/login/Login";
 import AddProduct from "./pages/addProduct/AddProduct";
 import AdminPanel from "./pages/adminPanel/AdminPanel";
 import { useGlobalContext } from "./context/Context";
+import Product from "./pages/product/Product";
 
 const App = () => {
   const { user } = useGlobalContext();
@@ -25,6 +26,10 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/add-product" element={<AddProduct />} />
+        <Route
+          path="/categories/group/:id_group/product/:id_product"
+          element={<Product />}
+        />
       </Routes>
     </Router>
   );
