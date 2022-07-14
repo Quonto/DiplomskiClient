@@ -1,3 +1,10 @@
 .product-details-info > span{
     margin-left: 10px;
 }
+
+.product-image > img
+{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}

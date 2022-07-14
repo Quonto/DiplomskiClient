@@ -1,9 +1,11 @@
 import "./navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../../context/Context";
 
 const Navbar = () => {
   const { user, setUser } = useGlobalContext();
+
+  const { pathname } = useLocation();
 
   const handleLogout = () => {
     localStorage.setItem("user", null);
@@ -30,13 +32,21 @@ const Navbar = () => {
             src={user.picture}
             alt="profilna"
           />
-          {/* <div className="navbar-cart">Cart</div>*/}
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
           <Link className="navbar-link-add" to="/add-product">
             +
           </Link>
+          <Link className="user-product" to="/user-products">
+            My Product
+          </Link>
+          <Link className="navbar-cart" to="/cart ">
+            Cart
+          </Link>
+          <Link className="notification" to="">
+            Notification
+          </Link>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       ) : (
         <>

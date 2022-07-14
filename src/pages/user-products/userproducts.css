@@ -1,0 +1,23 @@
+.sell-btn
+{
+    width: 80%;
+    height: 30px;
+    margin: 5px 0;
+
+}
+
+
+.user-product-div
+{
+    display: flex;
+    flex-direction: column ;
+    width: 70%;
+    margin: auto;
+}
+
+@media (min-width: 1100px) {
+    .section-product{
+        width: 70%;
+    }
+
+}

@@ -11,6 +11,7 @@ const getLocalStorage = () => {
 
 const AppProvider = ({ children }) => {
   const [user, setUser] = useState(getLocalStorage());
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     if (user) {
@@ -19,7 +20,7 @@ const AppProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, cart, setCart }}>
       {children}
     </AppContext.Provider>
   );

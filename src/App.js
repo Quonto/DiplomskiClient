@@ -9,6 +9,8 @@ import AddProduct from "./pages/addProduct/AddProduct";
 import AdminPanel from "./pages/adminPanel/AdminPanel";
 import { useGlobalContext } from "./context/Context";
 import Product from "./pages/product/Product";
+import Cart from "./pages/cart/Cart";
+import UserProducts from "./pages/user-products/UserProducts";
 
 const App = () => {
   const { user } = useGlobalContext();
@@ -30,6 +32,8 @@ const App = () => {
           path="/categories/group/:id_group/product/:id_product"
           element={<Product />}
         />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/user-products" element={<UserProducts />}></Route>
       </Routes>
     </Router>
   );

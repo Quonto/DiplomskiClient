@@ -38,7 +38,7 @@
 }
 
 .navbar-profile{
-    width: 30%;
+    width: 50%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -52,8 +52,8 @@
     border-radius: 50%;
 }
 
-.navbar-cart{
-    font-size: 20px;
+.navbar-cart, .notification, .user-product{
+    font-size: 15px;
     text-transform: uppercase;
     color: #fff;
     margin-right: 15px;
@@ -61,9 +61,10 @@
     cursor: pointer;
     border-radius: 5px;
     padding: 5px 10px;
+    text-decoration: none;
 }
 
-.navbar-cart:hover{
+.navbar-cart:hover, .notification:hover, .user-product:hover{
     color: #1c89cc;
     background-color: #fff;
 }

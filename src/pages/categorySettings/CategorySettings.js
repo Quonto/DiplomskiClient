@@ -18,6 +18,7 @@ const CategorySettings = () => {
       const response = await axios.get(
         `https://localhost:7113/User/FetchProduct?id_group=${id_group}`
       );
+
       setProducts(response.data);
       setFilteredProducts(response.data);
     };
@@ -43,6 +44,7 @@ const CategorySettings = () => {
             products={products}
           />
           <ProductSettings
+            group={group}
             filteredProducts={filteredProducts}
             setFilteredProducts={setFilteredProducts}
           />

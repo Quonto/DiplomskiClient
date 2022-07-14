@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
 
-const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
+const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
   const sortMethods = [
     { label: "Opadajuci po ceni", method: "oc" },
     { label: "Rastuci po ceni", method: "rc" },
@@ -9,7 +10,10 @@ const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
     { label: "Rastuci po nazivu", method: "rn" },
   ];
 
+  const { pathname } = useLocation();
+
   const [sort, setSort] = useState("");
+  const [mark, setMark] = useState(0);
 
   const handleSort = (sort) => {
     let sorted = filteredProducts.reverse();
@@ -56,6 +60,18 @@ const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
     setFilteredProducts([...sorted]);
   };
 
+  const calculateMark = (product) => {
+    if (product.reviews.length === 0) {
+      return 0;
+    }
+    let sum = 0;
+    product.reviews.map((r) => {
+      sum = sum + r.mark;
+      return r;
+    });
+    return Math.round(parseFloat(sum / product.reviews.length));
+  };
+
   useEffect(() => {
     sort !== "" && handleSort(sort);
   }, [sort]);
@@ -63,7 +79,7 @@ const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
   return (
     <section className="product-list">
       <div className="header-sort">
-        <h3>Naslov kategorije</h3>
+        <h3>{group.name}</h3>
         <div className="sort">
           <label htmlFor="select">Sortiraj po:</label>
           <select
@@ -81,22 +97,31 @@ const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
         {filteredProducts.map((product) => {
           return (
             <article className="product" key={product.id}>
-              <img
+              <Link
                 className="product-image"
-                src={
-                  product.picture.length === 0 ? "" : product.picture[0].data
-                }
-                alt=""
-              />
+                to={`${pathname}/product/${product.id}`}
+              >
+                <img
+                  src={
+                    product.picture.length === 0 ? "" : product.picture[0].data
+                  }
+                  alt=""
+                />
+              </Link>
               <div className="product-details">
-                <h4>{product.name}</h4>
+                <Link
+                  style={{ textDecoration: "none", color: "black" }}
+                  to={`${pathname}/product/${product.id}`}
+                >
+                  <h4>{product.name}</h4>
+                </Link>
                 <div className="product-details-info">
                   <label>Cena:</label>
                   <span>{product.price}</span>
                 </div>
                 <div className="product-details-info">
                   <label>Ocena:</label>
-                  <span>{product.reviews.mark || 0}</span>
+                  <span>{calculateMark(product)}</span>
                 </div>
                 <div className="product-details-info">
                   <label>Korisnik:</label>
@@ -105,9 +130,9 @@ const ProductSettings = ({ filteredProducts, setFilteredProducts }) => {
               </div>
               <div className="button-list">
                 <button className="wishlist-btn">Dodaj</button>
-                <div className="button-info">{`${product.numberOfWish} zeli ovaj proizvod`}</div>
+                <div className="button-info">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
                 <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
-                <div className="button-info">{`${product.numberOfLike} lajkova`}</div>
+                <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
               </div>
             </article>
           );
