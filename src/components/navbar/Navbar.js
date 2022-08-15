@@ -3,13 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../../context/Context";
 
 const Navbar = () => {
-  const { user, setUser } = useGlobalContext();
+  const { user, setUser, setCart } = useGlobalContext();
 
   const { pathname } = useLocation();
 
   const handleLogout = () => {
     localStorage.setItem("user", null);
     setUser(null);
+    setCart([]);
     window.location.replace("/");
   };
 
@@ -40,9 +41,6 @@ const Navbar = () => {
           </Link>
           <Link className="navbar-cart" to="/cart ">
             Cart
-          </Link>
-          <Link className="notification" to="">
-            Notification
           </Link>
           <button className="logout-btn" onClick={handleLogout}>
             Logout

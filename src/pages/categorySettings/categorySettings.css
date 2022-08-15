@@ -56,6 +56,7 @@
 
 .products{
     width: 100%;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -64,22 +65,61 @@
     height: 200px;
     display: flex;
     flex-direction: row;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
 .product-image{
     height: 100%;
-    width: 20%;
+    width: 30%;
 }
 
 .product-details{
-    width: 60%;
+    width: 25%;
     height: 100%;
-    padding: 0 30px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: space-evenly;
+}
+
+.product-details-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.product-details > h4
+{
+    margin-left: 10px;
+}
+
+
+.product-details-info > span{
+    margin: 5px auto;
+    text-align: center;
+    
+}
+
+.product-details-info > label{
+    margin: 10px auto 0 auto;
+}
+
+.product-contact
+{
+    width: 25%;
+    height: 100%;
+    display: flex; 
+    flex-direction: column;
+  
+}
+
+.product-contact > label
+{
+    margin: 14px auto 4px auto;
+   
+}
+
+.product-contact > span{
+    margin: 0 auto;
+    text-align: center;
 }
 
 .button-list{
@@ -87,17 +127,19 @@
     width: 20%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    margin: 0 auto;
 }
 
 .wishlist-btn{
-    padding: 5px 0;
-    width: 100%;
+
+    width: 80%;
+    height: 30px;
+    margin: 0 auto;
 }
 
 .button-info{
     padding: 5px 0;
-    width: 100%;
+    margin: 5px auto 0 auto;
 }
 
 .filter-list{

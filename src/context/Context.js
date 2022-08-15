@@ -2,22 +2,30 @@ import React, { useContext, useEffect, useState } from "react";
 
 const AppContext = React.createContext();
 
-const getLocalStorage = () => {
-  let newUser = localStorage.getItem("user");
-  if (newUser) {
-    return (newUser = JSON.parse(localStorage.getItem("user")));
+const getLocalStorage = (text) => {
+  let item = localStorage.getItem(text);
+  if (item) {
+    return (item = JSON.parse(localStorage.getItem(text)));
   } else return null;
 };
 
 const AppProvider = ({ children }) => {
-  const [user, setUser] = useState(getLocalStorage());
-  const [cart, setCart] = useState([]);
+  const [user, setUser] = useState(getLocalStorage("user"));
+  const [cart, setCart] = useState(getLocalStorage("cart"));
 
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (cart) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } else {
+      localStorage.setItem("cart", JSON.stringify([]));
+    }
+  }, [cart]);
 
   return (
     <AppContext.Provider value={{ user, setUser, cart, setCart }}>

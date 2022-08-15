@@ -16,9 +16,9 @@ const CategorySettings = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await axios.get(
-        `https://localhost:7113/User/FetchProduct?id_group=${id_group}`
+        `https://localhost:7113/User/FetchProducts?id_group=${id_group}`
       );
-
+      console.log(response.data);
       setProducts(response.data);
       setFilteredProducts(response.data);
     };

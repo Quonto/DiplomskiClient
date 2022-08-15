@@ -19,7 +19,14 @@ const AddProduct = () => {
     name: "",
     price: "",
     details: "",
+    place: null,
+    auction: false,
   });
+  const [places, setPlaces] = useState(null);
+  const [place, setPlace] = useState({
+    name: "",
+  });
+  const [time, setTime] = useState("");
 
   const { user } = useGlobalContext();
 
@@ -48,29 +55,66 @@ const AddProduct = () => {
     });
   };
 
+  const handleChangePurchase = (e) => {
+    setProduct({ ...product, auction: e.target.value === "true" });
+  };
+
+  const handleChangeTime = (e) => {
+    setTime(parseInt(e.target.value));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const currentTime = new Date();
+    currentTime.setHours(currentTime.getHours() + 2);
     const newProduct = {
       name: product.name,
       price: product.price,
+      phone: product.phone,
       picture: productImage,
+      place: place,
+      date: currentTime,
       details: product.details,
       data: productInformation,
+      auction: product.auction,
     };
     const response = await axios.post(
-      `https://localhost:7113/User/InputProduct?id_user=${user.id}&id_group=${selectedGroup.id}`,
+      `https://localhost:7113/User/InputProductBuy/${user.id}/${selectedGroup.id}`,
       newProduct
     );
+    console.log(response.data);
+    if (product.auction) {
+      currentTime.setDate(currentTime.getDate() + time);
+      console.log(currentTime);
+      const newAuction = {
+        time: currentTime,
+        minimumPrice: parseInt((product.price / 100) * 5),
+      };
+
+      await axios.post(
+        `https://localhost:7113/Auction/InputAuction/${response.data}`,
+        newAuction
+      );
+    }
+    /*
     response &&
       window.location.replace(
         `/categories/group/${selectedGroup.id}/product/${response?.data}`
       );
+      */
   };
 
   const handleChangeCategory = (e) => {
     setSelectedCategory(categories[e.target.value]);
     setProductInformation([]);
     setSelectedGroup(null);
+  };
+
+  const handleChangePlaces = (e) => {
+    setPlace({ name: places[e.target.value].name.toString() });
+    console.log(places);
+    console.log(e.target.value);
+    console.log(place);
   };
 
   const handleChangeGroup = (e) => {
@@ -95,6 +139,18 @@ const AddProduct = () => {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchPlace = async () => {
+      if (product) {
+        const response = await axios.get(
+          `https://localhost:7113/Category/FetchPlace`
+        );
+        setPlaces([{ name: "" }, ...response.data]);
+      }
+    };
+    fetchPlace();
+  }, [product]);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -161,27 +217,86 @@ const AddProduct = () => {
         <section className="add-product-information">
           <div className="left-container">
             <label className="add-product-label" htmlFor="name">
-              Name:
+              Ime:
             </label>
             <input
               name="name"
               className="add-product-input"
-              placeholder="name..."
+              placeholder="Ime"
               onChange={(e) => setProduct({ ...product, name: e.target.value })}
             ></input>
             <label className="add-product-label" htmlFor="price">
-              Price:
+              Cena:
             </label>
             <input
               name="price"
               className="add-product-input"
-              placeholder="price..."
+              placeholder="Cena"
               onChange={(e) =>
                 setProduct({ ...product, price: e.target.value })
               }
             ></input>
+            <label className="add-product-label" htmlFor="place">
+              Mesto:
+            </label>
+            {places?.length !== 0 && (
+              <select
+                className="add-product-select"
+                onChange={handleChangePlaces}
+              >
+                {places.map((p, i) => {
+                  return (
+                    <option key={i} value={i}>
+                      {p.name}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+            <div className="purchase">
+              <div className="purchase-product">
+                <label className="add-product-label" htmlFor="place">
+                  Nacin kupovine:
+                </label>
+                <select
+                  className="add-product-select"
+                  onChange={handleChangePurchase}
+                >
+                  <option value={false}>Kupovina</option>
+                  <option value={true}>Aukcija</option>
+                </select>
+              </div>
+
+              {product.auction && (
+                <div className="purchase-product">
+                  <label className="add-product-label" htmlFor="place">
+                    Vreme aukcije:
+                  </label>
+                  <select
+                    className="add-product-select"
+                    onChange={handleChangeTime}
+                  >
+                    <option value={1}>Jedan dan</option>
+                    <option value={2}>Dva dana</option>
+                    <option value={3}>Tri dana</option>
+                    <option value={4}>Cetiri dana</option>
+                  </select>
+                </div>
+              )}
+            </div>
+            <label className="add-product-label" htmlFor="contact">
+              Kontakt:
+            </label>
+            <input
+              name="contact"
+              className="add-product-input"
+              placeholder="Kontakt"
+              onChange={(e) =>
+                setProduct({ ...product, phone: e.target.value })
+              }
+            ></input>
             <label className="add-product-label" htmlFor="details">
-              Details:
+              Opis:
             </label>
             <textarea
               name="details"
@@ -230,7 +345,7 @@ const AddProduct = () => {
           onClick={handleSubmit}
           type="submit"
         >
-          Add product
+          Dodaj Proizvod
         </button>
       )}
     </form>

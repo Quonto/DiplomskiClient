@@ -11,9 +11,14 @@ const FilterSettings = ({
     do: "",
   });
   const [korisnik, setKorisnik] = useState("");
+  const [place, setPlace] = useState("");
+  const [auction, setAuction] = useState(false);
+  const [buy, setBuy] = useState(false);
 
   const handleFilters = () => {
     let newProducts = products;
+
+    console.log(products);
     if (cena.do !== "" && cena.od !== "") {
       const parseCena = {
         od: parseInt(cena.od),
@@ -26,6 +31,25 @@ const FilterSettings = ({
         );
       }
     }
+
+    if (auction === false && buy !== false) {
+      console.log(newProducts);
+      newProducts = newProducts.filter(
+        (product) => auction === product.auction
+      );
+    }
+    if (buy === false && auction !== false) {
+      console.log(newProducts);
+      newProducts = newProducts.filter((product) => buy !== product.auction);
+    }
+
+    if (place !== "") {
+      console.log(newProducts);
+      newProducts = newProducts.filter(
+        (product) => place === product.place.name
+      );
+    }
+
     if (korisnik !== "") {
       newProducts = newProducts.filter(
         (product) => korisnik === product.user.username
@@ -41,6 +65,8 @@ const FilterSettings = ({
       do: "",
     });
     setKorisnik("");
+    setAuction(false);
+    setBuy(false);
   };
 
   return (
@@ -54,26 +80,25 @@ const FilterSettings = ({
       </button>
       {productInformation?.length !== 0 && (
         <div className="filter-list">
-          <h4>Stanje</h4>
-          <div className="checkbox">
-            <input name="neiskorisceno" type="checkbox" value="Neiskorisceno" />
-            <label htmlFor="neiskorisceno">Neiskorisceno</label>
-          </div>
-          <div className="checkbox">
-            <input name="polovno" type="checkbox" value="Polovno" />
-            <label htmlFor="polovno">Polovno</label>
-          </div>
-          <div className="checkbox">
-            <input name="neispravno" type="checkbox" value="Neispravno" />
-            <label htmlFor="neispravno">Neispravno</label>
-          </div>
           <h4>Nacin kupovine</h4>
           <div className="checkbox">
-            <input name="aukcija" type="checkbox" value="Aukcija" />
+            <input
+              name="aukcija"
+              type="checkbox"
+              value="Aukcija"
+              checked={auction}
+              onChange={() => setAuction(!auction)}
+            />
             <label htmlFor="aukcija">Aukcija</label>
           </div>
           <div className="checkbox">
-            <input name="placanje" type="checkbox" value="Placanje" />
+            <input
+              name="placanje"
+              type="checkbox"
+              value="Placanje"
+              checked={buy}
+              onChange={() => setBuy(!buy)}
+            />
             <label htmlFor="placanje">Placanje</label>
           </div>
           <h4>Cena</h4>
@@ -100,6 +125,13 @@ const FilterSettings = ({
             <input
               className="korisnik-input"
               onChange={(e) => setKorisnik(e.target.value)}
+            />
+          </div>
+          <h4>Mesto</h4>
+          <div className="checkbox">
+            <input
+              className="korisnik-input"
+              onChange={(e) => setPlace(e.target.value)}
             />
           </div>
         </div>

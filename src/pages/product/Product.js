@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "./product.css";
 import { useGlobalContext } from "../../context/Context";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import * as signalR from "@microsoft/signalr";
 
 const Product = () => {
   const [isAddActive, setIsAddActive] = useState(false);
@@ -11,18 +12,99 @@ const Product = () => {
     mark: "",
     coment: "",
   });
+  const [auction, setAuction] = useState({});
+  const [auctionTime, setAuctionTime] = useState(null);
+  const [connection, setConnection] = useState(null);
+  const [newPrice, setNewPrice] = useState(null);
 
   const { id_product } = useParams();
 
-  const { user, setCart } = useGlobalContext();
+  const { user, setCart, cart } = useGlobalContext();
+
+  const checkAddedToCart = () => {
+    if (cart && product) {
+      let productCart = cart.find((item) => item.id === product.id);
+      if (productCart) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  };
 
   const [product, setProduct] = useState(null);
+  const [addedToCart, setAddedToCart] = useState(checkAddedToCart());
+
+  const handleDate = (date) => {
+    const d = date.split("T");
+    const da = d[0].split("-");
+
+    return da[2] + "." + da[1] + "." + da[0];
+  };
+
+  const handleTime = (time) => {
+    const d = time.split("T");
+    const da = d[1].split(":");
+
+    return da[0] + ":" + da[1];
+  };
+
+  const handleAddToCart = async () => {
+    setCart([...cart, product]);
+    setAddedToCart(true);
+  };
 
   const handleModal = () => {
     setIsAddActive(!isAddActive);
   };
+
+  const handleAuction = async () => {
+    const newProduct = {
+      id: product.id,
+      price: parseInt(newPrice),
+    };
+
+    const response = await axios.put(
+      `https://localhost:7113/Auction/UpdateAuction/${user.id}`,
+      newProduct
+    );
+  };
+
+  const convertMinutes = (totalMinutes) => {
+    const minutesInDay = 24 * 60;
+    const minutesInHour = 60;
+    let days = Math.floor(totalMinutes / minutesInDay);
+    let remainingMinutes = totalMinutes % minutesInDay;
+    let hours = Math.floor(remainingMinutes / minutesInHour);
+    let minutes = Math.round(remainingMinutes % minutesInHour);
+
+    return `${days}d:${hours}h:${minutes}m`;
+  };
+
+  const handleAuctionTime = async (au) => {
+    const currentTime = new Date().toISOString();
+
+    let remainingTime = (new Date(au) - new Date(currentTime)) / 60000;
+    if (remainingTime < 0) {
+      if (auction.user === null) {
+        await axios.put(`https://localhost:7113/User/InputBuy/${0}`, [product]);
+      } else {
+        console.log(auction);
+        if (user.id === auction?.user.id) {
+          await axios.put(
+            `https://localhost:7113/User/InputBuy/${auction.user.id}`,
+            [product]
+          );
+        }
+      }
+      window.location.replace("/");
+    }
+
+    setAuctionTime(convertMinutes(remainingTime));
+  };
+
   const handleAddReview = async () => {
-    console.log(addReview);
     const response = await axios.post(
       `https://localhost:7113/User/InputReview?id_product=${id_product}&id_user=${user.id}`,
       addReview
@@ -37,6 +119,7 @@ const Product = () => {
     setProduct({ ...product, reviews: newReviews });
     setIsAddActive(false);
   };
+
   const checkIfWishlist = () => {
     let bul = false;
     product.numberOfWish.map((now) => {
@@ -106,19 +189,66 @@ const Product = () => {
     });
     return Math.round(parseFloat(sum / product.reviews.length));
   };
+
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await axios.post(
+      await axios.post(
         `https://localhost:7113/User/InputNumberOfView?id_product=${id_product}`,
         { idUser: user.id }
       );
+
       const response = await axios.get(
         `https://localhost:7113/User/FetchSingleProduct?id_product=${id_product} `
       );
+
+      if (response.data.auction === true) {
+        const responseAuction = await axios.get(
+          `https://localhost:7113/Auction/FetchAuction/${id_product} `
+        );
+        console.log(responseAuction.data);
+        setAuction(responseAuction.data);
+        handleAuctionTime(responseAuction.data.time);
+      }
+
       setProduct(response.data);
     };
     fetchProduct();
   }, [id_product]);
+
+  useEffect(() => {
+    product && setAddedToCart(checkAddedToCart());
+  }, [product]);
+
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          connection.on("BroadcastMessage", (product, auction) => {
+            console.log(product);
+            console.log(auction);
+            setProduct(product);
+            setAuction(auction);
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [connection]);
+
+  useEffect(() => {
+    const connect = new HubConnectionBuilder()
+      .configureLogging(signalR.LogLevel.Information)
+      .withUrl(`https://localhost:7113/chatHub`)
+      .withAutomaticReconnect()
+      .build();
+    setConnection(connect);
+  }, []);
+
+  useEffect(() => {
+    setInterval(() => {
+      if (auction?.time) handleAuctionTime(auction.time);
+    }, 10000);
+  }, [auction]);
 
   if (product) {
     return (
@@ -126,18 +256,67 @@ const Product = () => {
         <section className="section-product">
           <div className="product-picture">
             <img
-              src={product?.picture[0].data}
+              src={product.picture[0].data}
               alt=""
               className="product-picture-img"
             />
           </div>
           <div className="product-buy">
             <h3 className="product-name">{product.name}</h3>
-            <label className="product-price">
-              Cena:
-              <span className="product-price-span">{product.price} RSD</span>
-            </label>
-            <button className="product-buy-button">Kupi</button>
+            {!product.auction && product.user.id !== user.id && (
+              <div className="purchase-container">
+                <label className="product-price">
+                  Cena:
+                  <span className="product-price-span">
+                    {product.price} RSD
+                  </span>
+                </label>
+                <button
+                  disabled={addedToCart}
+                  className="product-buy-button"
+                  onClick={handleAddToCart}
+                >
+                  Dodaj u korpu
+                </button>
+              </div>
+            )}
+            {product.auction && product.user.id !== user.id && (
+              <div className="purchase-container">
+                <label className="product-price">
+                  Trenutna cena:
+                  <span className="product-price-span">
+                    {parseInt(product.price)} RSD
+                  </span>
+                </label>
+                <div className="auction-input-price">
+                  <input
+                    className="price-input"
+                    placeholder="Cena"
+                    onChange={(e) => {
+                      setNewPrice(e.target.value);
+                    }}
+                  />
+                  <button
+                    className="product-buy-button-auction"
+                    onClick={handleAuction}
+                  >
+                    Licitiraj
+                  </button>
+                </div>
+                <div className="auction-information">
+                  <label className="minimum-price">{`${
+                    auction.minimumPrice + parseInt(product.price)
+                  } minimum`}</label>
+                  <label className="user-auction-information">
+                    Korisnik:{" "}
+                    {auction.user !== null && `${auction.user?.username}`}
+                  </label>
+                </div>
+                <label className="user-auction-information">
+                  Preostalo vreme:{auctionTime}
+                </label>
+              </div>
+            )}
             <div className="like-div">
               <button
                 className="like-product"
@@ -148,7 +327,7 @@ const Product = () => {
               <div className="number-of-like-wish">
                 <label className="number-of-like">
                   {`${product.numberOfLike.length} ${
-                    product.numberOfLike.length === 1 ? "like" : "likes"
+                    product.numberOfLike.length === 1 ? "lajk" : "lajkovi"
                   }`}
                 </label>
                 <label className="number-of-wish">
@@ -157,15 +336,23 @@ const Product = () => {
               </div>
             </div>
             <button
-              className="product-buy-button"
+              className="product-wish-button"
               onClick={checkIfWishlist() ? handleUnwish : handleWish}
             >
               {`${checkIfWishlist() ? "Dodat" : "Dodaj"} u listi zelja`}
             </button>
-
-            <label className="number-of-view">{calculateMark()} ocena</label>
+            <div className="number-of-view-div">
+              <label className="number-of-view">{calculateMark()} ocena</label>
+              <label className="number-of-view">
+                {product.numberOfViewers.length} pregleda
+              </label>
+            </div>
+            <div className="number-of-view-div">
+              <label className="number-of-view">{product.place.name}</label>
+              <label className="number-of-view"> {product.phone}</label>
+            </div>
             <label className="number-of-view">
-              {product.numberOfViewers.length} pregleda
+              {handleTime(product.date)} {handleDate(product.date)}
             </label>
           </div>
           <div className="user-information">
@@ -180,7 +367,7 @@ const Product = () => {
             <label className="user-information-label">
               Ime:
               <span className="product-information-span">
-                {product.user.userInformation?.name}
+                {product.user.userInformation?.nameUser}
               </span>
             </label>
             <label className="user-information-label">
@@ -192,7 +379,7 @@ const Product = () => {
             <label className="user-information-label">
               Mesto:
               <span className="product-information-span">
-                {product.user.userInformation?.place}
+                {product.user.userInformation?.place.name}
               </span>
             </label>
             <label className="user-information-label">
@@ -201,12 +388,15 @@ const Product = () => {
                 {product.user.userInformation?.phone}
               </span>
             </label>
-            <label className="user-information-label">
-              Vreme kreiranja naloga:
-              <span className="product-information-span">
-                {product.user.userInformation?.date}
-              </span>
-            </label>
+            <div className="user-information-label">
+              <label className="user-information-label">
+                Vreme kreiranja naloga:
+              </label>
+              <div className="user-information-data-time">
+                <span>{handleTime(product.user.userInformation.date)} </span>
+                <span>{handleDate(product.user.userInformation.date)} </span>
+              </div>
+            </div>
           </div>
         </section>
         <section className="section-product-details">
@@ -244,12 +434,17 @@ const Product = () => {
                 <div className="review-header">
                   <img
                     className="img-user-review"
-                    src={p.user.picture}
+                    src={p.user?.picture}
                     alt=""
                   />
-                  <label className="mark-review">
-                    Ocena: <span className="mark-review-span"> {p.mark}</span>
-                  </label>
+                  <div className="review-mark">
+                    <label className="mark-review">
+                      Korisnik: {p.user.username}
+                    </label>
+                    <label className="mark-review">
+                      Ocena: <span className="mark-review-span"> {p.mark}</span>
+                    </label>
+                  </div>
                 </div>
                 <div className="review-body-comment">
                   <h3>Komentar</h3>

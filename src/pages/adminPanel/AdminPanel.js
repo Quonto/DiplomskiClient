@@ -8,12 +8,17 @@ const AdminPanel = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [productInformation, setProductInformation] = useState([]);
+  const [place, setPlace] = useState([]);
   const [singleProductInformation, setSingleProductInformation] = useState({
     name: "",
     data: "",
   });
+  const [singlePlace, setSinglePlace] = useState({
+    name: "",
+  });
 
   const nameRef = useRef(null);
+  const placeRef = useRef(null);
 
   const changeCategory = (e) => {
     if (e.target.value !== "") setSelectedCategory(categories[e.target.value]);
@@ -22,6 +27,19 @@ const AdminPanel = () => {
   const changeGroup = (e) => {
     setSelectedGroup(groups[e.target.value]);
     setProductInformation(groups[e.target.value].productInformation);
+  };
+
+  const addPlace = async () => {
+    let newPlace = {
+      name: singlePlace.name,
+    };
+    const response = await axios.post(
+      `https://localhost:7113/User/InputPlace`,
+      newPlace
+    );
+    newPlace = { ...newPlace, id: response.data };
+    setPlace([...place, newPlace]);
+    placeRef.current.value = "";
   };
 
   const addProductInformation = async () => {
@@ -49,11 +67,20 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
+    const fetchPlace = async () => {
+      const response = await axios.get(
+        "https://localhost:7113/Category/FetchPlace"
+      );
+      setPlace(response.data);
+    };
+    fetchPlace();
+  }, []);
+
+  useEffect(() => {
     const fetchCategories = async () => {
       const response = await axios.get(
         "https://localhost:7113/Category/FetchCategoriesAndGroups"
       );
-      console.log(response.data);
       response && setCategories([{ name: "" }, ...response.data]);
     };
     fetchCategories();
@@ -102,7 +129,7 @@ const AdminPanel = () => {
             </div>
             <div className="groups-pi-add">
               <label htmlFor="name" className="add-pi-label">
-                Name:
+                Name
               </label>
               <input
                 className="add-pi-input"
@@ -121,6 +148,37 @@ const AdminPanel = () => {
             </div>
           </>
         )}
+      </section>
+      <section className="place-settings">
+        <div className="groups-review">
+          {place.length !== 0 &&
+            place.map((p, index) => {
+              return (
+                <article key={index}>
+                  <p>{p.name}</p>
+                </article>
+              );
+            })}
+        </div>
+        <div className="groups-place-add">
+          <label htmlFor="name" className="add-place-label">
+            Name
+          </label>
+          <input
+            className="add-place-input"
+            name="name"
+            ref={placeRef}
+            onChange={(e) =>
+              setSinglePlace({
+                ...singlePlace,
+                name: e.target.value,
+              })
+            }
+          />
+          <button className="add-place-btn" onClick={addPlace}>
+            Dodaj
+          </button>
+        </div>
       </section>
     </section>
   );

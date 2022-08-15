@@ -36,9 +36,23 @@
 .product-buy-button
 {
     width: 80%;
+    height: 40px;
+    margin: auto;
+}
+
+.product-buy-button-auction
+{
+    width: 30%;
+    height: 30px;
+    
+}
+
+
+
+.product-wish-button{
+    width: 80%;
     margin: 0 auto;
     height: 40px;
-
 }
 
 .number-of-like-wish
@@ -55,9 +69,15 @@
     justify-content: space-between;
 }
 
+.number-of-view-div
+{
+    display: flex;
+}
+
 .number-of-view
 {
     margin: 0 auto;
+    
 }
 
 .product-info
@@ -91,13 +111,24 @@
     margin: 10px 10px;
 }
 
+
+
 .user-information-label
 {
     width: 100%;
     margin: 5px 0;
+    height: 50px;
     display: flex;
     justify-content: space-between;
 }
+
+.user-information-data-time{
+    display: flax;
+    flex-direction: column;
+    margin-top: 7px;
+}
+
+
 .product-information-span
 {
     text-align: end;
@@ -111,12 +142,13 @@
 .user-header{
     display: flex;
     width: 100%;
-    height: 100px;
+    height: 90px;
     margin-bottom: 5px;
+    justify-content: space-between;
 }
 .user-header > img{
     height: 100%;
-    width: 50%;
+    width: 45%;
 }
 
 .section-product-details
@@ -195,6 +227,13 @@
     margin-right: 10px;
     width: 30%
 }
+.price-input
+{
+    width: 60%;
+    height: 25px;
+    margin: auto 0px;
+    
+}
 
 .modal-textarea
 {
@@ -253,8 +292,16 @@
     justify-content: space-evenly;
     align-items: center;
 }
-.mark-review{
+.mark-review {
     height: auto;
+    margin: 10px 0;
+}
+
+.review-mark
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .review-body-comment
@@ -301,9 +348,36 @@
     border-radius: 5px ;
 }
 
+.purchase-container{
+    display: flex;
+    height: 100px;
+    flex-direction: column;
+}
+.auction-information
+{
+    display: flex;
+    width: 100%;
+    height: 20px;
+
+}
+
+.minimum-price
+{
+    width: 60%;
+    height: 100%;
+}
+
+
+.auction-input-price{
+    width: 100%;
+   display: flex;
+   justify-content: space-between;
+}
+
+
 @media (min-width: 1100px) {
     .section-product{
-        width: 70%;
+        width: 80%;
     }
     .section-product-details
     {

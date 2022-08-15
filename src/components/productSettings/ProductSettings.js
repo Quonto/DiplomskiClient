@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
 
@@ -8,6 +8,8 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
     { label: "Rastuci po ceni", method: "rc" },
     { label: "Opadajuci po nazivu", method: "on" },
     { label: "Rastuci po nazivu", method: "rn" },
+    { label: "Rastuci po vremenu", method: "rv" },
+    { label: "Opadajuci po vremenu", method: "ov" },
   ];
 
   const { pathname } = useLocation();
@@ -15,8 +17,11 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
   const [sort, setSort] = useState("");
   const [mark, setMark] = useState(0);
 
+  const nekiRef = useRef(null);
+
   const handleSort = (sort) => {
     let sorted = filteredProducts.reverse();
+    console.log(sorted);
     switch (sort) {
       case "oc": {
         sorted = filteredProducts.sort((a, b) => a.price - b.price).reverse();
@@ -56,8 +61,52 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
         });
         break;
       }
+      case "ov": {
+        sorted = filteredProducts
+          .sort((a, b) => {
+            let x = a.date.toLowerCase();
+            let y = b.date.toLowerCase();
+            if (x < y) {
+              return -1;
+            }
+            if (x > y) {
+              return 1;
+            }
+            return 0;
+          })
+          .reverse();
+        break;
+      }
+      case "rv": {
+        sorted = filteredProducts.sort((a, b) => {
+          let x = a.date.toLowerCase();
+          let y = b.date.toLowerCase();
+          if (x < y) {
+            return -1;
+          }
+          if (x > y) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      }
     }
     setFilteredProducts([...sorted]);
+  };
+
+  const handleDate = (date) => {
+    const d = date.split("T");
+    const da = d[0].split("-");
+
+    return da[2] + "." + da[1] + "." + da[0];
+  };
+
+  const handleTime = (time) => {
+    const d = time.split("T");
+    const da = d[1].split(":");
+
+    return da[0] + ":" + da[1];
   };
 
   const calculateMark = (product) => {
@@ -74,8 +123,8 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
 
   useEffect(() => {
     sort !== "" && handleSort(sort);
+    console.log(nekiRef.current.getBoundingClientRect());
   }, [sort]);
-
   return (
     <section className="product-list">
       <div className="header-sort">
@@ -93,8 +142,9 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
           </select>
         </div>
       </div>
-      <div className="products">
+      <div className="products" ref={nekiRef}>
         {filteredProducts.map((product) => {
+          console.log(`${pathname}/product/${product.id}`);
           return (
             <article className="product" key={product.id}>
               <Link
@@ -110,7 +160,11 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
               </Link>
               <div className="product-details">
                 <Link
-                  style={{ textDecoration: "none", color: "black" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    margin: "0px 10px",
+                  }}
                   to={`${pathname}/product/${product.id}`}
                 >
                   <h4>{product.name}</h4>
@@ -128,9 +182,17 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
                   <span>{product.user.username}</span>
                 </div>
               </div>
+              <div className="product-contact">
+                <label>Grad/Mesto</label>
+                <span>{product.place.name}</span>
+                <label>Kontakt</label>
+                <span>{product.phone} </span>
+                <label>Vreme</label>
+                <span>{handleTime(product.date)} </span>
+                <span>{handleDate(product.date)} </span>
+              </div>
               <div className="button-list">
-                <button className="wishlist-btn">Dodaj</button>
-                <div className="button-info">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
+                <div className="button-info">{`${product.numberOfWish.length} zeli `}</div>
                 <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
                 <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
               </div>

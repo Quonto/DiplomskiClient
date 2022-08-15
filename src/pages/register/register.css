@@ -1,10 +1,10 @@
 .register{
     display: flex;
-    height: 500px;
+    height: 600px;
     width: 80%;
     flex-direction: row;
     align-self: center;
-    margin: 40px auto;
+    margin: 20px auto;
 }
 
 .register-form
@@ -15,18 +15,28 @@
     padding: 10px 20px;
 }
 
+.register-label
+{
+    margin: 10px 0px;
+    height: 20px;
+}
+
+.register-description
+{
+    width: 100%;
+    height: 70px;
+}
+
 .register-input
 {
-    margin: 20px 0px;
     height: 30px;
-    padding: 0 5px;
 }
 
 .register-button
 {
     height: 30px;
     width: 100px;
-    margin: 0px auto;
+    margin: 10px auto;
 }
 .section-image
 {
@@ -41,4 +51,10 @@
 .section-input-file
 {
     margin: 10px 0px;
+}
+.section-register-image{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 10px 20px;
 }
