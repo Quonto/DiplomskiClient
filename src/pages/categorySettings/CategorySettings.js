@@ -18,13 +18,13 @@ const CategorySettings = () => {
       const response = await axios.get(
         `https://localhost:7113/User/FetchProducts?id_group=${id_group}`
       );
-      console.log(response.data);
+
       setProducts(response.data);
       setFilteredProducts(response.data);
     };
     const fetchGroup = async () => {
       const response = await axios.get(
-        `https://localhost:7113/Category/FetchGroup?id_group=${id_group}`
+        `https://localhost:7113/Category/FetchGroup/${id_group}`
       );
       setGroup(response.data);
       setProductInformation(response.data.productInformation);

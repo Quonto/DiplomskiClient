@@ -28,11 +28,13 @@ const Navbar = () => {
       <div className="navbar-settings"></div>
       {user ? (
         <div className="navbar-profile">
-          <img
-            className="navbar-profile-image"
-            src={user.picture}
-            alt="profilna"
-          />
+          <Link className="profile-link" to={`/profile/${user.id}`}>
+            <img
+              className="navbar-profile-image"
+              src={user.picture}
+              alt="profilna"
+            />
+          </Link>
           <Link className="navbar-link-add" to="/add-product">
             +
           </Link>

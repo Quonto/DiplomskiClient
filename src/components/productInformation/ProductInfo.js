@@ -1,0 +1,176 @@
+import ImageSlider from "../imageSlider/ImageSlider";
+
+import axios from "axios";
+const ProductInfo = ({
+  product,
+  setProduct,
+  handleChangePurchase,
+  places,
+  handleChangePlaces,
+  handleChangeTime,
+  handleUploadFile,
+  images,
+  selectedImage,
+  setIsImageEditorActive,
+  handleSelectedImage,
+  handleChangePi,
+  productInformation,
+  inputRef,
+}) => {
+  return (
+    <>
+      <section className="add-product-information">
+        <div className="left-container">
+          <label className="add-product-label" htmlFor="name">
+            Ime:
+          </label>
+          <input
+            name="name"
+            className="add-product-input"
+            placeholder="Ime"
+            onChange={(e) => setProduct({ ...product, name: e.target.value })}
+          ></input>
+          <label className="add-product-label" htmlFor="price">
+            Cena:
+          </label>
+          <input
+            name="price"
+            className="add-product-input"
+            placeholder="Cena"
+            onChange={(e) => setProduct({ ...product, price: e.target.value })}
+          ></input>
+          <label className="add-product-label" htmlFor="place">
+            Mesto:
+          </label>
+          {places && (
+            <select
+              className="add-product-select"
+              onChange={handleChangePlaces}
+            >
+              {places.map((p, i) => {
+                return (
+                  <option key={i} value={i}>
+                    {p.name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+          <div className="purchase">
+            <div className="purchase-product">
+              <label className="add-product-label" htmlFor="place">
+                Nacin kupovine:
+              </label>
+              <select
+                className="add-product-select"
+                onChange={handleChangePurchase}
+              >
+                <option value={false}>Kupovina</option>
+                <option value={true}>Aukcija</option>
+              </select>
+            </div>
+
+            {product.auction && (
+              <div className="purchase-product">
+                <label className="add-product-label" htmlFor="place">
+                  Vreme aukcije:
+                </label>
+                <select
+                  className="add-product-select"
+                  onChange={handleChangeTime}
+                >
+                  <option selected={product.auction} value={1}>
+                    Jedan dan
+                  </option>
+                  <option selected={product.auction} value={2}>
+                    Dva dana
+                  </option>
+                  <option selected={product.auction} value={3}>
+                    Tri dana
+                  </option>
+                  <option selected={product.auction} value={4}>
+                    Cetiri dana
+                  </option>
+                </select>
+              </div>
+            )}
+          </div>
+          <label className="add-product-label" htmlFor="contact">
+            Kontakt:
+          </label>
+          <input
+            name="contact"
+            className="add-product-input"
+            placeholder="Kontakt"
+            onChange={(e) => setProduct({ ...product, phone: e.target.value })}
+          ></input>
+          <label className="add-product-label" htmlFor="details">
+            Opis:
+          </label>
+          <textarea
+            name="details"
+            className="add-product-details"
+            onChange={(e) =>
+              setProduct({ ...product, details: e.target.value })
+            }
+          />
+        </div>
+        <div className="middle-container">
+          <label htmlFor="input-slika" className="input-btn">
+            Dodaj sliku
+            <input
+              style={{ display: "none" }}
+              id="input-slika"
+              ref={inputRef}
+              type="file"
+              onChange={handleUploadFile}
+            />
+          </label>
+          {images && (
+            <>
+              <div className="image-preview">
+                <img
+                  className="add-product-image"
+                  src={selectedImage?.data}
+                  alt=""
+                />
+              </div>
+              <button
+                className="image-edit-btn"
+                onClick={() => setIsImageEditorActive(true)}
+                type="button"
+              >
+                Image edit
+              </button>
+              <ImageSlider
+                images={images}
+                handleSelectedImage={handleSelectedImage}
+              ></ImageSlider>
+            </>
+          )}
+        </div>
+        {productInformation && (
+          <div className="right-container">
+            {productInformation.map((pi, index) => {
+              return (
+                <>
+                  <label htmlFor="name" className="pi-label">
+                    {pi.name}
+                  </label>
+                  <input
+                    className="pi-input"
+                    name="name"
+                    placeholder={pi.name}
+                    onChange={(e) => handleChangePi(e, pi.name)}
+                  />
+                </>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </>
+  );
+};
+
+export default ProductInfo;

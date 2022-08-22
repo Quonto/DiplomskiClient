@@ -18,7 +18,6 @@ const FilterSettings = ({
   const handleFilters = () => {
     let newProducts = products;
 
-    console.log(products);
     if (cena.do !== "" && cena.od !== "") {
       const parseCena = {
         od: parseInt(cena.od),
@@ -33,18 +32,15 @@ const FilterSettings = ({
     }
 
     if (auction === false && buy !== false) {
-      console.log(newProducts);
       newProducts = newProducts.filter(
         (product) => auction === product.auction
       );
     }
     if (buy === false && auction !== false) {
-      console.log(newProducts);
       newProducts = newProducts.filter((product) => buy !== product.auction);
     }
 
     if (place !== "") {
-      console.log(newProducts);
       newProducts = newProducts.filter(
         (product) => place === product.place.name
       );

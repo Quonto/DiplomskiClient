@@ -5,6 +5,7 @@ import "./product.css";
 import { useGlobalContext } from "../../context/Context";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import * as signalR from "@microsoft/signalr";
+import ImageSlider from "../../components/imageSlider/ImageSlider";
 
 const Product = () => {
   const [isAddActive, setIsAddActive] = useState(false);
@@ -12,10 +13,11 @@ const Product = () => {
     mark: "",
     coment: "",
   });
-  const [auction, setAuction] = useState({});
+  const [auction, setAuction] = useState(null);
   const [auctionTime, setAuctionTime] = useState(null);
   const [connection, setConnection] = useState(null);
   const [newPrice, setNewPrice] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { id_product } = useParams();
 
@@ -35,6 +37,15 @@ const Product = () => {
 
   const [product, setProduct] = useState(null);
   const [addedToCart, setAddedToCart] = useState(checkAddedToCart());
+
+  const handleSelectedImage = (image) => {
+    setSelectedImage({
+      ...selectedImage,
+      data: image.data,
+      name: image.name,
+      index: image.index,
+    });
+  };
 
   const handleDate = (date) => {
     const d = date.split("T");
@@ -86,21 +97,22 @@ const Product = () => {
     const currentTime = new Date().toISOString();
 
     let remainingTime = (new Date(au) - new Date(currentTime)) / 60000;
-    if (remainingTime < 0) {
-      if (auction.user === null) {
-        await axios.put(`https://localhost:7113/User/InputBuy/${0}`, [product]);
-      } else {
-        console.log(auction);
-        if (user.id === auction?.user.id) {
+
+    if (auction) {
+      if (remainingTime < 0) {
+        if (auction.user === null) {
+          await axios.put(`https://localhost:7113/User/InputBuy/${0}`, [
+            product,
+          ]);
+        } else {
           await axios.put(
             `https://localhost:7113/User/InputBuy/${auction.user.id}`,
             [product]
           );
         }
+        window.location.replace("/");
       }
-      window.location.replace("/");
     }
-
     setAuctionTime(convertMinutes(remainingTime));
   };
 
@@ -205,7 +217,6 @@ const Product = () => {
         const responseAuction = await axios.get(
           `https://localhost:7113/Auction/FetchAuction/${id_product} `
         );
-        console.log(responseAuction.data);
         setAuction(responseAuction.data);
         handleAuctionTime(responseAuction.data.time);
       }
@@ -216,7 +227,14 @@ const Product = () => {
   }, [id_product]);
 
   useEffect(() => {
-    product && setAddedToCart(checkAddedToCart());
+    if (product) {
+      setAddedToCart(checkAddedToCart());
+      setSelectedImage({
+        name: product.picture[0].name,
+        index: 0,
+        data: product.picture[0].data,
+      });
+    }
   }, [product]);
 
   useEffect(() => {
@@ -225,8 +243,6 @@ const Product = () => {
         .start()
         .then(() => {
           connection.on("BroadcastMessage", (product, auction) => {
-            console.log(product);
-            console.log(auction);
             setProduct(product);
             setAuction(auction);
           });
@@ -254,14 +270,22 @@ const Product = () => {
     return (
       <>
         <section className="section-product">
-          <div className="product-picture">
-            <img
-              src={product.picture[0].data}
-              alt=""
-              className="product-picture-img"
-            />
-          </div>
-          <div className="product-buy">
+          {selectedImage && (
+            <div className="product-picture">
+              <div className="product-picture-wrapper">
+                <img
+                  src={selectedImage.data}
+                  alt=""
+                  className="product-picture-img"
+                />
+              </div>
+              <ImageSlider
+                images={product.picture}
+                handleSelectedImage={handleSelectedImage}
+              ></ImageSlider>
+            </div>
+          )}
+          <div className=" product-buy">
             <h3 className="product-name">{product.name}</h3>
             {!product.auction && product.user.id !== user.id && (
               <div className="purchase-container">

@@ -15,21 +15,20 @@ const Home = () => {
         "https://localhost:7113/User/FetchMostWanted"
       );
       setMostWanted(response.data);
-      console.log(response.data);
     };
     const handleMostLiked = async () => {
       const response = await axios.get(
         "https://localhost:7113/User/FetchLikeProduct"
       );
-      // console.log(response);
+
       setMostLiked(response.data);
     };
     const handleMostPopular = async () => {
       const response = await axios.get(
         "https://localhost:7113/User/FetchPopularGroup"
       );
-      setMostPopular(response.data);
       console.log(response.data);
+      setMostPopular(response.data);
     };
     handleMostWanted();
     handleMostLiked();
@@ -96,16 +95,25 @@ const Home = () => {
       <section className="popular-categories">
         <h3>Popularne kategorije</h3>
         <div className="popular-categories-list">
-          <article className="popular-category">
-            <div className="popular-image-wrapper">
-              <img
-                className="popular-category-image"
-                src="https://bibliotekamuzejodzaci.org.rs/wp-content/uploads/2016/11/Wallpapers-Old-Books-The-Old-Books-Wallpaper-1020x816-iWallH-copy.jpg"
-                alt=""
-              />
-            </div>
-            <p>Knjige</p>
-          </article>
+          {mostPopular.map((group) => {
+            return (
+              <Link
+                className="wanted-product"
+                to={`/categories/group/${group.id}`}
+              >
+                <article className="popular-category">
+                  <div className="popular-image-wrapper">
+                    <img
+                      className="popular-category-image"
+                      src={group.picture.data}
+                      alt=""
+                    />
+                  </div>
+                  <p>{group.name}</p>
+                </article>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </main>

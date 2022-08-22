@@ -11,6 +11,7 @@ import { useGlobalContext } from "./context/Context";
 import Product from "./pages/product/Product";
 import Cart from "./pages/cart/Cart";
 import UserProducts from "./pages/user-products/UserProducts";
+import Profile from "./pages/profile/Profile";
 
 const App = () => {
   const { user } = useGlobalContext();
@@ -34,6 +35,7 @@ const App = () => {
         />
         <Route path="/cart" element={<Cart />} />
         <Route path="/user-products" element={<UserProducts />}></Route>
+        <Route path="/profile/:id_user" element={<Profile />}></Route>
       </Routes>
     </Router>
   );

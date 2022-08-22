@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./addProduct.css";
 import { useGlobalContext } from "../../context/Context";
 import axios from "axios";
+import ImageEditor from "../imageEditor/ImageEditor";
+import ProductInfo from "../../components/productInformation/ProductInfo";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [groups, setGroups] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [productImage, setProductImage] = useState([
-    {
-      name: "",
-      data: "",
-    },
-  ]);
+  const [images, setImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState({
+    name: "",
+    data: null,
+    index: "",
+  });
+  const [place, setPlace] = useState({
+    name: "",
+  });
+  const [isImageEditorActive, setIsImageEditorActive] = useState(false);
   const [productInformation, setProductInformation] = useState([]);
   const [product, setProduct] = useState({
     name: "",
@@ -23,12 +29,16 @@ const AddProduct = () => {
     auction: false,
   });
   const [places, setPlaces] = useState(null);
-  const [place, setPlace] = useState({
-    name: "",
-  });
+
   const [time, setTime] = useState("");
 
+  const inputRef = useRef(null);
+
   const { user } = useGlobalContext();
+
+  const handleChangePlaces = (e) => {
+    setPlace({ name: places[e.target.value].name.toString() });
+  };
 
   const readFileDataAsBase64 = (e) => {
     const file = e.target.files[0];
@@ -45,13 +55,65 @@ const AddProduct = () => {
       };
 
       reader.readAsDataURL(file);
-      setProductImage({ ...productImage, name: file.name });
     });
   };
 
+  const handleSelectedImage = (image) => {
+    setSelectedImage({
+      ...selectedImage,
+      data: image.data,
+      name: image.name,
+      index: image.index,
+    });
+  };
+  const handleChangePi = (e, name) => {
+    setProductInformation(
+      productInformation.map((pi) => {
+        if (pi.name === name) return { ...pi, data: e.target.value };
+        else return pi;
+      })
+    );
+  };
+
+  const handleEditImage = (image) => {
+    if (image === null) {
+      const newImages = images.filter(
+        (img) => img.index !== selectedImage.index
+      );
+      setImages(newImages);
+      setSelectedImage({
+        name: "",
+        data: null,
+        index: "",
+      });
+    } else {
+      setSelectedImage({ ...selectedImage, data: image });
+      const newImages = images.map((img, index) => {
+        if (index === selectedImage.index) {
+          return {
+            data: image,
+            name: "",
+            index: selectedImage.index,
+          };
+        }
+        return img;
+      });
+      setImages(newImages);
+    }
+  };
+
   const handleUploadFile = (e) => {
-    readFileDataAsBase64(e).then((data) => {
-      setProductImage([{ ...productImage, data }]);
+    readFileDataAsBase64(e).then((data, name) => {
+      setSelectedImage({ ...selectedImage, data, name, index: images.length });
+      setImages([
+        ...images,
+        {
+          name: selectedImage?.name || "",
+          data,
+          index: images.length,
+        },
+      ]);
+      inputRef.current.value = "";
     });
   };
 
@@ -71,7 +133,7 @@ const AddProduct = () => {
       name: product.name,
       price: product.price,
       phone: product.phone,
-      picture: productImage,
+      picture: images,
       place: place,
       date: currentTime,
       details: product.details,
@@ -82,10 +144,8 @@ const AddProduct = () => {
       `https://localhost:7113/User/InputProductBuy/${user.id}/${selectedGroup.id}`,
       newProduct
     );
-    console.log(response.data);
     if (product.auction) {
       currentTime.setDate(currentTime.getDate() + time);
-      console.log(currentTime);
       const newAuction = {
         time: currentTime,
         minimumPrice: parseInt((product.price / 100) * 5),
@@ -96,12 +156,11 @@ const AddProduct = () => {
         newAuction
       );
     }
-    /*
+
     response &&
       window.location.replace(
         `/categories/group/${selectedGroup.id}/product/${response?.data}`
       );
-      */
   };
 
   const handleChangeCategory = (e) => {
@@ -110,24 +169,8 @@ const AddProduct = () => {
     setSelectedGroup(null);
   };
 
-  const handleChangePlaces = (e) => {
-    setPlace({ name: places[e.target.value].name.toString() });
-    console.log(places);
-    console.log(e.target.value);
-    console.log(place);
-  };
-
   const handleChangeGroup = (e) => {
     setSelectedGroup(groups[e.target.value]);
-  };
-
-  const handleChangePi = (e, name) => {
-    setProductInformation(
-      productInformation.map((pi) => {
-        if (pi.name === name) return { ...pi, data: e.target.value };
-        else return pi;
-      })
-    );
   };
 
   useEffect(() => {
@@ -136,21 +179,13 @@ const AddProduct = () => {
         "https://localhost:7113/Category/FetchCategories"
       );
       setCategories([{ name: "" }, ...response.data]);
+      const response2 = await axios.get(
+        `https://localhost:7113/Category/FetchPlace`
+      );
+      setPlaces([{ name: "" }, ...response2.data]);
     };
     fetchCategories();
   }, []);
-
-  useEffect(() => {
-    const fetchPlace = async () => {
-      if (product) {
-        const response = await axios.get(
-          `https://localhost:7113/Category/FetchPlace`
-        );
-        setPlaces([{ name: "" }, ...response.data]);
-      }
-    };
-    fetchPlace();
-  }, [product]);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -185,170 +220,73 @@ const AddProduct = () => {
   }, [selectedGroup]);
 
   return (
-    <form className="add-product-form" onSubmit={handleSubmit}>
-      <div className="select-container">
-        {categories.length !== 0 && (
-          <select
-            onChange={handleChangeCategory}
-            className="add-product-select"
-          >
-            {categories.map((category, i) => {
-              return (
-                <option key={i} value={i}>
-                  {category.name}
-                </option>
-              );
-            })}
-          </select>
-        )}
-        {groups?.length !== 0 && (
-          <select className="add-product-select" onChange={handleChangeGroup}>
-            {groups.map((group, i) => {
-              return (
-                <option key={i} value={i}>
-                  {group.name}
-                </option>
-              );
-            })}
-          </select>
-        )}
-      </div>
-      {selectedGroup && (
-        <section className="add-product-information">
-          <div className="left-container">
-            <label className="add-product-label" htmlFor="name">
-              Ime:
-            </label>
-            <input
-              name="name"
-              className="add-product-input"
-              placeholder="Ime"
-              onChange={(e) => setProduct({ ...product, name: e.target.value })}
-            ></input>
-            <label className="add-product-label" htmlFor="price">
-              Cena:
-            </label>
-            <input
-              name="price"
-              className="add-product-input"
-              placeholder="Cena"
-              onChange={(e) =>
-                setProduct({ ...product, price: e.target.value })
-              }
-            ></input>
-            <label className="add-product-label" htmlFor="place">
-              Mesto:
-            </label>
-            {places?.length !== 0 && (
-              <select
-                className="add-product-select"
-                onChange={handleChangePlaces}
-              >
-                {places.map((p, i) => {
-                  return (
-                    <option key={i} value={i}>
-                      {p.name}
-                    </option>
-                  );
-                })}
-              </select>
-            )}
-            <div className="purchase">
-              <div className="purchase-product">
-                <label className="add-product-label" htmlFor="place">
-                  Nacin kupovine:
-                </label>
-                <select
-                  className="add-product-select"
-                  onChange={handleChangePurchase}
-                >
-                  <option value={false}>Kupovina</option>
-                  <option value={true}>Aukcija</option>
-                </select>
-              </div>
-
-              {product.auction && (
-                <div className="purchase-product">
-                  <label className="add-product-label" htmlFor="place">
-                    Vreme aukcije:
-                  </label>
-                  <select
-                    className="add-product-select"
-                    onChange={handleChangeTime}
-                  >
-                    <option value={1}>Jedan dan</option>
-                    <option value={2}>Dva dana</option>
-                    <option value={3}>Tri dana</option>
-                    <option value={4}>Cetiri dana</option>
-                  </select>
-                </div>
-              )}
-            </div>
-            <label className="add-product-label" htmlFor="contact">
-              Kontakt:
-            </label>
-            <input
-              name="contact"
-              className="add-product-input"
-              placeholder="Kontakt"
-              onChange={(e) =>
-                setProduct({ ...product, phone: e.target.value })
-              }
-            ></input>
-            <label className="add-product-label" htmlFor="details">
-              Opis:
-            </label>
-            <textarea
-              name="details"
-              className="add-product-details"
-              onChange={(e) =>
-                setProduct({ ...product, details: e.target.value })
-              }
-            />
-          </div>
-          <div className="middle-container">
-            <input type="file" onChange={handleUploadFile} />
-            {productImage[0]?.data && (
-              <div className="image-preview">
-                <img
-                  className="add-product-image"
-                  src={productImage[0].data}
-                  alt=""
-                />
-              </div>
-            )}
-          </div>
-          {productInformation.length !== 0 && (
-            <div className="right-container">
-              {productInformation.map((pi, index) => {
+    <>
+      <form className="add-product-form" onSubmit={handleSubmit}>
+        <div className="select-container">
+          {categories.length !== 0 && (
+            <select
+              onChange={handleChangeCategory}
+              className="add-product-select"
+            >
+              {categories.map((category, i) => {
                 return (
-                  <>
-                    <label htmlFor="name" className="pi-label">
-                      {pi.name}
-                    </label>
-                    <input
-                      className="pi-input"
-                      name="name"
-                      placeholder={pi.name}
-                      onChange={(e) => handleChangePi(e, pi.name)}
-                    />
-                  </>
+                  <option key={i} value={i}>
+                    {category.name}
+                  </option>
                 );
               })}
-            </div>
+            </select>
           )}
-        </section>
+          {groups?.length !== 0 && (
+            <select className="add-product-select" onChange={handleChangeGroup}>
+              {groups.map((group, i) => {
+                return (
+                  <option key={i} value={i}>
+                    {group.name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+        </div>
+        {selectedGroup && (
+          <ProductInfo
+            product={product}
+            setProduct={setProduct}
+            place={place}
+            setPlace={setPlace}
+            places={places}
+            handleChangePlaces={handleChangePlaces}
+            handleChangePurchase={handleChangePurchase}
+            handleChangeTime={handleChangeTime}
+            handleUploadFile={handleUploadFile}
+            images={images}
+            selectedImage={selectedImage}
+            setIsImageEditorActive={setIsImageEditorActive}
+            handleSelectedImage={handleSelectedImage}
+            handleChangePi={handleChangePi}
+            productInformation={productInformation}
+            inputRef={inputRef}
+          ></ProductInfo>
+        )}
+        {selectedGroup && (
+          <button
+            className="add-product-btn"
+            onClick={handleSubmit}
+            type="submit"
+          >
+            Dodaj Proizvod
+          </button>
+        )}
+      </form>
+      {isImageEditorActive && (
+        <ImageEditor
+          selectedImage={selectedImage}
+          setIsImageEditorActive={setIsImageEditorActive}
+          handleEditImage={handleEditImage}
+        />
       )}
-      {selectedGroup && (
-        <button
-          className="add-product-btn"
-          onClick={handleSubmit}
-          type="submit"
-        >
-          Dodaj Proizvod
-        </button>
-      )}
-    </form>
+    </>
   );
 };
 

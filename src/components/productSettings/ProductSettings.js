@@ -21,7 +21,6 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
 
   const handleSort = (sort) => {
     let sorted = filteredProducts.reverse();
-    console.log(sorted);
     switch (sort) {
       case "oc": {
         sorted = filteredProducts.sort((a, b) => a.price - b.price).reverse();
@@ -123,7 +122,6 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
 
   useEffect(() => {
     sort !== "" && handleSort(sort);
-    console.log(nekiRef.current.getBoundingClientRect());
   }, [sort]);
   return (
     <section className="product-list">
@@ -144,7 +142,6 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
       </div>
       <div className="products" ref={nekiRef}>
         {filteredProducts.map((product) => {
-          console.log(`${pathname}/product/${product.id}`);
           return (
             <article className="product" key={product.id}>
               <Link

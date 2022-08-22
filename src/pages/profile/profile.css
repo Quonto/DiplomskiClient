@@ -1,0 +1,131 @@
+.profile{
+    height: 100%;
+    width: 80%;
+    display: flex;
+    margin: 30px 50px;
+    flex-wrap:wrap;
+    justify-content: center;
+}
+
+.section-profile-image{
+    display: flex;
+    width: 30%;
+    height: 250px;
+    margin: 5px 5px;
+    
+}
+
+.profile-image{
+    width: 100%;
+    height: 100%;
+}
+
+.profile-information
+{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    height: 100%;
+    width: 30%;
+}
+
+.profile-name-label{
+    margin-top: 10px;
+}
+
+.profile-name-password{
+    margin: 10px 0px;
+}
+
+.profile-name
+{
+    margin: 5px 5px;
+}
+
+.current-information
+{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.current-information-info
+{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-button{
+    width: 50px;
+    height: 30px;
+    margin:  auto auto;
+}
+
+.profile-product-name
+{
+    height: 20px;
+    width: 100%;
+    margin: 5px 0;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none !important;
+    text-align: center;
+}
+
+.profile-product a {
+    text-decoration: none;
+}
+
+
+.profile-product-link
+{
+    display: flex;
+    width: 150px;
+    height: 90%;
+}
+
+.profile-product{
+    display: flex;
+    justify-content: center;
+    flex-wrap:wrap;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.current-profile-product
+{
+    display: flex;
+    flex-direction: column;
+    height: 230px;
+    width: 150px;
+    margin: 10px 10px;
+}
+.profile-product-image
+{
+    height: 160px;
+    width: 100%;
+}
+
+.product-profile-button
+{
+    display: flex;
+    height: 30px;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.change-product{
+    width: 50px;
+    height: 30px;
+}
+
+
+@media (min-width: 1000px) {
+    .profile{
+        display: flex;
+        width: 900px;
+        margin: 30px auto;
+    }
+}

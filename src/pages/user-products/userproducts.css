@@ -106,12 +106,3 @@
     top: 0px;
     right: 5px;
 }
-
-
-
-@media (min-width: 1100px) {
-    .section-product{
-        width: 80%;
-    }
-
-}

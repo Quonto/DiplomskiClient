@@ -15,7 +15,6 @@ const Cart = () => {
   };
 
   const handleBuyProducts = async () => {
-    console.log(cart);
     await axios.put(`https://localhost:7113/User/InputBuy/${user.id}`, cart);
     setCart([]);
   };
@@ -24,7 +23,6 @@ const Cart = () => {
     <div className="cart">
       {cart ? (
         cart.map((cartItem) => {
-          console.log(cartItem);
           return (
             <article className="cart-article">
               <div className="product-image">

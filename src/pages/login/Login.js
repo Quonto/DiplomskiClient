@@ -17,7 +17,7 @@ const Login = () => {
       "https://localhost:7113/User/FetchUser",
       login
     );
-    console.log(response.data);
+
     setUser(response.data);
     setTimeout(() => window.location.replace("/"), 500);
   };

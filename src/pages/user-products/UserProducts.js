@@ -30,7 +30,7 @@ const UserProducts = () => {
       const response = await axios.get(
         `https://localhost:7113/User/FetchUserProducts/${user.id}`
       );
-      console.log(response.data);
+
       if (response.data.length !== 0) {
         try {
           const responseUser = await axios.get(
@@ -92,7 +92,7 @@ const UserProducts = () => {
       minimumPrice: parseInt((productPrice / 100) * 5),
       user: null,
     };
-    console.log(newAuction);
+
     await axios.put(`https://localhost:7113/User/UpdateAuction`, newAuction);
 
     let newProducts = myProducts.filter((product) => product.id !== product.id);
