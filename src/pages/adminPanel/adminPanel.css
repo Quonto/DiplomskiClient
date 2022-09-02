@@ -1,11 +1,105 @@
+.root{
+    height: 600px;
+}
+
 .group-settings{
-    height: 400px;
+    height: 300px;
     width: 50%;
-    padding: 20px 30px;
+    padding: 10px 30px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-evenly;
+}
+
+.add-pi-input{
+    margin: 5px;
+}
+
+.add-place-input{
+    margin: 5px;
+}
+
+.group-settings > h3{
+    margin: 5px 0px;
+}
+
+.place-settings >h3{
+    margin: 5px 0px;
+}
+
+.group-settings-select
+{
+    margin: 5px ;
+}
+
+.groups-review
+{
+    overflow-y: scroll;
+    margin: 10px 0px;
+}
+
+.add-category
+{
+    height: 300px;
+    width: 100%;
+    padding: 10px 30px;
+}
+
+.category-container > h3{
+    margin: 5px auto ;
+}
+
+.category-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.category-item
+{
+    display: flex;
+    width: 100%;
+    height: 80%;
+    
+}
+
+.category-picture
+{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 40%;
+}
+.category-name-input
+{
+    width: 100%;
+    height: 20px;
+    margin: 10px 0px;
+}
+
+.category-input-button
+{
+    margin: 0px auto ;
+    height: 30px;
+    width: 60px;  
+}
+
+.category-name
+{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    margin: 10px 10px;
+}
+.categories-group{
+    display: flex;
+    height: 100%;
+    width: 30%;
+    margin: 5px 10px;
+    flex-direction: column;
 }
 
 .admin-panel
@@ -15,11 +109,11 @@
 
 .place-settings
 {
-    height: 400px;
+    height: 300px;
     width: 50%;
-    padding: 20px 30px;
+    padding: 10px 30px;
     display: flex;
     align-items: center;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }

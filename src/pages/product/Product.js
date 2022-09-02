@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./product.css";
 import { useGlobalContext } from "../../context/Context";
 import { HubConnectionBuilder } from "@microsoft/signalr";
@@ -83,23 +83,30 @@ const Product = () => {
   };
 
   const convertMinutes = (totalMinutes) => {
-    const minutesInDay = 24 * 60;
-    const minutesInHour = 60;
-    let days = Math.floor(totalMinutes / minutesInDay);
-    let remainingMinutes = totalMinutes % minutesInDay;
-    let hours = Math.floor(remainingMinutes / minutesInHour);
-    let minutes = Math.round(remainingMinutes % minutesInHour);
+    const secondInDay = 24 * 60 * 60;
+    const secondInHour = 60 * 60;
+    const secondInMinute = 60;
 
-    return `${days}d:${hours}h:${minutes}m`;
+    let days = Math.floor(totalMinutes / secondInDay);
+    let remaininghours = totalMinutes % secondInDay;
+
+    let hours = Math.floor(remaininghours / secondInHour);
+    let remainingMinute = remaininghours % secondInHour;
+
+    let minutes = Math.floor(remainingMinute / secondInMinute);
+    let second = Math.round(remainingMinute % secondInMinute);
+
+    return `${days}d:${hours}h:${Math.round(minutes)}m:${second}s`;
   };
 
   const handleAuctionTime = async (au) => {
     const currentTime = new Date().toISOString();
 
-    let remainingTime = (new Date(au) - new Date(currentTime)) / 60000;
+    let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
 
     if (auction) {
       if (remainingTime < 0) {
+        window.location.replace("/");
         if (auction.user === null) {
           await axios.put(`https://localhost:7113/User/InputBuy/${0}`, [
             product,
@@ -110,7 +117,6 @@ const Product = () => {
             [product]
           );
         }
-        window.location.replace("/");
       }
     }
     setAuctionTime(convertMinutes(remainingTime));
@@ -140,6 +146,7 @@ const Product = () => {
     });
     return bul;
   };
+
   const handleWish = async () => {
     const response = await axios.post(
       `https://localhost:7113/User/InputNumberOfWish?id_product=${id_product}`,
@@ -151,6 +158,7 @@ const Product = () => {
     ];
     setProduct({ ...product, numberOfWish: newWishlist });
   };
+
   const handleLike = async () => {
     const response = await axios.post(
       `https://localhost:7113/User/InputNumberOfLike?id_product=${id_product}`,
@@ -162,6 +170,7 @@ const Product = () => {
     ];
     setProduct({ ...product, numberOfLike: newLikelist });
   };
+
   const handleUnwish = async () => {
     let wish = product.numberOfWish.find((nm) => nm.idUser === user.id);
 
@@ -171,6 +180,7 @@ const Product = () => {
     let newWishlist = product.numberOfWish.filter((wsh) => wsh.id !== wish.id);
     setProduct({ ...product, numberOfWish: newWishlist });
   };
+
   const handleDislike = async () => {
     let like = product.numberOfLike.find((nm) => nm.idUser === user.id);
     await axios.delete(
@@ -180,6 +190,7 @@ const Product = () => {
     let newLikelist = product.numberOfLike.filter((nmb) => nmb.id !== like.id);
     setProduct({ ...product, numberOfLike: newLikelist });
   };
+
   const checkLike = () => {
     let lk = false;
     product.numberOfLike.map((like) => {
@@ -190,6 +201,7 @@ const Product = () => {
     });
     return lk;
   };
+
   const calculateMark = () => {
     if (product.reviews.length === 0) {
       return 0;
@@ -204,10 +216,12 @@ const Product = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      await axios.post(
-        `https://localhost:7113/User/InputNumberOfView?id_product=${id_product}`,
-        { idUser: user.id }
-      );
+      if (user !== null) {
+        await axios.post(
+          `https://localhost:7113/User/InputNumberOfView?id_product=${id_product}`,
+          { idUser: user.id }
+        );
+      }
 
       const response = await axios.get(
         `https://localhost:7113/User/FetchSingleProduct?id_product=${id_product} `
@@ -263,7 +277,7 @@ const Product = () => {
   useEffect(() => {
     setInterval(() => {
       if (auction?.time) handleAuctionTime(auction.time);
-    }, 10000);
+    }, 1);
   }, [auction]);
 
   if (product) {
@@ -331,13 +345,14 @@ const Product = () => {
                   <label className="minimum-price">{`${
                     auction.minimumPrice + parseInt(product.price)
                   } minimum`}</label>
-                  <label className="user-auction-information">
-                    Korisnik:{" "}
-                    {auction.user !== null && `${auction.user?.username}`}
-                  </label>
+                  {auction.user !== null && (
+                    <label className="user-auction-information">
+                      Korisnik: {auction.user.username}
+                    </label>
+                  )}
                 </div>
                 <label className="user-auction-information">
-                  Preostalo vreme:{auctionTime}
+                  Preostalo vreme: {auctionTime}
                 </label>
               </div>
             )}
@@ -382,11 +397,26 @@ const Product = () => {
           <div className="user-information">
             <div className="user-header">
               <h3>User information</h3>
-              <img src={product.user.picture} alt="" />
+              <Link
+                to={`/profile/${product.user.id}`}
+                className="user-header-product"
+              >
+                <img src={product.user.picture} alt="" />
+              </Link>
             </div>
             <label className="user-information-label">
               Korisnicko ime:
-              <span>{product.user.username}</span>
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: "black",
+
+                  justifyContent: "right",
+                }}
+                to={`/profile/${product.user.id}`}
+              >
+                <span>{product.user.username}</span>
+              </Link>
             </label>
             <label className="user-information-label">
               Ime:
@@ -456,11 +486,16 @@ const Product = () => {
             return (
               <article className="review-article">
                 <div className="review-header">
-                  <img
-                    className="img-user-review"
-                    src={p.user?.picture}
-                    alt=""
-                  />
+                  <Link
+                    to={`/profile/${p.user.id}`}
+                    className="user-header-product"
+                  >
+                    <img
+                      className="img-user-review"
+                      src={p.user?.picture}
+                      alt=""
+                    />
+                  </Link>
                   <div className="review-mark">
                     <label className="mark-review">
                       Korisnik: {p.user.username}

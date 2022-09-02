@@ -66,6 +66,7 @@ const AddProduct = () => {
       index: image.index,
     });
   };
+
   const handleChangePi = (e, name) => {
     setProductInformation(
       productInformation.map((pi) => {
@@ -191,7 +192,7 @@ const AddProduct = () => {
     const fetchGroups = async () => {
       if (selectedCategory) {
         const response = await axios.get(
-          `https://localhost:7113/Category/FetchGroups/?id_category=${selectedCategory?.id}`
+          `https://localhost:7113/Group/FetchGroups/?id_category=${selectedCategory?.id}`
         );
         setGroups([{ name: "" }, ...response.data]);
       }
@@ -203,7 +204,7 @@ const AddProduct = () => {
     const fetchPi = async () => {
       if (selectedGroup) {
         const response = await axios.get(
-          `https://localhost:7113/User/FetchProductInformation/?id_group=${selectedGroup?.id}`
+          `https://localhost:7113/ProductInformation/FetchProductInformation/?id_group=${selectedGroup?.id}`
         );
         setProductInformation(
           response.data.map((item) => {

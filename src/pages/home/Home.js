@@ -25,11 +25,12 @@ const Home = () => {
     };
     const handleMostPopular = async () => {
       const response = await axios.get(
-        "https://localhost:7113/User/FetchPopularGroup"
+        "https://localhost:7113/Group/FetchPopularGroup"
       );
       console.log(response.data);
       setMostPopular(response.data);
     };
+
     handleMostWanted();
     handleMostLiked();
     handleMostPopular();

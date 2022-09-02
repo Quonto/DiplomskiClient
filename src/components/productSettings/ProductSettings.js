@@ -176,7 +176,16 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
                 </div>
                 <div className="product-details-info">
                   <label>Korisnik:</label>
-                  <span>{product.user.username}</span>
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+                      margin: "5px auto",
+                    }}
+                    to={`/profile/${product.user.id}`}
+                  >
+                    <span>{product.user.username}</span>
+                  </Link>
                 </div>
               </div>
               <div className="product-contact">

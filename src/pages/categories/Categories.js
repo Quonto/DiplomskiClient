@@ -26,7 +26,7 @@ const Categories = () => {
     const fetchGroups = async () => {
       if (selectedCategory) {
         const response = await axios.get(
-          `https://localhost:7113/Category/FetchGroups?id_category=${selectedCategory.id}`
+          `https://localhost:7113/Group/FetchGroups?id_category=${selectedCategory.id}`
         );
         setGroups(response.data);
       }

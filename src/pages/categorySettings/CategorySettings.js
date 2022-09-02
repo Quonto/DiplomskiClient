@@ -24,7 +24,7 @@ const CategorySettings = () => {
     };
     const fetchGroup = async () => {
       const response = await axios.get(
-        `https://localhost:7113/Category/FetchGroup/${id_group}`
+        `https://localhost:7113/Group/FetchGroup/${id_group}`
       );
       setGroup(response.data);
       setProductInformation(response.data.productInformation);

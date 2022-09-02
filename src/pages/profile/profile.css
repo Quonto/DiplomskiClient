@@ -1,8 +1,8 @@
 .profile{
-    height: 100%;
+    height: 330px;
     width: 80%;
     display: flex;
-    margin: 30px 50px;
+    margin: 10px 50px;
     flex-wrap:wrap;
     justify-content: center;
 }
@@ -10,56 +10,111 @@
 .section-profile-image{
     display: flex;
     width: 30%;
-    height: 250px;
-    margin: 5px 5px;
-    
+    height: 100%;
+    margin: 7px 5px;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.date-create-profile
+{
+
+    height: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+   
 }
 
 .profile-image{
     width: 100%;
-    height: 100%;
+    height: 70%;
 }
 
 .profile-information
 {
     display: flex;
+    border-left: 1px solid black;
     flex-direction: column;
+    justify-content: space-between;
     margin-left: 20px;
     height: 100%;
-    width: 30%;
+    width: 40%;
 }
 
-.profile-name-label{
-    margin-top: 10px;
+.profile-information:last-child{
+    width: 20%;
+   
+    
 }
 
-.profile-name-password{
-    margin: 10px 0px;
+.profile-information > .current-information-wrapper:last-child{
+    height: 20%;
+    
 }
 
-.profile-name
+.profile-information > .current-information-wrapper:last-child > .current-information{
+    align-items: center ;
+    justify-content: flex-end;
+}
+
+.profile-name{
+    margin-left: 5px;
+}
+
+.current-information-wrapper, .current-information-details{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.current-information-wrapper{
+    height: 20%;
+}
+
+.current-information-details{
+    height: 40%;
+}
+
+.time-create-user-label
 {
-    margin: 5px 5px;
+    margin: 5px auto;
+}
+
+
+.time-create-user{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
 }
 
 .current-information
 {
     width: 100%;
+    height: 50px;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 10px;
 }
+
 
 .current-information-info
 {
     width: 80%;
     display: flex;
     flex-direction: column;
+    margin-top: 5px;
 }
 
 .edit-button{
-    width: 50px;
+    width: 80px;
     height: 30px;
-    margin:  auto auto;
+    margin: 5px auto;
 }
 
 .profile-product-name
@@ -121,11 +176,23 @@
     height: 30px;
 }
 
+.user-data
+{
+    padding: 5px;
+    height: 100%;
+    width: 100%;
+}
 
 @media (min-width: 1000px) {
     .profile{
         display: flex;
         width: 900px;
-        margin: 30px auto;
+        height: 330px;
+        margin: 10px auto;
     }
+    .current-information
+    {
+        border-left: none;
+    }
+
 }

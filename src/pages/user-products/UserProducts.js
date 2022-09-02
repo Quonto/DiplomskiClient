@@ -6,7 +6,7 @@ import "./userproducts.css";
 const UserProducts = () => {
   const [myProducts, setMyProducts] = useState([]);
   const [userBuy, setUserBuy] = useState([]);
-  const [auctionTime, setAuctionTime] = useState(null);
+  const [auctionTime, setAuctionTime] = useState(1);
   const [productPrice, setProductPrice] = useState(null);
   const [isReturnActive, setIsReturnActive] = useState(false);
   const { user } = useGlobalContext();
@@ -80,9 +80,13 @@ const UserProducts = () => {
       price: parseInt(productPrice),
       date: currentTime,
       buy: false,
+      buyUser: 0,
     };
 
-    await axios.put(`https://localhost:7113/User/UpdateProduct`, newProduct);
+    await axios.put(
+      `https://localhost:7113/User/UpdateAuctionProduct`,
+      newProduct
+    );
 
     currentTime.setDate(currentTime.getDate() + auctionTime);
 
@@ -90,11 +94,15 @@ const UserProducts = () => {
       id: auction.data.id,
       time: currentTime,
       minimumPrice: parseInt((productPrice / 100) * 5),
-      user: null,
+      product: newProduct.id,
     };
 
-    await axios.put(`https://localhost:7113/User/UpdateAuction`, newAuction);
+    const response = await axios.put(
+      `https://localhost:7113/Auction/UpdateAuction`,
+      newAuction
+    );
 
+    console.log(response);
     let newProducts = myProducts.filter((product) => product.id !== product.id);
     setMyProducts(newProducts);
   };
