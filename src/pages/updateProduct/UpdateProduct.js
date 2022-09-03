@@ -137,7 +137,7 @@ const UpdateProduct = ({
       auction: selectedPr.auction,
     };
     const response = await axios.put(
-      `https://localhost:7113/User/UpdateProduct`,
+      `https://localhost:7113/Product/UpdateProduct`,
       changedProduct
     );
     setUserProducts(() => {
@@ -155,7 +155,7 @@ const UpdateProduct = ({
   useEffect(() => {
     const fetchPlaces = async () => {
       const response = await axios.get(
-        `https://localhost:7113/Category/FetchPlace`
+        `https://localhost:7113/Place/FetchPlace`
       );
       setPlaces([{ name: "" }, ...response.data]);
     };

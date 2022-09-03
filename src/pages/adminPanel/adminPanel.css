@@ -39,6 +39,28 @@
     margin: 10px 0px;
 }
 
+.groups-review > article
+{
+    display: flex;
+    margin: 5px 0px;
+    
+}
+
+.groups-review > article > p
+{
+    display: flex;
+    width: 60%;
+    
+}
+
+.groups-review > article > button
+{
+    display: flex;
+    justify-content: center;
+    margin: 0px 2px;
+    width: 20%;
+    
+}
 .add-category
 {
     height: 300px;

@@ -47,7 +47,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProducts = async () => {
       const response = await axios.get(
-        `https://localhost:7113/User/GetUserProducts/${id_user}`
+        `https://localhost:7113/Product/GetUserProducts/${id_user}`
       );
       setUserProducts(response.data);
     };
@@ -71,7 +71,7 @@ const Profile = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`https://localhost:7113/User/RemoveProduct/${id}`);
+    await axios.delete(`https://localhost:7113/Product/RemoveProduct/${id}`);
     setUserProducts(() => {
       return userProducts.filter((product) => product.id !== id);
     });
@@ -105,7 +105,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchPlaces = async () => {
       const response = await axios.get(
-        `https://localhost:7113/Category/FetchPlace`
+        `https://localhost:7113/Place/FetchPlace`
       );
       setPlaces([{ name: "" }, ...response.data]);
     };
@@ -125,7 +125,7 @@ const Profile = () => {
               />
             )}
             <img src={userProfile.picture} alt="" className="profile-image" />
-            {user.id == userProfile.id && (
+            {user !== null && user?.id === userProfile.id && (
               <button
                 className="edit-button"
                 onClick={() => setIsImageEditorActive(true)}
@@ -262,7 +262,7 @@ const Profile = () => {
             <div className="current-information-wrapper">
               {" "}
               <div className="current-information">
-                {user.id == userProfile.id && (
+                {user !== null && user?.id == userProfile.id && (
                   <button
                     className="edit-button"
                     onClick={
@@ -298,7 +298,7 @@ const Profile = () => {
             </div>
             <div className="current-information">
               <div className="current-information-info">
-                {user.id == userProfile.id && (
+                {user !== null && user?.id == userProfile.id && (
                   <label htmlFor="name" className="profile-name-password">
                     Sifra
                   </label>
@@ -307,7 +307,7 @@ const Profile = () => {
             </div>
             <div className="current-information-wrapper">
               <div className="current-information">
-                {user.id == userProfile.id && (
+                {user !== null && user?.id == userProfile.id && (
                   <button className="edit-button">Izmeni</button>
                 )}
               </div>
@@ -334,7 +334,7 @@ const Profile = () => {
                       </label>
                     </div>
                   </Link>
-                  {user.id == userProfile.id && (
+                  {user !== null && user?.id == userProfile.id && (
                     <div className="product-profile-button">
                       <button
                         className="change-product"

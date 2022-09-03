@@ -142,7 +142,7 @@ const AddProduct = () => {
       auction: product.auction,
     };
     const response = await axios.post(
-      `https://localhost:7113/User/InputProductBuy/${user.id}/${selectedGroup.id}`,
+      `https://localhost:7113/Product/InputProductBuy/${user.id}/${selectedGroup.id}`,
       newProduct
     );
     if (product.auction) {
@@ -181,7 +181,7 @@ const AddProduct = () => {
       );
       setCategories([{ name: "" }, ...response.data]);
       const response2 = await axios.get(
-        `https://localhost:7113/Category/FetchPlace`
+        `https://localhost:7113/Place/FetchPlace`
       );
       setPlaces([{ name: "" }, ...response2.data]);
     };
@@ -192,7 +192,7 @@ const AddProduct = () => {
     const fetchGroups = async () => {
       if (selectedCategory) {
         const response = await axios.get(
-          `https://localhost:7113/Group/FetchGroups/?id_category=${selectedCategory?.id}`
+          `https://localhost:7113/Group/FetchGroups/${selectedCategory?.id}`
         );
         setGroups([{ name: "" }, ...response.data]);
       }
@@ -204,7 +204,7 @@ const AddProduct = () => {
     const fetchPi = async () => {
       if (selectedGroup) {
         const response = await axios.get(
-          `https://localhost:7113/ProductInformation/FetchProductInformation/?id_group=${selectedGroup?.id}`
+          `https://localhost:7113/ProductInformation/FetchProductInformation/${selectedGroup?.id}`
         );
         setProductInformation(
           response.data.map((item) => {

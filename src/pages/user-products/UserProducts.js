@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../context/Context";
+import { Link } from "react-router-dom";
 import "./userproducts.css";
 
 const UserProducts = () => {
@@ -12,14 +13,14 @@ const UserProducts = () => {
   const { user } = useGlobalContext();
 
   const handleBackProduct = async (id) => {
-    await axios.put(`https://localhost:7113/User/InputProduct/${id}`);
+    await axios.put(`https://localhost:7113/Product/InputProduct/${id}`);
     let newProducts = myProducts.filter((product) => product.id !== id);
     setMyProducts(newProducts);
   };
 
   const handleSoldProduct = async (id) => {
     const response = await axios.delete(
-      `https://localhost:7113/User/RemoveProduct/${id}`
+      `https://localhost:7113/Product/RemoveProduct/${id}`
     );
     let newProducts = myProducts.filter((product) => product.id !== id);
     setMyProducts(newProducts);
@@ -28,7 +29,7 @@ const UserProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await axios.get(
-        `https://localhost:7113/User/FetchUserProducts/${user.id}`
+        `https://localhost:7113/Product/FetchUserProducts/${user.id}`
       );
 
       if (response.data.length !== 0) {
@@ -84,7 +85,7 @@ const UserProducts = () => {
     };
 
     await axios.put(
-      `https://localhost:7113/User/UpdateAuctionProduct`,
+      `https://localhost:7113/Product/UpdateAuctionProduct`,
       newProduct
     );
 
@@ -138,14 +139,23 @@ const UserProducts = () => {
                 <div className="user-buy">
                   <div className="user-buy-information">
                     <label>Slika: </label>
-                    <img
-                      src={userBuy.picture.length === 0 ? "" : userBuy.picture}
-                      alt=""
-                    />
+                    <Link to={`/profile/${userBuy.id}`}>
+                      <img
+                        src={
+                          userBuy.picture.length === 0 ? "" : userBuy.picture
+                        }
+                        alt=""
+                      />
+                    </Link>
                   </div>
                   <div className="user-buy-information">
                     <label>Korisnik: </label>
-                    <span>{userBuy.username}</span>
+                    <Link
+                      to={`/profile/${userBuy.id}`}
+                      className="user-buy-information-link"
+                    >
+                      <span>{userBuy.username}</span>
+                    </Link>
                   </div>
                   <div className="user-buy-information">
                     <label>Ime: </label>
@@ -165,7 +175,7 @@ const UserProducts = () => {
                   </div>
                 </div>
               )}
-              <div className="button-list">
+              <div className="button-list-sell">
                 <button
                   className="sell-btn"
                   onClick={() => handleSoldProduct(product.id)}
@@ -182,9 +192,9 @@ const UserProducts = () => {
                 >
                   Vrati ponudu
                 </button>
-                <div className="button-info">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
-                <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
-                <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
+                <div className="button-info-sell">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
+                <div className="button-info-sell">{`${product.numberOfViewers.length} pregleda`}</div>
+                <div className="button-info-sell">{`${product.numberOfLike.length} lajkova`}</div>
               </div>
             </article>
             <div>

@@ -16,7 +16,7 @@ const CategorySettings = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await axios.get(
-        `https://localhost:7113/User/FetchProducts?id_group=${id_group}`
+        `https://localhost:7113/Product/FetchProducts/${id_group}`
       );
 
       setProducts(response.data);
@@ -35,7 +35,7 @@ const CategorySettings = () => {
 
   return (
     <section className="category-settings">
-      {filteredProducts.length !== 0 && (
+      {group && (
         <>
           <FilterSettings
             productInformation={productInformation}
@@ -47,6 +47,7 @@ const CategorySettings = () => {
             group={group}
             filteredProducts={filteredProducts}
             setFilteredProducts={setFilteredProducts}
+            products={products}
           />
         </>
       )}

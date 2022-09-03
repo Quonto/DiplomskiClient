@@ -179,6 +179,11 @@
     width: 70%;
 }
 
+.user-header-product{
+    text-decoration: none;
+    color: black;
+}
+
 .section-product-details
 {
     width: 100%;
@@ -381,6 +386,7 @@
     display: flex;
     height: 100px;
     flex-direction: column;
+    justify-content: space-between;
 }
 .auction-information
 {

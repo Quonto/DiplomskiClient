@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
 
-const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
+const ProductSettings = ({
+  group,
+  filteredProducts,
+  setFilteredProducts,
+  products,
+}) => {
   const sortMethods = [
     { label: "Opadajuci po ceni", method: "oc" },
     { label: "Rastuci po ceni", method: "rc" },
@@ -15,7 +20,7 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
   const { pathname } = useLocation();
 
   const [sort, setSort] = useState("");
-  const [mark, setMark] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const nekiRef = useRef(null);
 
@@ -123,12 +128,31 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
   useEffect(() => {
     sort !== "" && handleSort(sort);
   }, [sort]);
+
+  useEffect(() => {
+    if (searchTerm !== "") {
+      const newProducts = filteredProducts.filter((cp) =>
+        cp.name.toLowerCase().includes(searchTerm)
+      );
+      setFilteredProducts(newProducts);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [searchTerm]);
+
   return (
     <section className="product-list">
       <div className="header-sort">
         <h3>{group.name}</h3>
+        <div className="search-settings">
+          Pretraga:
+          <input
+            className="search-input"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         <div className="sort">
-          <label htmlFor="select">Sortiraj po:</label>
+          <label htmlFor="select">Sortiraj</label>
           <select
             className="select-sort"
             name="select"
@@ -140,72 +164,76 @@ const ProductSettings = ({ group, filteredProducts, setFilteredProducts }) => {
           </select>
         </div>
       </div>
-      <div className="products" ref={nekiRef}>
-        {filteredProducts.map((product) => {
-          return (
-            <article className="product" key={product.id}>
-              <Link
-                className="product-image"
-                to={`${pathname}/product/${product.id}`}
-              >
-                <img
-                  src={
-                    product.picture.length === 0 ? "" : product.picture[0].data
-                  }
-                  alt=""
-                />
-              </Link>
-              <div className="product-details">
+      {filteredProducts.length !== 0 && (
+        <div className="products" ref={nekiRef}>
+          {filteredProducts.map((product) => {
+            return (
+              <article className="product" key={product.id}>
                 <Link
-                  style={{
-                    textDecoration: "none",
-                    color: "black",
-                    margin: "0px 10px",
-                  }}
+                  className="product-image"
                   to={`${pathname}/product/${product.id}`}
                 >
-                  <h4>{product.name}</h4>
+                  <img
+                    src={
+                      product.picture.length === 0
+                        ? ""
+                        : product.picture[0].data
+                    }
+                    alt=""
+                  />
                 </Link>
-                <div className="product-details-info">
-                  <label>Cena:</label>
-                  <span>{product.price}</span>
-                </div>
-                <div className="product-details-info">
-                  <label>Ocena:</label>
-                  <span>{calculateMark(product)}</span>
-                </div>
-                <div className="product-details-info">
-                  <label>Korisnik:</label>
+                <div className="product-details">
                   <Link
                     style={{
                       textDecoration: "none",
                       color: "black",
-                      margin: "5px auto",
+                      margin: "0px 10px",
                     }}
-                    to={`/profile/${product.user.id}`}
+                    to={`${pathname}/product/${product.id}`}
                   >
-                    <span>{product.user.username}</span>
+                    <h4>{product.name}</h4>
                   </Link>
+                  <div className="product-details-info">
+                    <label>Cena:</label>
+                    <span>{product.price}</span>
+                  </div>
+                  <div className="product-details-info">
+                    <label>Ocena:</label>
+                    <span>{calculateMark(product)}</span>
+                  </div>
+                  <div className="product-details-info">
+                    <label>Korisnik:</label>
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                        color: "black",
+                        margin: "5px auto",
+                      }}
+                      to={`/profile/${product.user.id}`}
+                    >
+                      <span>{product.user.username}</span>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-              <div className="product-contact">
-                <label>Grad/Mesto</label>
-                <span>{product.place.name}</span>
-                <label>Kontakt</label>
-                <span>{product.phone} </span>
-                <label>Vreme</label>
-                <span>{handleTime(product.date)} </span>
-                <span>{handleDate(product.date)} </span>
-              </div>
-              <div className="button-list">
-                <div className="button-info">{`${product.numberOfWish.length} zeli `}</div>
-                <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
-                <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+                <div className="product-contact">
+                  <label>Grad/Mesto</label>
+                  <span>{product.place.name}</span>
+                  <label>Kontakt</label>
+                  <span>{product.phone} </span>
+                  <label>Vreme</label>
+                  <span>{handleTime(product.date)} </span>
+                  <span>{handleDate(product.date)} </span>
+                </div>
+                <div className="button-list">
+                  <div className="button-info">{`${product.numberOfWish.length} zeli `}</div>
+                  <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
+                  <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 };

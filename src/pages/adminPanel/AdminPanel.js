@@ -11,7 +11,8 @@ const AdminPanel = () => {
   const [productInformation, setProductInformation] = useState([]);
   const [place, setPlace] = useState([]);
   const [isImageEditorActive, setIsImageEditorActive] = useState(false);
-
+  const [categoryName, setCategoryName] = useState("");
+  const [saveCategory, setSaveCategory] = useState(false);
   const [singleProductInformation, setSingleProductInformation] = useState({
     name: "",
     data: "",
@@ -37,12 +38,25 @@ const AdminPanel = () => {
     setProductInformation(groups[e.target.value].productInformation);
   };
 
+  const inputCategory = async () => {
+    let newCategory = {
+      name: categoryName,
+      picture: selectedImage,
+    };
+    console.log(newCategory);
+    const response = await axios.post(
+      "https://localhost:7113/Category/InputCategory",
+      newCategory
+    );
+    setCategories([...categories, response.data]);
+  };
+
   const addPlace = async () => {
     let newPlace = {
       name: singlePlace.name,
     };
     const response = await axios.post(
-      `https://localhost:7113/User/InputPlace`,
+      `https://localhost:7113/Place/InputPlace`,
       newPlace
     );
     newPlace = { ...newPlace, id: response.data };
@@ -50,8 +64,14 @@ const AdminPanel = () => {
     placeRef.current.value = "";
   };
 
+  const handleChangeCategory = (category) => {
+    setCategories();
+  };
+
+  const handleUpdateCategory = (category) => {};
+
   const handleEditImage = async (image) => {
-    setSelectedImage({ ...selectedImage, data: image });
+    setSelectedImage({ ...selectedImage, data: image, name: "" });
   };
 
   const readFileDataAsBase64 = (e) => {
@@ -74,7 +94,7 @@ const AdminPanel = () => {
 
   const handleUploadFile = (e) => {
     readFileDataAsBase64(e).then((data, name) => {
-      setSelectedImage({ ...selectedImage, data, name });
+      setSelectedImage({ ...selectedImage, data, name: "" });
       inputRef.current.value = "";
     });
   };
@@ -85,7 +105,7 @@ const AdminPanel = () => {
       data: "",
     };
     const response = await axios.post(
-      `https://localhost:7113/ProductInformation/InputProductInformation/?id_group=${selectedGroup.id}`,
+      `https://localhost:7113/ProductInformation/InputProductInformation/${selectedGroup.id}`,
       newPi
     );
     newPi = { ...newPi, id: response };
@@ -106,7 +126,7 @@ const AdminPanel = () => {
   useEffect(() => {
     const fetchPlace = async () => {
       const response = await axios.get(
-        "https://localhost:7113/Category/FetchPlace"
+        "https://localhost:7113/Place/FetchPlace"
       );
       setPlace(response.data);
     };
@@ -123,6 +143,7 @@ const AdminPanel = () => {
     fetchCategories();
   }, []);
   console.log(categories);
+
   useEffect(() => {
     if (selectedCategory) setGroups([{ name: "" }, ...selectedCategory.groups]);
   }, [selectedCategory]);
@@ -255,8 +276,16 @@ const AdminPanel = () => {
             </div>
             <div className="category-name">
               <label className="category-name-label">Naziv kategorije</label>
-              <input type="text" className="category-name-input" />
-              <button className="category-input-button">Dodaj</button>
+              <input
+                type="text"
+                className="category-name-input"
+                onChange={(e) => {
+                  setCategoryName(e.target.value);
+                }}
+              />
+              <button className="category-input-button" onClick={inputCategory}>
+                Dodaj
+              </button>
             </div>
             <div className="categories-group">
               <h3> Kategorije </h3>
@@ -264,9 +293,23 @@ const AdminPanel = () => {
                 {categories.length !== 0 &&
                   categories.map((p, index) => {
                     return (
-                      <article key={index}>
-                        <p>{p.name}</p>
-                      </article>
+                      <>
+                        {p.name !== "" && (
+                          <article key={index}>
+                            <p>{p.name}</p>
+                            <button
+                              onClick={(p) => {
+                                saveCategory
+                                  ? handleUpdateCategory(p)
+                                  : handleChangeCategory(p);
+                              }}
+                            >
+                              {saveCategory ? "Sacuvaj" : "Izmeni"}
+                            </button>
+                            <button>Izbrisi</button>{" "}
+                          </article>
+                        )}
+                      </>
                     );
                   })}
               </div>

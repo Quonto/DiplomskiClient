@@ -12,13 +12,13 @@ const Home = () => {
   useEffect(() => {
     const handleMostWanted = async () => {
       const response = await axios.get(
-        "https://localhost:7113/User/FetchMostWanted"
+        "https://localhost:7113/Product/FetchMostWanted"
       );
       setMostWanted(response.data);
     };
     const handleMostLiked = async () => {
       const response = await axios.get(
-        "https://localhost:7113/User/FetchLikeProduct"
+        "https://localhost:7113/Product/FetchLikeProduct"
       );
 
       setMostLiked(response.data);

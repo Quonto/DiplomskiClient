@@ -19,6 +19,8 @@ const Product = () => {
   const [newPrice, setNewPrice] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  let interval;
+
   const { id_product } = useParams();
 
   const { user, setCart, cart } = useGlobalContext();
@@ -101,30 +103,29 @@ const Product = () => {
 
   const handleAuctionTime = async (au) => {
     const currentTime = new Date().toISOString();
-
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
-
     if (auction) {
       if (remainingTime < 0) {
         window.location.replace("/");
         if (auction.user === null) {
-          await axios.put(`https://localhost:7113/User/InputBuy/${0}`, [
+          await axios.put(`https://localhost:7113/Product/InputBuy/${0}`, [
             product,
           ]);
         } else {
           await axios.put(
-            `https://localhost:7113/User/InputBuy/${auction.user.id}`,
+            `https://localhost:7113/Product/InputBuy/${auction.user.id}`,
             [product]
           );
         }
       }
     }
+
     setAuctionTime(convertMinutes(remainingTime));
   };
 
   const handleAddReview = async () => {
     const response = await axios.post(
-      `https://localhost:7113/User/InputReview?id_product=${id_product}&id_user=${user.id}`,
+      `https://localhost:7113/User/InputReview/${id_product}/${user.id}`,
       addReview
     );
     const newReview = {
@@ -149,7 +150,7 @@ const Product = () => {
 
   const handleWish = async () => {
     const response = await axios.post(
-      `https://localhost:7113/User/InputNumberOfWish?id_product=${id_product}`,
+      `https://localhost:7113/Product/InputNumberOfWish/${id_product}`,
       { idUser: user.id }
     );
     let newWishlist = [
@@ -161,7 +162,7 @@ const Product = () => {
 
   const handleLike = async () => {
     const response = await axios.post(
-      `https://localhost:7113/User/InputNumberOfLike?id_product=${id_product}`,
+      `https://localhost:7113/Product/InputNumberOfLike/${id_product}`,
       { idUser: user.id }
     );
     let newLikelist = [
@@ -175,7 +176,7 @@ const Product = () => {
     let wish = product.numberOfWish.find((nm) => nm.idUser === user.id);
 
     await axios.delete(
-      `https://localhost:7113/User/RemoveNumberOfWish/${wish.id}`
+      `https://localhost:7113/Product/RemoveNumberOfWish/${wish.id}`
     );
     let newWishlist = product.numberOfWish.filter((wsh) => wsh.id !== wish.id);
     setProduct({ ...product, numberOfWish: newWishlist });
@@ -184,7 +185,7 @@ const Product = () => {
   const handleDislike = async () => {
     let like = product.numberOfLike.find((nm) => nm.idUser === user.id);
     await axios.delete(
-      `https://localhost:7113/User/RemoveNumberOfLike/${like.id}`
+      `https://localhost:7113/Product/RemoveNumberOfLike/${like.id}`
     );
 
     let newLikelist = product.numberOfLike.filter((nmb) => nmb.id !== like.id);
@@ -218,13 +219,13 @@ const Product = () => {
     const fetchProduct = async () => {
       if (user !== null) {
         await axios.post(
-          `https://localhost:7113/User/InputNumberOfView?id_product=${id_product}`,
+          `https://localhost:7113/Product/InputNumberOfView/${id_product}`,
           { idUser: user.id }
         );
       }
 
       const response = await axios.get(
-        `https://localhost:7113/User/FetchSingleProduct?id_product=${id_product} `
+        `https://localhost:7113/Product/FetchSingleProduct/${id_product} `
       );
 
       if (response.data.auction === true) {
@@ -256,9 +257,9 @@ const Product = () => {
       connection
         .start()
         .then(() => {
-          connection.on("BroadcastMessage", (product, auction) => {
+          connection.on("BroadcastMessage", (product, au) => {
             setProduct(product);
-            setAuction(auction);
+            setAuction(au);
           });
         })
         .catch((error) => console.log(error));
@@ -275,9 +276,11 @@ const Product = () => {
   }, []);
 
   useEffect(() => {
-    setInterval(() => {
+    interval = setInterval(() => {
       if (auction?.time) handleAuctionTime(auction.time);
-    }, 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, [auction]);
 
   if (product) {
@@ -301,7 +304,8 @@ const Product = () => {
           )}
           <div className=" product-buy">
             <h3 className="product-name">{product.name}</h3>
-            {!product.auction && product.user.id !== user.id && (
+
+            {!product.auction && product.user.id !== user?.id && (
               <div className="purchase-container">
                 <label className="product-price">
                   Cena:
@@ -309,16 +313,18 @@ const Product = () => {
                     {product.price} RSD
                   </span>
                 </label>
-                <button
-                  disabled={addedToCart}
-                  className="product-buy-button"
-                  onClick={handleAddToCart}
-                >
-                  Dodaj u korpu
-                </button>
+                {user !== null && (
+                  <button
+                    disabled={addedToCart}
+                    className="product-buy-button"
+                    onClick={handleAddToCart}
+                  >
+                    Dodaj u korpu
+                  </button>
+                )}
               </div>
             )}
-            {product.auction && product.user.id !== user.id && (
+            {product.auction && product.user.id !== user?.id && (
               <div className="purchase-container">
                 <label className="product-price">
                   Trenutna cena:
@@ -326,29 +332,38 @@ const Product = () => {
                     {parseInt(product.price)} RSD
                   </span>
                 </label>
-                <div className="auction-input-price">
-                  <input
-                    className="price-input"
-                    placeholder="Cena"
-                    onChange={(e) => {
-                      setNewPrice(e.target.value);
-                    }}
-                  />
-                  <button
-                    className="product-buy-button-auction"
-                    onClick={handleAuction}
-                  >
-                    Licitiraj
-                  </button>
-                </div>
+                {user !== null && (
+                  <div className="auction-input-price">
+                    <input
+                      className="price-input"
+                      placeholder="Cena"
+                      onChange={(e) => {
+                        setNewPrice(e.target.value);
+                      }}
+                    />
+                    <button
+                      className="product-buy-button-auction"
+                      onClick={handleAuction}
+                    >
+                      Licitiraj
+                    </button>
+                  </div>
+                )}
                 <div className="auction-information">
-                  <label className="minimum-price">{`${
-                    auction.minimumPrice + parseInt(product.price)
-                  } minimum`}</label>
+                  {user !== null && (
+                    <label className="minimum-price">{`${
+                      auction.minimumPrice + parseInt(product.price)
+                    } minimum`}</label>
+                  )}
                   {auction.user !== null && (
-                    <label className="user-auction-information">
-                      Korisnik: {auction.user.username}
-                    </label>
+                    <Link
+                      to={`/profile/${auction.user.id}`}
+                      className="user-header-product"
+                    >
+                      <label className="user-auction-information">
+                        Korisnik: {auction.user.username}
+                      </label>
+                    </Link>
                   )}
                 </div>
                 <label className="user-auction-information">
@@ -357,12 +372,14 @@ const Product = () => {
               </div>
             )}
             <div className="like-div">
-              <button
-                className="like-product"
-                onClick={checkLike() ? handleDislike : handleLike}
-              >
-                {`${checkLike() ? "Dislike" : "Like"}`}
-              </button>
+              {user !== null && (
+                <button
+                  className="like-product"
+                  onClick={checkLike() ? handleDislike : handleLike}
+                >
+                  {`${checkLike() ? "Dislike" : "Like"}`}
+                </button>
+              )}
               <div className="number-of-like-wish">
                 <label className="number-of-like">
                   {`${product.numberOfLike.length} ${
@@ -374,12 +391,14 @@ const Product = () => {
                 </label>
               </div>
             </div>
-            <button
-              className="product-wish-button"
-              onClick={checkIfWishlist() ? handleUnwish : handleWish}
-            >
-              {`${checkIfWishlist() ? "Dodat" : "Dodaj"} u listi zelja`}
-            </button>
+            {user !== null && (
+              <button
+                className="product-wish-button"
+                onClick={checkIfWishlist() ? handleUnwish : handleWish}
+              >
+                {`${checkIfWishlist() ? "Dodat" : "Dodaj"} u listi zelja`}
+              </button>
+            )}
             <div className="number-of-view-div">
               <label className="number-of-view">{calculateMark()} ocena</label>
               <label className="number-of-view">
@@ -475,7 +494,7 @@ const Product = () => {
             <p>{product.details}</p>
           </div>
         </section>
-        {!isAddActive && (
+        {!isAddActive && user !== null && (
           <button className="input-review" onClick={handleModal}>
             Add review
           </button>

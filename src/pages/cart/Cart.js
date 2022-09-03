@@ -7,7 +7,7 @@ const Cart = () => {
   const { cart, setCart, user } = useGlobalContext();
 
   const handleRemove = async (id_product) => {
-    await axios.put(`https://localhost:7113/User/InputPurchase/${id_product}`, {
+    await axios.put(`https://localhost:7113/Product/InputPurchase/${id_product}`, {
       addToCart: false,
     });
     let newCart = cart.filter((cartItem) => cartItem.id !== id_product);
@@ -15,7 +15,7 @@ const Cart = () => {
   };
 
   const handleBuyProducts = async () => {
-    await axios.put(`https://localhost:7113/User/InputBuy/${user.id}`, cart);
+    await axios.put(`https://localhost:7113/Product/InputBuy/${user.id}`, cart);
     setCart([]);
   };
 

@@ -24,7 +24,7 @@ const Register = () => {
   useEffect(() => {
     const fetchPlace = async () => {
       const response = await axios.get(
-        "https://localhost:7113/Category/FetchPlace"
+        "https://localhost:7113/Place/FetchPlace"
       );
       setPlaces(response.data);
     };

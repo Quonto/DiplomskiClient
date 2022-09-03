@@ -6,6 +6,24 @@
 
 }
 
+.button-info-sell
+{
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.button-list-sell
+{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
 .sell-button
 {
     height: 30px;
@@ -22,37 +40,65 @@
 .user-buy
 {
     width: 25%;
-    height: 30px;
+    height: 100%;
+    display: flex;
     flex-direction: column;
+    justify-content: space-between;
     
 }
 
 .user-buy-information
 {
     width: 100%;
-    height: 100%;
+    height: 40px;
     display: flex;
-    margin: 5px 0;
+    align-items: center;
+  
     
+}
+
+.user-buy-information-link
+{
+
+    margin: 5px auto;
+    text-decoration: none;
+    color: black;
 }
 
 .user-buy-information > label
 {
-   width: 50%;
-   height: 10%;
-   text-align: center;
-   
+   width:50%;
 }
+
+.user-buy-information > a > img
+{
+    width: 40px;
+    height: 40px;
+    display: flex;
+}
+
+.user-buy-information > a 
+{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.user-buy-information > span
+{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+
 
 .label
 {
     margin: 5px 0;
-}
-
-.user-buy-information > span{
-    width: 50%;
-    height: 10%;
-    text-align: center; 
 }
 
 .user-buy-information > img{
