@@ -2,6 +2,11 @@
     height: 600px;
 }
 
+.admin-panel-component{
+    display: flex;
+    flex-direction: column;
+}
+
 .group-settings{
     height: 300px;
     width: 50%;
@@ -37,6 +42,7 @@
 {
     overflow-y: scroll;
     margin: 10px 0px;
+    width: 90%;
 }
 
 .groups-review > article
@@ -53,6 +59,11 @@
     
 }
 
+.groups-review > article > input {
+    display: flex;
+    width: 60%;
+}
+
 .groups-review > article > button
 {
     display: flex;
@@ -63,7 +74,7 @@
 }
 .add-category
 {
-    height: 300px;
+    height: 350px;
     width: 100%;
     padding: 10px 30px;
 }

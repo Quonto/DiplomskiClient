@@ -1,0 +1,85 @@
+.ap-change-product
+{
+    width: 100%;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.change-product > h3 
+{
+    margin: 5px;
+}
+
+.ap-search-name-product{
+    width: 40%;
+    height: 40px;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    justify-content: center;
+}
+
+.ap-search-input{
+    height: 30px;
+    width: 60%;
+    padding: 2px 5px;
+}
+
+.ap-search-input:focus{
+    outline: none;
+}
+
+.ap-btn{
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.ap-section-products{
+    width: 90%;
+    height: 400px;
+    align-self: center;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.ap-single-product{
+    height: 350px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+}
+
+.ap-product-link{
+    height: 80%;
+    width: 100%;
+    text-decoration: none;
+}
+
+.ap-product{
+    height: 100%;
+    width: 100%;
+}
+
+.ap-product-image{
+    height: 90%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.ap-product-profile-buttons{
+    height: 20%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.ap-product-profile-button{
+    padding: 5px 10px;
+}

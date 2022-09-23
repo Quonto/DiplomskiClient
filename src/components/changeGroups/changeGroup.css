@@ -1,0 +1,23 @@
+.change-group{
+    margin: 10px 0px;
+    width: 100%;
+    height: 400px;
+}
+.group-settings-select{
+    display: flex;
+    margin: 5px auto;
+    width: 100px;
+}
+
+.add-group
+{
+    height: 100%;
+    width: 100%;
+    padding: 10px 30px;
+}
+.change-group > h3
+{
+display: flex;
+justify-content: center;
+margin: 5px 0px;
+}

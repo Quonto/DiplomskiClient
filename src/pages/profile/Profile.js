@@ -1,6 +1,6 @@
 import "./profile.css";
 import axios from "axios";
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageEditor from "../imageEditor/ImageEditor";
 import UpdateProduct from "../updateProduct/UpdateProduct";
@@ -54,19 +54,20 @@ const Profile = () => {
     if (userProfile) {
       fetchUserProducts();
     }
-  }, [userProfile]);
+  }, [userProfile, id_user]);
 
   const handleOpenUpdate = (p) => {
+    console.log(p);
     setSelectedProduct(p);
     setIsChangeActive(true);
   };
 
   const handleEditImage = async (image) => {
     setUserProfile({ ...userProfile, picture: image });
-    const response = await axios.put(
-      `https://localhost:7113/User/UpdateUserPicture`,
-      { id: userProfile.id, picture: image }
-    );
+    await axios.put(`https://localhost:7113/User/UpdateUserPicture`, {
+      id: userProfile.id,
+      picture: image,
+    });
     setUser({ ...user, picture: image });
   };
 
@@ -262,7 +263,7 @@ const Profile = () => {
             <div className="current-information-wrapper">
               {" "}
               <div className="current-information">
-                {user !== null && user?.id == userProfile.id && (
+                {user !== null && user?.id === userProfile.id && (
                   <button
                     className="edit-button"
                     onClick={
@@ -298,7 +299,7 @@ const Profile = () => {
             </div>
             <div className="current-information">
               <div className="current-information-info">
-                {user !== null && user?.id == userProfile.id && (
+                {user !== null && user?.id === userProfile.id && (
                   <label htmlFor="name" className="profile-name-password">
                     Sifra
                   </label>
@@ -307,7 +308,7 @@ const Profile = () => {
             </div>
             <div className="current-information-wrapper">
               <div className="current-information">
-                {user !== null && user?.id == userProfile.id && (
+                {user !== null && user?.id === userProfile.id && (
                   <button className="edit-button">Izmeni</button>
                 )}
               </div>
@@ -334,7 +335,7 @@ const Profile = () => {
                       </label>
                     </div>
                   </Link>
-                  {user !== null && user?.id == userProfile.id && (
+                  {user !== null && user?.id === userProfile.id && (
                     <div className="product-profile-button">
                       <button
                         className="change-product"
