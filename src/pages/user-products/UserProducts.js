@@ -19,9 +19,7 @@ const UserProducts = () => {
   };
 
   const handleSoldProduct = async (id) => {
-    const response = await axios.delete(
-      `https://localhost:7113/Product/RemoveProduct/${id}`
-    );
+    await axios.delete(`https://localhost:7113/Product/RemoveProduct/${id}`);
     let newProducts = myProducts.filter((product) => product.id !== id);
     setMyProducts(newProducts);
   };
@@ -46,7 +44,7 @@ const UserProducts = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [user.id]);
 
   const calculateMark = (product) => {
     if (product.reviews.length === 0) {
@@ -104,15 +102,15 @@ const UserProducts = () => {
     );
 
     console.log(response);
-    let newProducts = myProducts.filter((product) => product.id !== product.id);
+    let newProducts = myProducts.filter((p) => p.id !== product.id);
     setMyProducts(newProducts);
   };
 
   return (
     <div className="user-product-div">
-      {myProducts.map((product) => {
+      {myProducts.map((product, index) => {
         return (
-          <>
+          <article key={index}>
             <article className="product" key={product.id}>
               <div className="product-image">
                 <img
@@ -240,7 +238,7 @@ const UserProducts = () => {
                 </section>
               )}
             </div>
-          </>
+          </article>
         );
       })}
     </div>

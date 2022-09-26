@@ -1,0 +1,100 @@
+.change-user{
+    width: 90%;
+    height: 500px;
+    display: flex;
+    align-self: center;
+}
+
+.change-user-list{
+    height: 400px;
+    flex: 3;
+    overflow-y: scroll;
+}
+
+.change-single-user{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 5px 10px;
+    background-color: #1ad1d1;
+    color: #fff;
+    border-radius: 10px;
+}
+
+.change-user-img-container{
+    flex: 3;
+}
+
+.change-user-image{
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.change-user-name{
+    flex: 7;
+}
+
+.change-user-username{
+    flex: 4;
+}
+
+.change-user-delete{
+    flex: 2;
+    border: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    color: #fff;
+    background-color: #c20505;
+    border-radius: 5px;
+}
+
+
+.change-user-info{
+    flex: 4;
+    display: flex;
+    margin-left: 20px;
+}
+
+.change-user-info-image-container{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.change-user-info-profile-image{
+    height: 250px;
+    width: 250px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.change-user-edit-image{
+    width: 150px;
+    height: 40px;
+    margin: 5px 0px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #1ad1d1;
+    color: #fff;
+    border: none;
+}
+
+.change-user-info-userInfo{
+    flex: 2;
+    padding: 10px;
+}
+
+.change-user-time-text
+{
+    height: 30px;
+    width: 50%;
+    margin: 5px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

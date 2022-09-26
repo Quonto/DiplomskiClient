@@ -13,15 +13,16 @@ const CategorySettings = () => {
 
   const { id_group } = useParams();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/Product/FetchProducts/${id_group}`
-      );
+  const fetchProducts = async () => {
+    const response = await axios.get(
+      `https://localhost:7113/Product/FetchProducts/${id_group}`
+    );
 
-      setProducts(response.data);
-      setFilteredProducts(response.data);
-    };
+    setProducts(response.data);
+    setFilteredProducts(response.data);
+  };
+
+  useEffect(() => {
     const fetchGroup = async () => {
       const response = await axios.get(
         `https://localhost:7113/Group/FetchGroup/${id_group}`
@@ -47,7 +48,7 @@ const CategorySettings = () => {
             group={group}
             filteredProducts={filteredProducts}
             setFilteredProducts={setFilteredProducts}
-            products={products}
+            fetchProducts={fetchProducts}
           />
         </>
       )}

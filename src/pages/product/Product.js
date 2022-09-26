@@ -49,6 +49,9 @@ const Product = () => {
     });
   };
 
+  //console.log(product);
+  // console.log(auction);
+  // console.log(auctionTime);
   const handleDate = (date) => {
     const d = date.split("T");
     const da = d[0].split("-");
@@ -78,7 +81,7 @@ const Product = () => {
       price: parseInt(newPrice),
     };
 
-    const response = await axios.put(
+    await axios.put(
       `https://localhost:7113/Auction/UpdateAuction/${user.id}`,
       newProduct
     );
@@ -107,7 +110,7 @@ const Product = () => {
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
     if (auction) {
       if (remainingTime < 0) {
-        window.location.replace("/");
+        // window.location.replace("/");
         if (auction.user === null) {
           await axios.put(`https://localhost:7113/Product/InputBuy/${0}`, [
             product,
@@ -477,15 +480,15 @@ const Product = () => {
           <div className="product-info">
             <h3>Detalji proizvoda</h3>
             <div className="product-inform">
-              {product.data.map((p) => {
+              {product.data.map((p, index) => {
                 return (
-                  <>
+                  <article key={index}>
                     <div className="product-information">
                       <label>{p.productInformation.name} </label>
                       <label>{p.data}</label>
                     </div>
                     <hr className="product-hr" />
-                  </>
+                  </article>
                 );
               })}
             </div>
@@ -502,9 +505,9 @@ const Product = () => {
         )}
         <hr className="line-comment"></hr>
         <section className="review-section">
-          {product.reviews.map((p) => {
+          {product.reviews.map((p, index) => {
             return (
-              <article className="review-article">
+              <article className="review-article" key={index}>
                 <div className="review-header">
                   <Link
                     to={`/profile/${p.user.id}`}

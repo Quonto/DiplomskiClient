@@ -38,9 +38,9 @@ const ImageSlider = ({ images, handleSelectedImage }) => {
         dangerouslySetInnerHTML={{ __html: "<" }}
       ></button>
       <div className="wrapper" ref={imagesRef}>
-        {images.map((image) => {
+        {images.map((image, index) => {
           return (
-            <article className="image-wrapper">
+            <article key={index} className="image-wrapper">
               <img
                 src={image.data}
                 alt=""

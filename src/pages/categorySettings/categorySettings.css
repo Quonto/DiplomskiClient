@@ -26,6 +26,10 @@
     margin-left: 20px;
 }
 
+.search-input{
+    outline: none;
+}
+
 .subscribe-line{
     width: 100%;
     position: relative;

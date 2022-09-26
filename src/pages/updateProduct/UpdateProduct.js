@@ -286,7 +286,7 @@ const UpdateProduct = ({
             <div className="right-container">
               {productInformation.map((pi, index) => {
                 return (
-                  <>
+                  <article key={index}>
                     <label htmlFor="name" className="pi-label">
                       {pi.productInformation.name}
                     </label>
@@ -299,7 +299,7 @@ const UpdateProduct = ({
                         handleChangePi(e, pi.productInformation.name)
                       }
                     />
-                  </>
+                  </article>
                 );
               })}
             </div>

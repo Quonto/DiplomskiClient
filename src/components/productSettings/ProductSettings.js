@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
+import axios from "axios";
 
 const ProductSettings = ({
   group,
   filteredProducts,
   setFilteredProducts,
-  products,
+  fetchProducts,
 }) => {
   const sortMethods = [
     { label: "Opadajuci po ceni", method: "oc" },
@@ -20,9 +21,21 @@ const ProductSettings = ({
   const { pathname } = useLocation();
 
   const [sort, setSort] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   const nekiRef = useRef(null);
+  const inputRef = useRef();
+
+  const handleRefresh = () => {
+    inputRef.current.value = "";
+    fetchProducts();
+  };
+
+  const handleProductName = async () => {
+    const response = await axios.get(
+      `https://localhost:7113/Product/FetchProductName/${group.id}/${inputRef.current.value}`
+    );
+    setFilteredProducts(response.data);
+  };
 
   const handleSort = (sort) => {
     let sorted = filteredProducts.reverse();
@@ -95,6 +108,8 @@ const ProductSettings = ({
         });
         break;
       }
+      default: {
+      }
     }
     setFilteredProducts([...sorted]);
   };
@@ -129,27 +144,19 @@ const ProductSettings = ({
     sort !== "" && handleSort(sort);
   }, [sort]);
 
-  useEffect(() => {
-    if (searchTerm !== "") {
-      const newProducts = filteredProducts.filter((cp) =>
-        cp.name.toLowerCase().includes(searchTerm)
-      );
-      setFilteredProducts(newProducts);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [searchTerm]);
-
   return (
     <section className="product-list">
       <div className="header-sort">
         <h3>{group.name}</h3>
         <div className="search-settings">
           Pretraga:
-          <input
-            className="search-input"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <input className="search-input" ref={inputRef} />
+          <button className="ap-btn" onClick={handleProductName}>
+            Pretraga
+          </button>
+          <button className="ap-btn" onClick={handleRefresh}>
+            Osvezi
+          </button>
         </div>
         <div className="sort">
           <label htmlFor="select">Sortiraj</label>
@@ -158,17 +165,21 @@ const ProductSettings = ({
             name="select"
             onChange={(e) => setSort(e.target.value)}
           >
-            {sortMethods.map((sm) => {
-              return <option value={sm.method}>{sm.label}</option>;
+            {sortMethods.map((sm, index) => {
+              return (
+                <option value={sm.method} key={index}>
+                  {sm.label}
+                </option>
+              );
             })}
           </select>
         </div>
       </div>
       {filteredProducts.length !== 0 && (
         <div className="products" ref={nekiRef}>
-          {filteredProducts.map((product) => {
+          {filteredProducts.map((product, index) => {
             return (
-              <article className="product" key={product.id}>
+              <article className="product" key={index}>
                 <Link
                   className="product-image"
                   to={`${pathname}/product/${product.id}`}

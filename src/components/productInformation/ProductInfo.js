@@ -1,6 +1,5 @@
 import ImageSlider from "../imageSlider/ImageSlider";
 
-import axios from "axios";
 const ProductInfo = ({
   product,
   setProduct,
@@ -78,19 +77,12 @@ const ProductInfo = ({
                 <select
                   className="add-product-select"
                   onChange={handleChangeTime}
+                  defaultValue={1}
                 >
-                  <option selected={product.auction} value={1}>
-                    Jedan dan
-                  </option>
-                  <option selected={product.auction} value={2}>
-                    Dva dana
-                  </option>
-                  <option selected={product.auction} value={3}>
-                    Tri dana
-                  </option>
-                  <option selected={product.auction} value={4}>
-                    Cetiri dana
-                  </option>
+                  <option value={1}>Jedan dan</option>
+                  <option value={2}>Dva dana</option>
+                  <option value={3}>Tri dana</option>
+                  <option value={4}>Cetiri dana</option>
                 </select>
               </div>
             )}
@@ -153,7 +145,7 @@ const ProductInfo = ({
           <div className="right-container">
             {productInformation.map((pi, index) => {
               return (
-                <>
+                <article key={index}>
                   <label htmlFor="name" className="pi-label">
                     {pi.name}
                   </label>
@@ -163,7 +155,7 @@ const ProductInfo = ({
                     placeholder={pi.name}
                     onChange={(e) => handleChangePi(e, pi.name)}
                   />
-                </>
+                </article>
               );
             })}
           </div>

@@ -31,6 +31,13 @@ const ChangeProduct = ({ categories }) => {
     setProducts(response.data);
   };
 
+  const handleDelete = async (id) => {
+    await axios.delete(`https://localhost:7113/Product/RemoveProduct/${id}`);
+    setProducts(() => {
+      return products.filter((product) => product.id !== id);
+    });
+  };
+
   const handleProductName = async () => {
     const response = await axios.get(
       `https://localhost:7113/Product/FetchProductName/${selectedGroup.id}/${inputRef.current.value}`
@@ -45,10 +52,10 @@ const ChangeProduct = ({ categories }) => {
   };
 
   useEffect(() => {
-    if (selectedCategory) {
+    if (selectedGroup) {
       fetchProducts();
     }
-  }, [selectedGroup, selectedCategory]);
+  }, [selectedGroup]);
 
   useEffect(() => {
     if (selectedCategory)
@@ -56,7 +63,6 @@ const ChangeProduct = ({ categories }) => {
   }, [selectedCategory]);
 
   const handleEditProduct = (p) => {
-    console.log(p);
     setSelectedProduct(p);
     setIsChangeActive(true);
   };
@@ -91,7 +97,7 @@ const ChangeProduct = ({ categories }) => {
         {selectedGroup && (
           <div className="ap-search-name-product">
             <input
-              placeholder="Product name..."
+              placeholder="Ime proizvoda..."
               className="ap-search-input"
               ref={inputRef}
             />
@@ -105,32 +111,37 @@ const ChangeProduct = ({ categories }) => {
         )}
         {products.length !== 0 && (
           <section className="ap-section-products">
-            {products.map((product) => {
+            {products.map((product, index) => {
               return (
-                <div className="ap-single-product">
-                  <Link
-                    className="ap-product-link"
-                    to={`/categories/group/${product.group}/product/${product.id}`}
-                  >
-                    <img
-                      src={product.picture[0].data}
-                      alt=""
-                      className="ap-product-image"
-                    />
-                    <label className="ap-product-name">{product.name}</label>
-                  </Link>
-                  <div className="ap-product-profile-buttons">
-                    <button className="ap-product-profile-button">
-                      Izbrisi
-                    </button>
-                    <button
-                      className="ap-product-profile-button"
-                      onClick={(e) => handleEditProduct(product)}
+                <article key={index}>
+                  <div className="ap-single-product">
+                    <Link
+                      className="ap-product-link"
+                      to={`/categories/group/${product.group}/product/${product.id}`}
                     >
-                      Izmeni
-                    </button>
+                      <img
+                        src={product.picture[0].data}
+                        alt=""
+                        className="ap-product-image"
+                      />
+                      <label className="ap-product-name">{product.name}</label>
+                    </Link>
+                    <div className="ap-product-profile-buttons">
+                      <button
+                        className="ap-product-profile-button"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        Izbrisi
+                      </button>
+                      <button
+                        className="ap-product-profile-button"
+                        onClick={(e) => handleEditProduct(product)}
+                      >
+                        Izmeni
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </section>

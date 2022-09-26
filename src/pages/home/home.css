@@ -22,8 +22,13 @@
     margin: 20px;
 }
 
+.wanted-article > a{
+    height: 100%;
+}
+
 .wanted-image{
-    height: 80%;
+    padding: 5px 5px;
+    height: 77%;
     width: 100%;
     object-fit: cover;
 }

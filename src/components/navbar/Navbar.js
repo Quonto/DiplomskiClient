@@ -1,11 +1,9 @@
 import "./navbar.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGlobalContext } from "../../context/Context";
 
 const Navbar = () => {
   const { user, setUser, setCart } = useGlobalContext();
-
-  const { pathname } = useLocation();
 
   const handleLogout = () => {
     localStorage.setItem("user", null);

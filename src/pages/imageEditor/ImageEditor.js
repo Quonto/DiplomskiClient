@@ -16,8 +16,6 @@ const ImageEditor = ({
     compressInitial: null,
   };
 
-  console.log(selectedImage);
-
   return (
     <section className="modal-return-edit-image">
       <div className="modal-wrapper-edit-image">

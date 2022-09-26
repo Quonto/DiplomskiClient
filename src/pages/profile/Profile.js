@@ -57,7 +57,6 @@ const Profile = () => {
   }, [userProfile, id_user]);
 
   const handleOpenUpdate = (p) => {
-    console.log(p);
     setSelectedProduct(p);
     setIsChangeActive(true);
   };
@@ -83,8 +82,6 @@ const Profile = () => {
   };
 
   const handleChangePlaces = (e) => {
-    console.log(e.target.value);
-    console.log(updateUser);
     setUpdateUser({
       ...updateUser,
       place: places[e.target.value],
@@ -92,7 +89,6 @@ const Profile = () => {
   };
 
   const handleUpdateInfo = async () => {
-    console.log(userProfile);
     const response = await axios.put(
       "https://localhost:7113/User/UpdateUserProductInformation",
       updateUser
@@ -199,7 +195,6 @@ const Profile = () => {
                   >
                     {places.length !== 0 &&
                       places.map((p, i) => {
-                        console.log(p);
                         return (
                           <option
                             selected={updateUser.place.name === p.name}
@@ -316,43 +311,41 @@ const Profile = () => {
           </section>
         </div>
         <div className="profile-product">
-          {userProducts.map((product) => {
+          {userProducts.map((product, index) => {
             return (
-              <>
-                <div className="current-profile-product">
-                  <Link
-                    className="profile-product-link"
-                    to={`/categories/group/${product.group}/product/${product.id}`}
-                  >
-                    <div className="profile-product">
-                      <img
-                        src={product.picture[0].data}
-                        alt=""
-                        className="profile-product-image"
-                      />
-                      <label className="profile-product-name">
-                        {product.name}
-                      </label>
-                    </div>
-                  </Link>
-                  {user !== null && user?.id === userProfile.id && (
-                    <div className="product-profile-button">
-                      <button
-                        className="change-product"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        Izbrisi
-                      </button>
-                      <button
-                        className="change-product"
-                        onClick={() => handleOpenUpdate(product)}
-                      >
-                        Izmeni
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
+              <div className="current-profile-product" key={index}>
+                <Link
+                  className="profile-product-link"
+                  to={`/categories/group/${product.group}/product/${product.id}`}
+                >
+                  <div className="profile-product">
+                    <img
+                      src={product.picture[0].data}
+                      alt=""
+                      className="profile-product-image"
+                    />
+                    <label className="profile-product-name">
+                      {product.name}
+                    </label>
+                  </div>
+                </Link>
+                {user !== null && user?.id === userProfile.id && (
+                  <div className="product-profile-button">
+                    <button
+                      className="change-product"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Izbrisi
+                    </button>
+                    <button
+                      className="change-product"
+                      onClick={() => handleOpenUpdate(product)}
+                    >
+                      Izmeni
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>

@@ -25,6 +25,15 @@ const ChangeGroups = ({ categories }) => {
     if (e.target.value !== "") setSelectedCategory(categories[e.target.value]);
   };
 
+  const handleDeleteGroup = async (g) => {
+    await axios.delete(`https://localhost:7113/Group/RemoveGroup/${g.id}`);
+
+    let newGroup = groups.filter((p) => p.id !== g.id);
+    setGroups(newGroup);
+    setSelectedImageGroup({ id: 0, name: "", data: null });
+    setGroupName("");
+  };
+
   const readFileDataAsBase64 = (e) => {
     const file = e.target.files[0];
 
@@ -44,7 +53,6 @@ const ChangeGroups = ({ categories }) => {
   };
 
   const handleChangeGroup = (group, index) => {
-    console.log(group);
     setSelectedImageGroup({
       ...selectedImageGroup,
       data: group.picture.data,
@@ -59,7 +67,7 @@ const ChangeGroups = ({ categories }) => {
     group.picture.data = selectedImageGroup.data;
     group.picture.name = selectedImageGroup.name;
     group.name = groupName;
-    console.log(group);
+
     await axios.put("https://localhost:7113/Group/UpdateGroup", group);
     setSelectedImageGroup({ id: 0, name: "", data: null });
     setGroupName("");
@@ -89,10 +97,7 @@ const ChangeGroups = ({ categories }) => {
 
   useEffect(() => {
     if (selectedCategory) setGroups([{ name: "" }, ...selectedCategory.groups]);
-    console.log("Setovane grupe");
   }, [selectedCategory]);
-
-  console.log(selectedImageGroup);
 
   return (
     <section className="change-group">
@@ -159,9 +164,9 @@ const ChangeGroups = ({ categories }) => {
                 {groups.length !== 0 &&
                   groups.map((group, index) => {
                     return (
-                      <>
+                      <article key={index}>
                         {group.name !== "" && (
-                          <article key={index}>
+                          <>
                             <p>{group.name}</p>
                             <button
                               onClick={() => {
@@ -174,10 +179,12 @@ const ChangeGroups = ({ categories }) => {
                                 ? "Sacuvaj"
                                 : "Izmeni"}
                             </button>
-                            <button>Izbrisi</button>{" "}
-                          </article>
+                            <button onClick={() => handleDeleteGroup(group)}>
+                              Izbrisi
+                            </button>{" "}
+                          </>
                         )}
-                      </>
+                      </article>
                     );
                   })}
               </div>

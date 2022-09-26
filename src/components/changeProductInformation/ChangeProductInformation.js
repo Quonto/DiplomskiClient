@@ -67,7 +67,7 @@ const ChangeProductInformation = ({
       `https://localhost:7113/ProductInformation/InputProductInformation/${selectedGroup.id}`,
       newPi
     );
-    newPi = { ...newPi, id: response };
+    newPi = { ...newPi, id: response.data };
     setProductInformation([...productInformation, newPi]);
     setGroups((groups) =>
       groups.map((group) => {
@@ -111,7 +111,6 @@ const ChangeProductInformation = ({
           <div className="groups-review">
             {productInformation?.length !== 0 &&
               productInformation.map((pi, index) => {
-                console.log(pi);
                 return (
                   <article key={index}>
                     {saveProductInformation &&

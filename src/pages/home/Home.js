@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./home.css";
 
 const Home = () => {
@@ -27,7 +27,7 @@ const Home = () => {
       const response = await axios.get(
         "https://localhost:7113/Group/FetchPopularGroup"
       );
-      console.log(response.data);
+
       setMostPopular(response.data);
     };
 
@@ -43,13 +43,13 @@ const Home = () => {
         <h3>Najtrazeniji predmeti</h3>
         <div className="wanted-list">
           {/* list of products */}
-          {mostWanted.map((product) => {
+          {mostWanted.map((product, index) => {
             return (
-              <Link
-                className="wanted-product"
-                to={`/categories/group/${product.group}/product/${product.id}`}
-              >
-                <article className="wanted-article">
+              <article className="wanted-article" key={index}>
+                <Link
+                  className="wanted-product"
+                  to={`/categories/group/${product.group}/product/${product.id}`}
+                >
                   <img
                     className="wanted-image"
                     src={product.picture[0].data}
@@ -59,8 +59,8 @@ const Home = () => {
                     <h4> {product.price} RSD</h4>
                     <p>{product.numberOfWish.length} ponuda</p>
                   </div>
-                </article>
-              </Link>
+                </Link>
+              </article>
             );
           })}
         </div>
@@ -70,13 +70,13 @@ const Home = () => {
         <h3>Istaknuti predmeti</h3>
         {/* List of products */}
         <div className="wanted-list">
-          {mostLiked.map((product) => {
+          {mostLiked.map((product, index) => {
             return (
-              <Link
-                className="wanted-product"
-                to={`/categories/group/${product.group}/product/${product.id}`}
-              >
-                <article className="wanted-article">
+              <article className="wanted-article" key={index}>
+                <Link
+                  className="wanted-product"
+                  to={`/categories/group/${product.group}/product/${product.id}`}
+                >
                   <img
                     className="wanted-image"
                     src={product.picture[0].data}
@@ -86,8 +86,8 @@ const Home = () => {
                     <h4> {product.price} RSD</h4>
                     <p>{product.numberOfLike.length} lajkovanih</p>
                   </div>
-                </article>
-              </Link>
+                </Link>
+              </article>
             );
           })}
         </div>
@@ -96,13 +96,13 @@ const Home = () => {
       <section className="popular-categories">
         <h3>Popularne kategorije</h3>
         <div className="popular-categories-list">
-          {mostPopular.map((group) => {
+          {mostPopular.map((group, index) => {
             return (
-              <Link
-                className="wanted-product"
-                to={`/categories/group/${group.id}`}
-              >
-                <article className="popular-category">
+              <article className="popular-category" key={index}>
+                <Link
+                  className="wanted-product"
+                  to={`/categories/group/${group.id}`}
+                >
                   <div className="popular-image-wrapper">
                     <img
                       className="popular-category-image"
@@ -111,8 +111,8 @@ const Home = () => {
                     />
                   </div>
                   <p>{group.name}</p>
-                </article>
-              </Link>
+                </Link>
+              </article>
             );
           })}
         </div>

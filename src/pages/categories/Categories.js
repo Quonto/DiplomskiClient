@@ -37,10 +37,10 @@ const Categories = () => {
   if (!selectedCategory) {
     return (
       <section className="categories">
-        {categories.map((category) => {
+        {categories.map((category, index) => {
           const { name, picture } = category;
           return (
-            <>
+            <article key={index}>
               <header
                 onClick={() => handleChangeCategory(category)}
                 className="category-article"
@@ -52,7 +52,7 @@ const Categories = () => {
                 />
                 <h4>{name}</h4>
               </header>
-            </>
+            </article>
           );
         })}
       </section>
@@ -61,10 +61,10 @@ const Categories = () => {
     return (
       <>
         <section className="categories">
-          {categories.map((category) => {
-            const { id, name, picture } = category;
+          {categories.map((category, index) => {
+            const { name, picture } = category;
             return (
-              <>
+              <article className="artile-category" key={index}>
                 {selectedCategory.name === name && (
                   <header
                     onClick={() => handleChangeCategory(category)}
@@ -99,7 +99,7 @@ const Categories = () => {
                     })}
                   </>
                 )}
-              </>
+              </article>
             );
           })}
         </section>

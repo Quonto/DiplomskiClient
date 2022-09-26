@@ -24,6 +24,13 @@ const ChangePlace = () => {
     placeRef.current.value = "";
   };
 
+  const handleDeletePlace = async (pi) => {
+    await axios.delete(`https://localhost:7113/Place/RemovePlace/${pi.id}`);
+
+    let newPlace = place.filter((p) => p.id !== pi.id);
+    setPlace(newPlace);
+  };
+
   const handleChangeProductInformation = (p, index) => {
     setPlaceName(p.name);
     setIndexPlace(index);
@@ -32,7 +39,6 @@ const ChangePlace = () => {
 
   const handleSaveProductInformation = async (p, index) => {
     p.name = placeName;
-    console.log(p);
     await axios.put("https://localhost:7113/Place/UpdatePlace", p);
 
     setIndexPlace(index);
@@ -76,7 +82,7 @@ const ChangePlace = () => {
                 >
                   {savePlace && index === indexPlace ? "Sacuvaj" : "Izmeni"}
                 </button>
-                <button>Izbrisi</button>{" "}
+                <button onClick={() => handleDeletePlace(p)}>Izbrisi</button>{" "}
               </article>
             );
           })}

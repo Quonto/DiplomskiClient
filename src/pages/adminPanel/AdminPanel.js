@@ -7,6 +7,7 @@ import ChangeProductInformation from "../../components/changeProductInformation/
 import ChangePlace from "../../components/changePlace/ChangePlace";
 import ChangeGroups from "../../components/changeGroups/ChangeGroups";
 import ChangeProduct from "../../components/changeProduct/ChangeProduct";
+import ChangeUser from "../../components/changeUser/ChangeUser";
 const AdminPanel = () => {
   const [categories, setCategories] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -45,6 +46,7 @@ const AdminPanel = () => {
       )}
       <ChangeGroups categories={categories} />
       <ChangeProduct categories={categories} groups={groups} />
+      <ChangeUser />
     </div>
   );
 };

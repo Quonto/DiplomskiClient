@@ -51,6 +51,17 @@ const ChangeCategory = ({ categories, setCategories }) => {
     setCategories([...categories, response.data]);
   };
 
+  const handleDeleteCategory = async (ca) => {
+    await axios.delete(
+      `https://localhost:7113/Category/RemoveCategory/${ca.id}`
+    );
+
+    let newProductInformation = categories.filter((p) => p.id !== ca.id);
+    setCategories(newProductInformation);
+    setSelectedImage({ id: 0, name: "", data: null });
+    setCategoryName("");
+  };
+
   const handleEditImage = async (image) => {
     setSelectedImage({ ...selectedImage, data: image, name: "" });
   };
@@ -131,27 +142,29 @@ const ChangeCategory = ({ categories, setCategories }) => {
             <h3> Kategorije </h3>
             <div className="groups-review">
               {categories.length !== 0 &&
-                categories.map((p, index) => {
+                categories.map((ca, index) => {
                   return (
-                    <>
-                      {p.name !== "" && (
-                        <article key={index}>
-                          <p>{p.name}</p>
+                    <article key={index}>
+                      {ca.name !== "" && (
+                        <>
+                          <p>{ca.name}</p>
                           <button
                             onClick={() => {
                               saveCategory && index === indexCategory
-                                ? handleUpdateCategory(p, index)
-                                : handleChangeCategory(p, index);
+                                ? handleUpdateCategory(ca, index)
+                                : handleChangeCategory(ca, index);
                             }}
                           >
                             {saveCategory && index === indexCategory
                               ? "Sacuvaj"
                               : "Izmeni"}
                           </button>
-                          <button>Izbrisi</button>{" "}
-                        </article>
+                          <button onClick={() => handleDeleteCategory(ca)}>
+                            Izbrisi
+                          </button>{" "}
+                        </>
                       )}
-                    </>
+                    </article>
                   );
                 })}
             </div>

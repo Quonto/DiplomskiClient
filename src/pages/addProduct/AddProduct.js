@@ -30,7 +30,7 @@ const AddProduct = () => {
   });
   const [places, setPlaces] = useState(null);
 
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState(1);
 
   const inputRef = useRef(null);
 
@@ -141,6 +141,8 @@ const AddProduct = () => {
       data: productInformation,
       auction: product.auction,
     };
+    console.log(newProduct);
+
     const response = await axios.post(
       `https://localhost:7113/Product/InputProductBuy/${user.id}/${selectedGroup.id}`,
       newProduct
@@ -151,7 +153,7 @@ const AddProduct = () => {
         time: currentTime,
         minimumPrice: parseInt((product.price / 100) * 5),
       };
-
+      console.log(newAuction);
       await axios.post(
         `https://localhost:7113/Auction/InputAuction/${response.data}`,
         newAuction
