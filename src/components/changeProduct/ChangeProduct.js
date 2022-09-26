@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./changeProduct.css";
+import Review from "../review/Review";
 import { Link } from "react-router-dom";
 import UpdateProduct from "../../pages/updateProduct/UpdateProduct";
 
@@ -12,6 +13,7 @@ const ChangeProduct = ({ categories }) => {
   const [isChangeActive, setIsChangeActive] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
+  const [isReviewActive, setIsReviewActive] = useState(false);
 
   const inputRef = useRef();
 
@@ -36,6 +38,11 @@ const ChangeProduct = ({ categories }) => {
     setProducts(() => {
       return products.filter((product) => product.id !== id);
     });
+  };
+
+  const handleReview = (p) => {
+    setSelectedProduct(p);
+    setIsReviewActive(true);
   };
 
   const handleProductName = async () => {
@@ -139,6 +146,12 @@ const ChangeProduct = ({ categories }) => {
                       >
                         Izmeni
                       </button>
+                      <button
+                        className="ap-product-profile-button"
+                        onClick={() => handleReview(product)}
+                      >
+                        Recenzije
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -155,6 +168,13 @@ const ChangeProduct = ({ categories }) => {
           setUserProducts={setProducts}
           userProducts={products}
         ></UpdateProduct>
+      )}
+      {isReviewActive && (
+        <Review
+          setIsReviewActive={setIsReviewActive}
+          isProduct={true}
+          id={selectedProduct.id}
+        />
       )}
     </>
   );

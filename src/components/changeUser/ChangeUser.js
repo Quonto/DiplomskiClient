@@ -173,7 +173,7 @@ const ChangeUser = () => {
                       className="change-user-edit-image"
                       onClick={() => setIsReviewActive(true)}
                     >
-                      View Review
+                      Recenzije
                     </button>
                   </>
                 )}
@@ -293,7 +293,13 @@ const ChangeUser = () => {
           handleEditImage={handleEditImage}
         />
       )}
-      {isReviewActive && <Review setIsReviewActive={setIsReviewActive} />}
+      {isReviewActive && (
+        <Review
+          setIsReviewActive={setIsReviewActive}
+          isProduct={false}
+          id={selectedUser.id}
+        />
+      )}
     </>
   );
 };

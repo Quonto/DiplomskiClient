@@ -9,6 +9,15 @@ import ChangeGroups from "../../components/changeGroups/ChangeGroups";
 import ChangeProduct from "../../components/changeProduct/ChangeProduct";
 import ChangeUser from "../../components/changeUser/ChangeUser";
 const AdminPanel = () => {
+  const values = [
+    "categories",
+    "groups",
+    "products",
+    "users",
+    "places",
+    "productInformation",
+  ];
+
   const [categories, setCategories] = useState([]);
   const [groups, setGroups] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
