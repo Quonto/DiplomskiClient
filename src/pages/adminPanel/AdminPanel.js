@@ -9,18 +9,22 @@ import ChangeGroups from "../../components/changeGroups/ChangeGroups";
 import ChangeProduct from "../../components/changeProduct/ChangeProduct";
 import ChangeUser from "../../components/changeUser/ChangeUser";
 const AdminPanel = () => {
-  const values = [
-    "categories",
-    "groups",
-    "products",
-    "users",
-    "places",
-    "productInformation",
+  const names = [
+    "Informacije proizvoda",
+    "Kategorije",
+    "Grupe",
+    "Proizvodi",
+    "Korisnici",
   ];
 
   const [categories, setCategories] = useState([]);
   const [groups, setGroups] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [value, setValue] = useState(0);
+
+  const handleChangeCategory = (index) => {
+    setValue(index);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -40,22 +44,46 @@ const AdminPanel = () => {
 
   return (
     <div className="admin-panel-component">
+      <div className="ap-categories">
+        {names.map((name, index) => {
+          return (
+            <button
+              className={`ap-category-button ${index === value && "active"} `}
+              key={index}
+              onClick={() => handleChangeCategory(index)}
+            >
+              {name}
+            </button>
+          );
+        })}
+      </div>
       <section className="admin-panel">
-        <ChangeProductInformation
-          groups={groups}
-          setSelectedCategory={setSelectedCategory}
-          categories={categories}
-          setGroups={setGroups}
-          selectedCategory={selectedCategory}
-        />
-        <ChangePlace />
+        {value === 0 && (
+          <>
+            <ChangeProductInformation
+              groups={groups}
+              setSelectedCategory={setSelectedCategory}
+              categories={categories}
+              setGroups={setGroups}
+              selectedCategory={selectedCategory}
+            />
+            <ChangePlace />
+          </>
+        )}
+
+        {categories.length !== 0 && value === 1 && (
+          <ChangeCategory
+            categories={categories}
+            setCategories={setCategories}
+          />
+        )}
+        {value === 2 && <ChangeGroups categories={categories} />}
+
+        {value === 3 && (
+          <ChangeProduct categories={categories} groups={groups} />
+        )}
+        {value === 4 && <ChangeUser />}
       </section>
-      {categories.length !== 0 && (
-        <ChangeCategory categories={categories} setCategories={setCategories} />
-      )}
-      <ChangeGroups categories={categories} />
-      <ChangeProduct categories={categories} groups={groups} />
-      <ChangeUser />
     </div>
   );
 };

@@ -78,7 +78,7 @@ const ChangeProduct = ({ categories }) => {
     <>
       <div className="ap-change-product">
         <h3>Izmena proizvod</h3>
-        <div className="category-container">
+        <div className="product-category-container">
           <select className="group-settings-select" onChange={changeCategory}>
             {categories.map((category, index) => {
               return (
@@ -88,19 +88,19 @@ const ChangeProduct = ({ categories }) => {
               );
             })}
           </select>
+          {selectedCategory && (
+            <select className="group-settings-select" onChange={changeGroup}>
+              {currentGroups.length !== 0 &&
+                currentGroups.map((group, index) => {
+                  return (
+                    <option key={index} value={index}>
+                      {group.name}
+                    </option>
+                  );
+                })}
+            </select>
+          )}
         </div>
-        {selectedCategory && (
-          <select className="group-settings-select" onChange={changeGroup}>
-            {currentGroups.length !== 0 &&
-              currentGroups.map((group, index) => {
-                return (
-                  <option key={index} value={index}>
-                    {group.name}
-                  </option>
-                );
-              })}
-          </select>
-        )}
         {selectedGroup && (
           <div className="ap-search-name-product">
             <input
@@ -120,41 +120,39 @@ const ChangeProduct = ({ categories }) => {
           <section className="ap-section-products">
             {products.map((product, index) => {
               return (
-                <article key={index}>
-                  <div className="ap-single-product">
-                    <Link
-                      className="ap-product-link"
-                      to={`/categories/group/${product.group}/product/${product.id}`}
+                <div className="ap-single-product" key={index}>
+                  <Link
+                    className="ap-product-link"
+                    to={`/categories/group/${product.group}/product/${product.id}`}
+                  >
+                    <img
+                      src={product.picture[0].data}
+                      alt=""
+                      className="ap-product-image"
+                    />
+                    <label className="ap-product-name">{product.name}</label>
+                  </Link>
+                  <div className="ap-product-profile-buttons">
+                    <button
+                      className="ap-product-profile-button"
+                      onClick={() => handleDelete(product.id)}
                     >
-                      <img
-                        src={product.picture[0].data}
-                        alt=""
-                        className="ap-product-image"
-                      />
-                      <label className="ap-product-name">{product.name}</label>
-                    </Link>
-                    <div className="ap-product-profile-buttons">
-                      <button
-                        className="ap-product-profile-button"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        Izbrisi
-                      </button>
-                      <button
-                        className="ap-product-profile-button"
-                        onClick={(e) => handleEditProduct(product)}
-                      >
-                        Izmeni
-                      </button>
-                      <button
-                        className="ap-product-profile-button"
-                        onClick={() => handleReview(product)}
-                      >
-                        Recenzije
-                      </button>
-                    </div>
+                      Izbrisi
+                    </button>
+                    <button
+                      className="ap-product-profile-button"
+                      onClick={(e) => handleEditProduct(product)}
+                    >
+                      Izmeni
+                    </button>
+                    <button
+                      className="ap-product-profile-button"
+                      onClick={() => handleReview(product)}
+                    >
+                      Recenzije
+                    </button>
                   </div>
-                </article>
+                </div>
               );
             })}
           </section>

@@ -174,10 +174,7 @@
     justify-content: flex-end;
 }
 
-.user-header-product > img{
-    height: 100%;
-    width: 70%;
-}
+
 
 .user-header-product{
     text-decoration: none;

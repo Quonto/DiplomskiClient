@@ -223,15 +223,15 @@ const ChangeUser = () => {
                   <select
                     className="add-product-select"
                     onChange={handleChangePlaces}
+                    defaultValue={{
+                      label: updateUser.place.name,
+                      value: updateUser.place.name,
+                    }}
                   >
                     {places.length !== 0 &&
                       places.map((p, i) => {
                         return (
-                          <option
-                            defaultValue={updateUser.place.name === p.name}
-                            key={i}
-                            value={i}
-                          >
+                          <option key={i} value={i}>
                             {p.name}
                           </option>
                         );
@@ -266,9 +266,9 @@ const ChangeUser = () => {
                 </label>
                 {selectedInfo ? (
                   <textarea
-                    placeholder="Broj telefona"
-                    className="change-user-input"
-                    defaultValue={selectedUser.userInformation.phone}
+                    placeholder="Opis"
+                    className="change-user-input-textarea"
+                    defaultValue={selectedUser.userInformation.data}
                     onChange={(e) =>
                       setUpdateUser({
                         ...updateUser,

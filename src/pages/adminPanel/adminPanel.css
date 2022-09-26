@@ -5,6 +5,35 @@
 .admin-panel-component{
     display: flex;
     flex-direction: column;
+    height: 500px;
+    margin-top: 30px;
+}
+
+.ap-categories
+{
+    display: flex;
+    width: 90%;
+    height: 70px;
+    justify-content: space-between  ;
+    align-self: center;
+}
+
+.ap-category-button
+{
+    width: 17%;
+    height: 30px;
+    font-size: 13px;
+    border: none;
+    background-color: #1ad1d1;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.ap-category-button.active{
+    background-color: white;
+    color: #1ad1d1;
+    border: 1px solid #1ad1d1;
 }
 
 .group-settings{
@@ -77,6 +106,8 @@
     height: 350px;
     width: 100%;
     padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 .category-container > h3{
@@ -86,8 +117,9 @@
 .category-container
 {
     display: flex;
+    width: 100%;
     flex-direction: column;
-    justify-content: space-evenly;
+   align-self: center;
 }
 
 .category-item
@@ -138,6 +170,9 @@
 .admin-panel
 {
     display: flex;
+    flex: 8;
+    padding: 20px;
+
 }
 
 .place-settings
@@ -150,3 +185,4 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
