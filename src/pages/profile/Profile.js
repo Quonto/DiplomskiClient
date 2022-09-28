@@ -5,17 +5,35 @@ import { useEffect, useState } from "react";
 import ImageEditor from "../imageEditor/ImageEditor";
 import UpdateProduct from "../updateProduct/UpdateProduct";
 import { useGlobalContext } from "../../context/Context";
+import Pagination from "../../components/pagination/Pagination";
 
 const Profile = () => {
   const { id_user } = useParams();
   const [userProfile, setUserProfile] = useState(null);
   const [isImageEditorActive, setIsImageEditorActive] = useState(false);
-  const [userProducts, setUserProducts] = useState([]);
   const [isChangeActive, setIsChangeActive] = useState(false);
+  const [isChangePassword, setIsChangePassword] = useState(false);
+  const [isChangeEmail, setIsChangeEmail] = useState(false);
+  const [isChangeUsername, setIsChangeUsername] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedPI, setSelectedPI] = useState(false);
   const [updateUser, setUpdateUser] = useState(null);
+  const [userProducts, setUserProducts] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [password, setPassword] = useState({
+    current: "",
+    new: "",
+    confirm: "",
+  });
+  const [mail, setMail] = useState("");
+  const [username, setUsername] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(4);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = userProducts.slice(indexOfFirstPost, indexOfLastPost);
 
   const { user, setUser } = useGlobalContext();
 
@@ -26,12 +44,54 @@ const Profile = () => {
     return da[2] + "." + da[1] + "." + da[0];
   };
 
+  const handleSavePassword = async () => {
+    try {
+      if (password.new === "") {
+        console.log("Niste uneli sifru");
+        return;
+      }
+
+      const newUser = {
+        id: updateUser.id,
+        password: password.current,
+      };
+      await axios.post(`https://localhost:7113/User/CheckPassword`, newUser);
+
+      if (password.new !== password.confirm) {
+        console.log("Sifre nisu jednake");
+        return;
+      }
+
+      if (password.current === password.new) {
+        console.log("Uneli ste istu sifru kao trenutnu");
+        return;
+      }
+
+      await axios.put("https://localhost:7113/User/UpdatePassword", {
+        ...newUser,
+        password: password.new,
+      });
+      setUser({ ...user, password: password.new });
+      setIsChangePassword(false);
+      setPassword({ current: "", new: "", confirm: "" });
+      console.log("Sifra je izmenjena");
+    } catch (e) {
+      console.log("Trenutna sifra nije validna");
+    }
+  };
+
   const handleTime = (time) => {
     const d = time.split("T");
     const da = d[1].split(":");
 
     return da[0] + ":" + da[1];
   };
+
+  useEffect(() => {
+    if (isChangeEmail) {
+      setMail(updateUser.email);
+    }
+  }, [isChangeEmail]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,10 +106,12 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserProducts = async () => {
+      setLoading(true);
       const response = await axios.get(
         `https://localhost:7113/Product/GetUserProducts/${id_user}`
       );
       setUserProducts(response.data);
+      setLoading(false);
     };
     if (userProfile) {
       fetchUserProducts();
@@ -75,6 +137,76 @@ const Profile = () => {
     setUserProducts(() => {
       return userProducts.filter((product) => product.id !== id);
     });
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleCancelPassword = () => {
+    setPassword({ current: "", new: "", confirm: "" });
+    setIsChangePassword(false);
+  };
+
+  const handleEditMail = async () => {
+    console.log(mail);
+    if (mail === "") {
+      console.log("Mail je prazan");
+      return;
+    }
+    if (mail === userProfile.email) {
+      console.log("Mejl je isti");
+      return;
+    }
+    try {
+      const newUser = {
+        id: userProfile.id,
+        email: mail,
+      };
+      await axios.put("https://localhost:7113/User/UpdateUserMail", newUser);
+      setUser({ ...user, email: mail });
+      setUserProfile({ ...userProfile, email: mail });
+    } catch (error) {
+      console.log("Uneti mejl vec postoji");
+    }
+    setIsChangeEmail(false);
+    setMail("");
+  };
+
+  const handleCancelMail = () => {
+    setIsChangeEmail(false);
+    setMail("");
+  };
+
+  const handleEditUsername = async () => {
+    if (username === "") {
+      console.log("Username je prazan");
+      return;
+    }
+    if (username === userProfile.username) {
+      console.log("Username je isti");
+      return;
+    }
+    try {
+      const newUser = {
+        id: userProfile.id,
+        username,
+      };
+      await axios.put(
+        "https://localhost:7113/User/UpdateUserUsername",
+        newUser
+      );
+      setUser({ ...user, username });
+      setUserProfile({ ...userProfile, username });
+    } catch (error) {
+      console.log("Uneti username vec postoji");
+    }
+    setIsChangeUsername(false);
+    setUsername("");
+  };
+
+  const handleCancelUsername = () => {
+    setIsChangeUsername(false);
   };
 
   const handleChangeProfileInfo = () => {
@@ -277,77 +409,210 @@ const Profile = () => {
                 <label htmlFor="name" className="profile-name-label">
                   Korisničko ime
                 </label>
-                <div className="profile-name" htmlFor="name">
-                  {userProfile.username}
-                </div>
+                {isChangeUsername ? (
+                  <input
+                    className="change-username"
+                    defaultValue={userProfile.username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.username}
+                  </div>
+                )}
+                {user !== null && user?.id === userProfile.id && (
+                  <div className="change-password-div">
+                    <button
+                      className="edit-button"
+                      onClick={
+                        isChangeUsername
+                          ? handleEditUsername
+                          : () => setIsChangeUsername(true)
+                      }
+                    >
+                      {isChangeUsername ? "Sacuvaj" : "Izmeni"}
+                    </button>
+                    {isChangeUsername && (
+                      <button
+                        className="edit-button"
+                        onClick={handleCancelUsername}
+                      >
+                        Otkazi
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="current-information">
               <div className="current-information-info">
                 <label htmlFor="name" className="profile-name-label">
-                  Mail
+                  Izmena mejla
                 </label>
-                <div className="profile-name" htmlFor="name">
-                  {userProfile.email}
-                </div>
+                {isChangeEmail ? (
+                  <input
+                    className="change-mail"
+                    defaultValue={userProfile.email}
+                    onChange={(e) => setMail(e.target.value)}
+                  />
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.email}
+                  </div>
+                )}
+                {user !== null && user?.id === userProfile.id && (
+                  <div className="change-password-div">
+                    <button
+                      className="edit-button"
+                      onClick={
+                        isChangeEmail
+                          ? handleEditMail
+                          : () => setIsChangeEmail(true)
+                      }
+                    >
+                      {isChangeEmail ? "Sacuvaj" : "Izmeni"}
+                    </button>
+                    {isChangeEmail && (
+                      <button
+                        className="edit-button"
+                        onClick={handleCancelMail}
+                      >
+                        Otkazi
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="current-information">
               <div className="current-information-info">
                 {user !== null && user?.id === userProfile.id && (
                   <label htmlFor="name" className="profile-name-password">
-                    Sifra
+                    Izmena Sifre
                   </label>
+                )}
+                {isChangePassword && (
+                  <>
+                    <label htmlFor="current" className="current-password-label">
+                      Trenutna sifra
+                    </label>
+                    <input
+                      type="password"
+                      name="current"
+                      className="current-password"
+                      onChange={(e) =>
+                        setPassword({ ...password, current: e.target.value })
+                      }
+                    />
+
+                    <label htmlFor="new" className="current-password-label">
+                      Nova sifra
+                    </label>
+                    <input
+                      type="password"
+                      name="new"
+                      className="current-password"
+                      onChange={(e) =>
+                        setPassword({ ...password, new: e.target.value })
+                      }
+                    />
+
+                    <label htmlFor="confirm" className="current-password-label">
+                      Potvrdna sifra
+                    </label>
+                    <input
+                      type="password"
+                      name="confirm"
+                      className="current-password"
+                      onChange={(e) =>
+                        setPassword({ ...password, confirm: e.target.value })
+                      }
+                    />
+                  </>
+                )}
+
+                {user !== null && user?.id === userProfile.id && (
+                  <div className="change-password-div">
+                    <button
+                      className="edit-button"
+                      onClick={
+                        isChangePassword
+                          ? handleSavePassword
+                          : () => setIsChangePassword(!isChangePassword)
+                      }
+                    >
+                      {isChangePassword ? "Sacuvaj" : "Izmeni"}
+                    </button>
+                    <>
+                      {isChangePassword && (
+                        <button
+                          className="edit-button"
+                          onClick={handleCancelPassword}
+                        >
+                          Otkazi
+                        </button>
+                      )}
+                    </>
+                  </div>
                 )}
               </div>
             </div>
             <div className="current-information-wrapper">
-              <div className="current-information">
-                {user !== null && user?.id === userProfile.id && (
-                  <button className="edit-button">Izmeni</button>
-                )}
-              </div>
+              <div className="current-information"></div>
             </div>
           </section>
         </div>
         <div className="profile-product">
-          {userProducts.map((product, index) => {
-            return (
-              <div className="current-profile-product" key={index}>
-                <Link
-                  className="profile-product-link"
-                  to={`/categories/group/${product.group}/product/${product.id}`}
-                >
-                  <div className="profile-product">
-                    <img
-                      src={product.picture[0].data}
-                      alt=""
-                      className="profile-product-image"
-                    />
-                    <label className="profile-product-name">
-                      {product.name}
-                    </label>
-                  </div>
-                </Link>
-                {user !== null && user?.id === userProfile.id && (
-                  <div className="product-profile-button">
-                    <button
-                      className="change-product"
-                      onClick={() => handleDelete(product.id)}
+          {loading ? (
+            <h2>Loading...</h2>
+          ) : (
+            <>
+              {currentPosts.map((product, index) => {
+                return (
+                  <div className="current-profile-product" key={index}>
+                    <Link
+                      className="profile-product-link"
+                      to={`/categories/group/${product.group}/product/${product.id}`}
                     >
-                      Izbrisi
-                    </button>
-                    <button
-                      className="change-product"
-                      onClick={() => handleOpenUpdate(product)}
-                    >
-                      Izmeni
-                    </button>
+                      <div className="profile-product">
+                        <img
+                          src={product.picture[0].data}
+                          alt=""
+                          className="profile-product-image"
+                        />
+                        <label className="profile-product-name">
+                          {product.name}
+                        </label>
+                      </div>
+                    </Link>
+                    {user !== null && user?.id === userProfile.id && (
+                      <div className="product-profile-button">
+                        <button
+                          className="change-product"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Izbrisi
+                        </button>
+                        <button
+                          className="change-product"
+                          onClick={() => handleOpenUpdate(product)}
+                        >
+                          Izmeni
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}{" "}
+            </>
+          )}
+          {!loading && (
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={userProducts.length}
+              paginate={paginate}
+            />
+          )}
         </div>
         {isChangeActive && (
           <UpdateProduct

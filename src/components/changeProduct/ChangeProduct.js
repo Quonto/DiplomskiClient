@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import UpdateProduct from "../../pages/updateProduct/UpdateProduct";
 
 import axios from "axios";
+import Pagination from "../pagination/Pagination";
 
 const ChangeProduct = ({ categories }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -14,6 +15,12 @@ const ChangeProduct = ({ categories }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [isReviewActive, setIsReviewActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(4);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = products.slice(indexOfFirstPost, indexOfLastPost);
 
   const inputRef = useRef();
 
@@ -26,11 +33,16 @@ const ChangeProduct = ({ categories }) => {
   };
 
   const fetchProducts = async () => {
+    setLoading(true);
     const response = await axios.get(
       `https://localhost:7113/Product/FetchProducts/${selectedGroup.id}`
     );
-
     setProducts(response.data);
+    setLoading(false);
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   const handleDelete = async (id) => {
@@ -116,46 +128,62 @@ const ChangeProduct = ({ categories }) => {
             </button>
           </div>
         )}
-        {products.length !== 0 && (
-          <section className="ap-section-products">
-            {products.map((product, index) => {
-              return (
-                <div className="ap-single-product" key={index}>
-                  <Link
-                    className="ap-product-link"
-                    to={`/categories/group/${product.group}/product/${product.id}`}
-                  >
-                    <img
-                      src={product.picture[0].data}
-                      alt=""
-                      className="ap-product-image"
-                    />
-                    <label className="ap-product-name">{product.name}</label>
-                  </Link>
-                  <div className="ap-product-profile-buttons">
-                    <button
-                      className="ap-product-profile-button"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Izbrisi
-                    </button>
-                    <button
-                      className="ap-product-profile-button"
-                      onClick={(e) => handleEditProduct(product)}
-                    >
-                      Izmeni
-                    </button>
-                    <button
-                      className="ap-product-profile-button"
-                      onClick={() => handleReview(product)}
-                    >
-                      Recenzije
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </section>
+
+        {currentPosts.length !== 0 && (
+          <>
+            {loading ? (
+              <h2>Loading...</h2>
+            ) : (
+              <section className="section-products-pagination">
+                <section className="ap-section-products">
+                  {currentPosts.map((product, index) => {
+                    return (
+                      <div className="ap-single-product" key={index}>
+                        <Link
+                          className="ap-product-link"
+                          to={`/categories/group/${product.group}/product/${product.id}`}
+                        >
+                          <img
+                            src={product.picture[0].data}
+                            alt=""
+                            className="ap-product-image"
+                          />
+                          <label className="ap-product-name">
+                            {product.name}
+                          </label>
+                        </Link>
+                        <div className="ap-product-profile-buttons">
+                          <button
+                            className="ap-product-profile-button"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            Izbrisi
+                          </button>
+                          <button
+                            className="ap-product-profile-button"
+                            onClick={(e) => handleEditProduct(product)}
+                          >
+                            Izmeni
+                          </button>
+                          <button
+                            className="ap-product-profile-button"
+                            onClick={() => handleReview(product)}
+                          >
+                            Recenzije
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <Pagination
+                    postsPerPage={postsPerPage}
+                    totalPosts={products.length}
+                    paginate={paginate}
+                  />
+                </section>
+              </section>
+            )}
+          </>
         )}
       </div>
       {isChangeActive && (

@@ -10,7 +10,7 @@
 }
 
 .product-list{
-    width: 70%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -164,4 +164,10 @@
 .cena-input{
     width: 35%;
     margin: 0 10px;
+}
+
+.product-setings
+{
+    width: 70%;
+    height: 100%;
 }

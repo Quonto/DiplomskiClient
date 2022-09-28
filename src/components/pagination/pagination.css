@@ -1,0 +1,38 @@
+.paginations-div
+{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pagination
+{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    
+
+}
+.page-item::marker
+{
+    display: none;
+}
+
+.page-item
+{
+    width: 30px;
+    height: 30px;
+   cursor: pointer;
+    border: 1px solid black ;
+    margin: 0px 5px;
+    list-style: none;
+}
+
+.page-link
+{
+    display: flex;
+    justify-content: center;
+    font-size:larger;
+}

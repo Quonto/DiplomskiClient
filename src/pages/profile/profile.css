@@ -176,6 +176,12 @@
     height: 30px;
 }
 
+.change-password-div{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .user-data
 {
     padding: 5px;

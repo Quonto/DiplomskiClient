@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../context/Context";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import * as signalR from "@microsoft/signalr";
 import ImageSlider from "../../components/imageSlider/ImageSlider";
+import Pagination from "../../components/pagination/Pagination";
 
 const Product = () => {
   const [isAddActive, setIsAddActive] = useState(false);
@@ -39,6 +40,17 @@ const Product = () => {
 
   const [product, setProduct] = useState(null);
   const [addedToCart, setAddedToCart] = useState(checkAddedToCart());
+
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(4);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = product?.reviews.slice(
+    indexOfFirstPost,
+    indexOfLastPost
+  );
+  console.log(currentPosts);
 
   const handleSelectedImage = (image) => {
     setSelectedImage({
@@ -110,7 +122,7 @@ const Product = () => {
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
     if (auction) {
       if (remainingTime < 0) {
-        // window.location.replace("/");
+        window.location.replace("/");
         if (auction.user === null) {
           await axios.put(`https://localhost:7113/Product/InputBuy/${0}`, [
             product,
@@ -219,8 +231,13 @@ const Product = () => {
     return Math.round(parseFloat(sum / product.reviews.length));
   };
 
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);
       if (user !== null) {
         await axios.post(
           `https://localhost:7113/Product/InputNumberOfView/${id_product}`,
@@ -241,6 +258,7 @@ const Product = () => {
       }
 
       setProduct(response.data);
+      setLoading(false);
     };
     fetchProduct();
   }, [id_product]);
@@ -290,284 +308,302 @@ const Product = () => {
   if (product) {
     return (
       <>
-        <section className="section-product">
-          {selectedImage && (
-            <div className="product-picture">
-              <div className="product-picture-wrapper">
-                <img
-                  src={selectedImage.data}
-                  alt=""
-                  className="product-picture-img"
-                />
-              </div>
-              <ImageSlider
-                images={product.picture}
-                handleSelectedImage={handleSelectedImage}
-              ></ImageSlider>
-            </div>
-          )}
-          <div className=" product-buy">
-            <h3 className="product-name">{product.name}</h3>
-
-            {!product.auction && product.user.id !== user?.id && (
-              <div className="purchase-container">
-                <label className="product-price">
-                  Cena:
-                  <span className="product-price-span">
-                    {product.price} RSD
-                  </span>
-                </label>
-                {user !== null && (
-                  <button
-                    disabled={addedToCart}
-                    className="product-buy-button"
-                    onClick={handleAddToCart}
-                  >
-                    Dodaj u korpu
-                  </button>
-                )}
-              </div>
-            )}
-            {product.auction && product.user.id !== user?.id && (
-              <div className="purchase-container">
-                <label className="product-price">
-                  Trenutna cena:
-                  <span className="product-price-span">
-                    {parseInt(product.price)} RSD
-                  </span>
-                </label>
-                {user !== null && (
-                  <div className="auction-input-price">
-                    <input
-                      className="price-input"
-                      placeholder="Cena"
-                      onChange={(e) => {
-                        setNewPrice(e.target.value);
-                      }}
+        {loading ? (
+          <h2>Loading...</h2>
+        ) : (
+          <>
+            <section className="section-product">
+              {selectedImage && (
+                <div className="product-picture">
+                  <div className="product-picture-wrapper">
+                    <img
+                      src={selectedImage.data}
+                      alt=""
+                      className="product-picture-img"
                     />
-                    <button
-                      className="product-buy-button-auction"
-                      onClick={handleAuction}
-                    >
-                      Licitiraj
-                    </button>
+                  </div>
+                  <ImageSlider
+                    images={product.picture}
+                    handleSelectedImage={handleSelectedImage}
+                  ></ImageSlider>
+                </div>
+              )}
+              <div className=" product-buy">
+                <h3 className="product-name">{product.name}</h3>
+
+                {!product.auction && product.user.id !== user?.id && (
+                  <div className="purchase-container">
+                    <label className="product-price">
+                      Cena:
+                      <span className="product-price-span">
+                        {product.price} RSD
+                      </span>
+                    </label>
+                    {user !== null && (
+                      <button
+                        disabled={addedToCart}
+                        className="product-buy-button"
+                        onClick={handleAddToCart}
+                      >
+                        Dodaj u korpu
+                      </button>
+                    )}
                   </div>
                 )}
-                <div className="auction-information">
+                {product.auction && product.user.id !== user?.id && (
+                  <div className="purchase-container">
+                    <label className="product-price">
+                      Trenutna cena:
+                      <span className="product-price-span">
+                        {parseInt(product.price)} RSD
+                      </span>
+                    </label>
+                    {user !== null && (
+                      <div className="auction-input-price">
+                        <input
+                          className="price-input"
+                          placeholder="Cena"
+                          onChange={(e) => {
+                            setNewPrice(e.target.value);
+                          }}
+                        />
+                        <button
+                          className="product-buy-button-auction"
+                          onClick={handleAuction}
+                        >
+                          Licitiraj
+                        </button>
+                      </div>
+                    )}
+                    <div className="auction-information">
+                      {user !== null && (
+                        <label className="minimum-price">{`${
+                          auction.minimumPrice + parseInt(product.price)
+                        } minimum`}</label>
+                      )}
+                      {auction.user !== null && (
+                        <Link
+                          to={`/profile/${auction.user.id}`}
+                          className="user-header-product"
+                        >
+                          <label className="user-auction-information">
+                            Korisnik: {auction.user.username}
+                          </label>
+                        </Link>
+                      )}
+                    </div>
+                    <label className="user-auction-information">
+                      Preostalo vreme: {auctionTime}
+                    </label>
+                  </div>
+                )}
+                <div className="like-div">
                   {user !== null && (
-                    <label className="minimum-price">{`${
-                      auction.minimumPrice + parseInt(product.price)
-                    } minimum`}</label>
-                  )}
-                  {auction.user !== null && (
-                    <Link
-                      to={`/profile/${auction.user.id}`}
-                      className="user-header-product"
+                    <button
+                      className="like-product"
+                      onClick={checkLike() ? handleDislike : handleLike}
                     >
-                      <label className="user-auction-information">
-                        Korisnik: {auction.user.username}
-                      </label>
-                    </Link>
+                      {`${checkLike() ? "Dislike" : "Like"}`}
+                    </button>
                   )}
+                  <div className="number-of-like-wish">
+                    <label className="number-of-like">
+                      {`${product.numberOfLike.length} ${
+                        product.numberOfLike.length === 1 ? "lajk" : "lajkovi"
+                      }`}
+                    </label>
+                    <label className="number-of-wish">
+                      {product.numberOfWish.length} osoba zeli
+                    </label>
+                  </div>
                 </div>
-                <label className="user-auction-information">
-                  Preostalo vreme: {auctionTime}
+                {user !== null && (
+                  <button
+                    className="product-wish-button"
+                    onClick={checkIfWishlist() ? handleUnwish : handleWish}
+                  >
+                    {`${checkIfWishlist() ? "Dodat" : "Dodaj"} u listi zelja`}
+                  </button>
+                )}
+                <div className="number-of-view-div">
+                  <label className="number-of-view">
+                    {calculateMark()} ocena
+                  </label>
+                  <label className="number-of-view">
+                    {product.numberOfViewers.length} pregleda
+                  </label>
+                </div>
+                <div className="number-of-view-div">
+                  <label className="number-of-view">{product.place.name}</label>
+                  <label className="number-of-view"> {product.phone}</label>
+                </div>
+                <label className="number-of-view">
+                  {handleTime(product.date)} {handleDate(product.date)}
                 </label>
               </div>
-            )}
-            <div className="like-div">
-              {user !== null && (
-                <button
-                  className="like-product"
-                  onClick={checkLike() ? handleDislike : handleLike}
-                >
-                  {`${checkLike() ? "Dislike" : "Like"}`}
-                </button>
-              )}
-              <div className="number-of-like-wish">
-                <label className="number-of-like">
-                  {`${product.numberOfLike.length} ${
-                    product.numberOfLike.length === 1 ? "lajk" : "lajkovi"
-                  }`}
+              <div className="user-information">
+                <div className="user-header">
+                  <h3>User information</h3>
+                  <Link
+                    to={`/profile/${product.user.id}`}
+                    className="user-header-product"
+                  >
+                    <img src={product.user.picture} alt="" />
+                  </Link>
+                </div>
+                <label className="user-information-label">
+                  Korisnicko ime:
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+
+                      justifyContent: "right",
+                    }}
+                    to={`/profile/${product.user.id}`}
+                  >
+                    <span>{product.user.username}</span>
+                  </Link>
                 </label>
-                <label className="number-of-wish">
-                  {product.numberOfWish.length} osoba zeli
+                <label className="user-information-label">
+                  Ime:
+                  <span className="product-information-span">
+                    {product.user.userInformation?.nameUser}
+                  </span>
                 </label>
+                <label className="user-information-label">
+                  Prezime:
+                  <span className="product-information-span">
+                    {product.user.userInformation?.surename}
+                  </span>
+                </label>
+                <label className="user-information-label">
+                  Mesto:
+                  <span className="product-information-span">
+                    {product.user.userInformation?.place.name}
+                  </span>
+                </label>
+                <label className="user-information-label">
+                  Broj telefona:
+                  <span className="product-information-span">
+                    {product.user.userInformation?.phone}
+                  </span>
+                </label>
+                <div className="user-information-label">
+                  <label className="user-information-label">
+                    Vreme kreiranja naloga:
+                  </label>
+                  <div className="user-information-data-time">
+                    <span>
+                      {handleTime(product.user.userInformation.date)}{" "}
+                    </span>
+                    <span>
+                      {handleDate(product.user.userInformation.date)}{" "}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-            {user !== null && (
-              <button
-                className="product-wish-button"
-                onClick={checkIfWishlist() ? handleUnwish : handleWish}
-              >
-                {`${checkIfWishlist() ? "Dodat" : "Dodaj"} u listi zelja`}
+            </section>
+            <section className="section-product-details">
+              <div className="product-info">
+                <h3>Detalji proizvoda</h3>
+                <div className="product-inform">
+                  {product.data.map((p, index) => {
+                    return (
+                      <article key={index}>
+                        <div className="product-information">
+                          <label>{p.productInformation.name} </label>
+                          <label>{p.data}</label>
+                        </div>
+                        <hr className="product-hr" />
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="product-details-text">
+                <h3>Opis proizvoda</h3>
+                <p>{product.details}</p>
+              </div>
+            </section>
+            {!isAddActive && user !== null && (
+              <button className="input-review" onClick={handleModal}>
+                Add review
               </button>
             )}
-            <div className="number-of-view-div">
-              <label className="number-of-view">{calculateMark()} ocena</label>
-              <label className="number-of-view">
-                {product.numberOfViewers.length} pregleda
-              </label>
-            </div>
-            <div className="number-of-view-div">
-              <label className="number-of-view">{product.place.name}</label>
-              <label className="number-of-view"> {product.phone}</label>
-            </div>
-            <label className="number-of-view">
-              {handleTime(product.date)} {handleDate(product.date)}
-            </label>
-          </div>
-          <div className="user-information">
-            <div className="user-header">
-              <h3>User information</h3>
-              <Link
-                to={`/profile/${product.user.id}`}
-                className="user-header-product"
-              >
-                <img src={product.user.picture} alt="" />
-              </Link>
-            </div>
-            <label className="user-information-label">
-              Korisnicko ime:
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: "black",
-
-                  justifyContent: "right",
-                }}
-                to={`/profile/${product.user.id}`}
-              >
-                <span>{product.user.username}</span>
-              </Link>
-            </label>
-            <label className="user-information-label">
-              Ime:
-              <span className="product-information-span">
-                {product.user.userInformation?.nameUser}
-              </span>
-            </label>
-            <label className="user-information-label">
-              Prezime:
-              <span className="product-information-span">
-                {product.user.userInformation?.surename}
-              </span>
-            </label>
-            <label className="user-information-label">
-              Mesto:
-              <span className="product-information-span">
-                {product.user.userInformation?.place.name}
-              </span>
-            </label>
-            <label className="user-information-label">
-              Broj telefona:
-              <span className="product-information-span">
-                {product.user.userInformation?.phone}
-              </span>
-            </label>
-            <div className="user-information-label">
-              <label className="user-information-label">
-                Vreme kreiranja naloga:
-              </label>
-              <div className="user-information-data-time">
-                <span>{handleTime(product.user.userInformation.date)} </span>
-                <span>{handleDate(product.user.userInformation.date)} </span>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="section-product-details">
-          <div className="product-info">
-            <h3>Detalji proizvoda</h3>
-            <div className="product-inform">
-              {product.data.map((p, index) => {
+            <hr className="line-comment"></hr>
+            <section className="review-section">
+              {currentPosts.map((p, index) => {
                 return (
-                  <article key={index}>
-                    <div className="product-information">
-                      <label>{p.productInformation.name} </label>
-                      <label>{p.data}</label>
+                  <article className="review-article" key={index}>
+                    <div className="review-header">
+                      <Link
+                        to={`/profile/${p.user.id}`}
+                        className="user-header-product"
+                      >
+                        <img
+                          className="img-user-review"
+                          src={p.user?.picture}
+                          alt=""
+                        />
+                      </Link>
+                      <div className="review-mark">
+                        <label className="mark-review">
+                          Korisnik: {p.user.username}
+                        </label>
+                        <label className="mark-review">
+                          Ocena:{" "}
+                          <span className="mark-review-span"> {p.mark}</span>
+                        </label>
+                      </div>
                     </div>
-                    <hr className="product-hr" />
+                    <div className="review-body-comment">
+                      <h3>Komentar</h3>
+                      <p className="comment-review">{p.coment}</p>
+                    </div>
                   </article>
                 );
               })}
-            </div>
-          </div>
-          <div className="product-details-text">
-            <h3>Opis proizvoda</h3>
-            <p>{product.details}</p>
-          </div>
-        </section>
-        {!isAddActive && user !== null && (
-          <button className="input-review" onClick={handleModal}>
-            Add review
-          </button>
-        )}
-        <hr className="line-comment"></hr>
-        <section className="review-section">
-          {product.reviews.map((p, index) => {
-            return (
-              <article className="review-article" key={index}>
-                <div className="review-header">
-                  <Link
-                    to={`/profile/${p.user.id}`}
-                    className="user-header-product"
-                  >
-                    <img
-                      className="img-user-review"
-                      src={p.user?.picture}
-                      alt=""
-                    />
-                  </Link>
-                  <div className="review-mark">
-                    <label className="mark-review">
-                      Korisnik: {p.user.username}
-                    </label>
-                    <label className="mark-review">
-                      Ocena: <span className="mark-review-span"> {p.mark}</span>
-                    </label>
-                  </div>
-                </div>
-                <div className="review-body-comment">
-                  <h3>Komentar</h3>
-                  <p className="comment-review">{p.coment}</p>
-                </div>
-              </article>
-            );
-          })}
-        </section>
-        {isAddActive && (
-          <div className="section-modal-wrapper">
-            <section className="section-modal">
-              <button
-                className="exit-modal"
-                onClick={() => setIsAddActive(false)}
-              >
-                X
-              </button>
-              <h3>Dodaj recenziju</h3>
-              <div className="modal-content">
-                <input
-                  type="number"
-                  className="modal-input"
-                  placeholder="Ocena.."
-                  onChange={(e) => {
-                    setAddReview({ ...addReview, mark: e.target.value });
-                  }}
-                />
-                <textarea
-                  className="modal-textarea"
-                  placeholder="Komentar..."
-                  onChange={(e) => {
-                    setAddReview({ ...addReview, coment: e.target.value });
-                  }}
-                />
-              </div>
-              <button className="add-review-btn" onClick={handleAddReview}>
-                Dodaj recenziju
-              </button>
+              <Pagination
+                postsPerPage={postsPerPage}
+                totalPosts={product?.reviews.length}
+                paginate={paginate}
+              />
             </section>
-          </div>
+            {isAddActive && (
+              <div className="section-modal-wrapper">
+                <section className="section-modal">
+                  <button
+                    className="exit-modal"
+                    onClick={() => setIsAddActive(false)}
+                  >
+                    X
+                  </button>
+                  <h3>Dodaj recenziju</h3>
+                  <div className="modal-content">
+                    <input
+                      type="number"
+                      className="modal-input"
+                      placeholder="Ocena.."
+                      onChange={(e) => {
+                        setAddReview({ ...addReview, mark: e.target.value });
+                      }}
+                    />
+                    <textarea
+                      className="modal-textarea"
+                      placeholder="Komentar..."
+                      onChange={(e) => {
+                        setAddReview({ ...addReview, coment: e.target.value });
+                      }}
+                    />
+                  </div>
+                  <button className="add-review-btn" onClick={handleAddReview}>
+                    Dodaj recenziju
+                  </button>
+                </section>
+              </div>
+            )}
+          </>
         )}
       </>
     );

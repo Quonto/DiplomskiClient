@@ -12,6 +12,11 @@
     z-index: 11;
 }
 
+.modal-return-review > h2
+{
+    color:  white;
+}
+
 .modal-wrapper-review{
     position: relative;
     background-color:white;
