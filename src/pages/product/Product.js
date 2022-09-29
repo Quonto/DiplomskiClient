@@ -50,7 +50,6 @@ const Product = () => {
     indexOfFirstPost,
     indexOfLastPost
   );
-  console.log(currentPosts);
 
   const handleSelectedImage = (image) => {
     setSelectedImage({

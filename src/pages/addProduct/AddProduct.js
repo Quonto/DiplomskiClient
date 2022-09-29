@@ -147,6 +147,7 @@ const AddProduct = () => {
       `https://localhost:7113/Product/InputProductBuy/${user.id}/${selectedGroup.id}`,
       newProduct
     );
+    console.log(response);
     if (product.auction) {
       currentTime.setDate(currentTime.getDate() + time);
       const newAuction = {
@@ -154,10 +155,11 @@ const AddProduct = () => {
         minimumPrice: parseInt((product.price / 100) * 5),
       };
       console.log(newAuction);
-      await axios.post(
+      const responseAuction = await axios.post(
         `https://localhost:7113/Auction/InputAuction/${response.data}`,
         newAuction
       );
+      console.log(responseAuction);
     }
 
     response &&

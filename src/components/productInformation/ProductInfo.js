@@ -21,7 +21,7 @@ const ProductInfo = ({
       <section className="add-product-information">
         <div className="left-container">
           <label className="add-product-label" htmlFor="name">
-            Ime:
+            Naziv:
           </label>
           <input
             name="name"
@@ -147,7 +147,7 @@ const ProductInfo = ({
               return (
                 <article key={index}>
                   <label htmlFor="name" className="pi-label">
-                    {pi.name}
+                    {pi.name + " "}
                   </label>
                   <input
                     className="pi-input"

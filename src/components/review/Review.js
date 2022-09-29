@@ -72,7 +72,7 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
 
   return (
     <section className="modal-return-review">
-      {loading ? (
+      {loading && reviews.length !== 0 ? (
         <h2>Loading...</h2>
       ) : (
         <div className="modal-wrapper-review">
