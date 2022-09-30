@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useRef, useState } from "react";
+import SnackBar from "../snackbar/Snackbar";
 
 const ChangeProductInformation = ({
   groups,
@@ -13,6 +14,10 @@ const ChangeProductInformation = ({
   const [saveProductInformation, setSaveProductInformation] = useState(false);
   const [productInformationName, setProductInformationName] = useState("");
   const [indexProductInformation, setIndexProductInformation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
   const [singleProductInformation, setSingleProductInformation] = useState({
     name: "",
     data: "",
@@ -31,14 +36,28 @@ const ChangeProductInformation = ({
   };
 
   const handleSaveProductInformation = async (pi, index) => {
+    const returnProductInfo = {
+      name: pi.name,
+    };
     pi.name = productInformationName;
-    await axios.put(
-      "https://localhost:7113/ProductInformation/UpdateProductInformation",
-      pi
-    );
+    try {
+      await axios.put(
+        "https://localhost:7113/ProductInformation/UpdateProductInformation",
+        pi
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      pi.name = returnProductInfo.name;
+      return;
+    }
 
     setIndexProductInformation(index);
     setSaveProductInformation(false);
+    setMessage("Uspešno ste izmenili naziv mesta");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const changeGroup = (e) => {
@@ -58,17 +77,29 @@ const ChangeProductInformation = ({
   };
 
   const addProductInformation = async () => {
+    setLoading(true);
     let newPi = {
       name: singleProductInformation.name,
       data: "",
       delete: false,
     };
-    const response = await axios.post(
-      `https://localhost:7113/ProductInformation/InputProductInformation/${selectedGroup.id}`,
-      newPi
-    );
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/ProductInformation/InputProductInformation/${selectedGroup.id}`,
+        newPi
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      setLoading(false);
+      return;
+    }
+
     newPi = { ...newPi, id: response.data };
     setProductInformation([...productInformation, newPi]);
+
     setGroups((groups) =>
       groups.map((group) => {
         if (selectedGroup.id === group.id) {
@@ -80,6 +111,14 @@ const ChangeProductInformation = ({
       })
     );
     nameRef.current.value = "";
+    setLoading(false);
+    setMessage("Uspešno dodata informacija o proizvodu");
+    setSeverity("success");
+    setUpdated(true);
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   return (
@@ -108,42 +147,48 @@ const ChangeProductInformation = ({
       )}
       {selectedGroup && (
         <>
-          <div className="groups-review">
-            {productInformation?.length !== 0 &&
-              productInformation.map((pi, index) => {
-                return (
-                  <article key={index}>
-                    {saveProductInformation &&
-                    index === indexProductInformation ? (
-                      <input
-                        value={productInformationName}
-                        onChange={(e) => {
-                          setProductInformationName(e.target.value);
-                        }}
-                      ></input>
-                    ) : (
-                      <p>{pi.name}</p>
-                    )}
-                    <button
-                      onClick={() => {
-                        saveProductInformation &&
-                        index === indexProductInformation
-                          ? handleSaveProductInformation(pi, index)
-                          : handleChangeProductInformation(pi, index);
-                      }}
-                    >
+          {loading ? (
+            <h2>Loading...</h2>
+          ) : (
+            <div className="groups-review">
+              {productInformation?.length !== 0 &&
+                productInformation.map((pi, index) => {
+                  return (
+                    <article key={index}>
                       {saveProductInformation &&
-                      index === indexProductInformation
-                        ? "Sacuvaj"
-                        : "Izmeni"}
-                    </button>
-                    <button onClick={() => handleDeleteProductInformation(pi)}>
-                      Izbrisi
-                    </button>{" "}
-                  </article>
-                );
-              })}
-          </div>
+                      index === indexProductInformation ? (
+                        <input
+                          value={productInformationName}
+                          onChange={(e) => {
+                            setProductInformationName(e.target.value);
+                          }}
+                        ></input>
+                      ) : (
+                        <p>{pi.name}</p>
+                      )}
+                      <button
+                        onClick={() => {
+                          saveProductInformation &&
+                          index === indexProductInformation
+                            ? handleSaveProductInformation(pi, index)
+                            : handleChangeProductInformation(pi, index);
+                        }}
+                      >
+                        {saveProductInformation &&
+                        index === indexProductInformation
+                          ? "Sacuvaj"
+                          : "Izmeni"}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProductInformation(pi)}
+                      >
+                        Izbrisi
+                      </button>{" "}
+                    </article>
+                  );
+                })}
+            </div>
+          )}
           <div className="groups-pi-add">
             <label htmlFor="name" className="add-pi-label">
               Name
@@ -165,6 +210,12 @@ const ChangeProductInformation = ({
           </div>
         </>
       )}
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </section>
   );
 };

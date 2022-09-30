@@ -23,7 +23,7 @@ const AddProduct = () => {
   const [productInformation, setProductInformation] = useState([]);
   const [product, setProduct] = useState({
     name: "",
-    price: "",
+    price: 0,
     details: "",
     place: null,
     auction: false,

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ImageEditor from "../../pages/imageEditor/ImageEditor";
+import SnackBar from "../snackbar/Snackbar";
 import "./changeGroup.css";
 import axios from "axios";
 
@@ -10,6 +11,10 @@ const ChangeGroups = ({ categories }) => {
   const [indexGroup, setIndexGroup] = useState(null);
   const [groupName, setGroupName] = useState("");
   const [groups, setGroups] = useState([]);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
+
   const [selectedImageGroup, setSelectedImageGroup] = useState({
     id: 0,
     name: "",
@@ -64,15 +69,35 @@ const ChangeGroups = ({ categories }) => {
   };
 
   const handleUpdateGroup = async (group, index) => {
+    const returnGroup = {
+      groupPictureData: group.picture.data,
+      groupPictureName: group.picture.name,
+      groupName: group.name,
+    };
+
     group.picture.data = selectedImageGroup.data;
     group.picture.name = selectedImageGroup.name;
     group.name = groupName;
 
-    await axios.put("https://localhost:7113/Group/UpdateGroup", group);
+    try {
+      await axios.put("https://localhost:7113/Group/UpdateGroup", group);
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      group.picture.data = returnGroup.groupPictureData;
+      group.picture.name = returnGroup.groupPictureName;
+      group.name = returnGroup.groupName;
+      return;
+    }
+
     setSelectedImageGroup({ id: 0, name: "", data: null });
     setGroupName("");
     setIndexGroup(index);
     setSaveGroup(false);
+    setMessage("Uspešno ažurirana grupa");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const inputGroup = async () => {
@@ -80,12 +105,22 @@ const ChangeGroups = ({ categories }) => {
       name: groupName,
       picture: selectedImageGroup,
     };
-
-    const response = await axios.post(
-      `https://localhost:7113/Group/WriteGroup/${selectedCategory.id}`,
-      newGroup
-    );
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/Group/WriteGroup/${selectedCategory.id}`,
+        newGroup
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     setGroups([...groups, response.data]);
+    setMessage("Uspešno dodata grupa");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleUploadFile = (e) => {
@@ -93,6 +128,10 @@ const ChangeGroups = ({ categories }) => {
       setSelectedImageGroup({ ...selectedImageGroup, data, name: "" });
       inputRef.current.value = "";
     });
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   useEffect(() => {
@@ -197,6 +236,12 @@ const ChangeGroups = ({ categories }) => {
               handleEditImage={handleEditImage}
             />
           )}
+          <SnackBar
+            boolean={updated}
+            handleClose={handleCloseSnackbarUpdated}
+            severity={severity}
+            message={message}
+          />
         </section>
       )}
     </section>

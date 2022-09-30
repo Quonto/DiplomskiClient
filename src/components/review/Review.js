@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "../pagination/Pagination";
+import SnackBar from "../snackbar/Snackbar";
 import "./review.css";
 
 const Review = ({ setIsReviewActive, isProduct, id }) => {
@@ -15,6 +16,9 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = reviews.slice(indexOfFirstPost, indexOfLastPost);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleUpdateReview = (p) => {
     setUpdateReview(p);
@@ -36,9 +40,20 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
     setIsUpdate(false);
   };
 
-  const handleUpdate = () => {
-    axios.put("https://localhost:7113/User/UpdateReview ", updateReview);
-
+  const handleUpdate = async () => {
+    let response;
+    try {
+      response = await axios.put(
+        "https://localhost:7113/User/UpdateReview ",
+        updateReview
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      setIsUpdate(false);
+      return;
+    }
     setReviews(
       reviews.map((review) => {
         if (review.id === updateReview.id) {
@@ -47,7 +62,9 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
         return review;
       })
     );
-
+    setMessage("Uspešna izmena");
+    setSeverity("success");
+    setUpdated(true);
     setIsUpdate(false);
   };
 
@@ -55,20 +72,31 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
     const fetchReviews = async () => {
       let response;
       setLoading(true);
-      if (isProduct) {
-        response = await axios.get(
-          `https://localhost:7113/User/FetchProductReviews/${id}`
-        );
-      } else {
-        response = await axios.get(
-          `https://localhost:7113/User/FetchReviews/${id}`
-        );
+      try {
+        if (isProduct) {
+          response = await axios.get(
+            `https://localhost:7113/User/FetchProductReviews/${id}`
+          );
+        } else {
+          response = await axios.get(
+            `https://localhost:7113/User/FetchReviews/${id}`
+          );
+        }
+      } catch (error) {
+        setMessage(error.response.data);
+        setSeverity("info");
+        setUpdated(true);
+        return;
       }
       setReviews(response.data);
       setLoading(false);
     };
     fetchReviews();
   }, []);
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
+  };
 
   return (
     <section className="modal-return-review">
@@ -171,6 +199,13 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
               paginate={paginate}
             />
           </section>
+          <SnackBar
+            boolean={updated}
+            handleClose={handleCloseSnackbarUpdated}
+            severity={severity}
+            message={message}
+          />
+          ;
         </div>
       )}
     </section>

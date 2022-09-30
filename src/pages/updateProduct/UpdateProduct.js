@@ -3,7 +3,9 @@ import axios from "axios";
 import ImageEditor from "../imageEditor/ImageEditor";
 import "../addProduct/addProduct.css";
 import ImageSlider from "../../components/imageSlider/ImageSlider";
+
 import "./updateproduct.css";
+import SnackBar from "../../components/snackbar/Snackbar";
 
 const UpdateProduct = ({
   setIsChangeActive,
@@ -11,9 +13,13 @@ const UpdateProduct = ({
   setSelectedPr,
   setUserProducts,
   userProducts,
+  handleUpdated,
 }) => {
   const [places, setPlaces] = useState(null);
   const [place, setPlace] = useState(selectedPr.place);
+  const [update, setUpdate] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
   const [images, setImages] = useState(() => {
     return selectedPr.picture.map((img, index) => {
       return {
@@ -127,7 +133,7 @@ const UpdateProduct = ({
     const changedProduct = {
       id: selectedPr.id,
       name: selectedPr.name,
-      price: selectedPr.price,
+      price: selectedPr.price === "" ? 0 : parseInt(selectedPr.price),
       phone: selectedPr.phone,
       picture: images,
       place: place,
@@ -136,10 +142,20 @@ const UpdateProduct = ({
       data: productInformation,
       auction: selectedPr.auction,
     };
-    const response = await axios.put(
-      `https://localhost:7113/Product/UpdateProduct`,
-      changedProduct
-    );
+    let response;
+
+    try {
+      response = await axios.put(
+        `https://localhost:7113/Product/UpdateProduct`,
+        changedProduct
+      );
+    } catch (error) {
+      console.log(error.response.data);
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdate(true);
+      return;
+    }
     setUserProducts(() => {
       return userProducts.map((product) => {
         if (product.id === changedProduct.id) {
@@ -150,6 +166,7 @@ const UpdateProduct = ({
       });
     });
     setIsChangeActive(false);
+    handleUpdated();
   };
 
   useEffect(() => {
@@ -161,6 +178,10 @@ const UpdateProduct = ({
     };
     fetchPlaces();
   }, []);
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdate(false);
+  };
 
   return (
     <section className="modal-update">
@@ -209,14 +230,11 @@ const UpdateProduct = ({
               <select
                 className="add-product-select"
                 onChange={handleChangePlaces}
+                defaultValue={selectedPr.place.name}
               >
                 {places.map((p, i) => {
                   return (
-                    <option
-                      selected={selectedPr.place.name === p.name}
-                      key={i}
-                      value={i}
-                    >
+                    <option key={i} value={i}>
                       {p.name}
                     </option>
                   );
@@ -316,6 +334,12 @@ const UpdateProduct = ({
           handleEditImage={handleEditImage}
         />
       )}
+      <SnackBar
+        boolean={update}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </section>
   );
 };

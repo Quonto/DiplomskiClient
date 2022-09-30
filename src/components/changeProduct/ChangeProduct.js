@@ -6,6 +6,7 @@ import UpdateProduct from "../../pages/updateProduct/UpdateProduct";
 
 import axios from "axios";
 import Pagination from "../pagination/Pagination";
+import SnackBar from "../snackbar/Snackbar";
 
 const ChangeProduct = ({ categories }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -21,6 +22,9 @@ const ChangeProduct = ({ categories }) => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = products.slice(indexOfFirstPost, indexOfLastPost);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const inputRef = useRef();
 
@@ -70,6 +74,12 @@ const ChangeProduct = ({ categories }) => {
     fetchProducts();
   };
 
+  const handleUpdated = () => {
+    setMessage("Uspešno ste izmenili proizvod");
+    setSeverity("success");
+    setUpdated(true);
+  };
+
   useEffect(() => {
     if (selectedGroup) {
       fetchProducts();
@@ -84,6 +94,10 @@ const ChangeProduct = ({ categories }) => {
   const handleEditProduct = (p) => {
     setSelectedProduct(p);
     setIsChangeActive(true);
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   return (
@@ -193,6 +207,7 @@ const ChangeProduct = ({ categories }) => {
           setSelectedPr={setSelectedProduct}
           setUserProducts={setProducts}
           userProducts={products}
+          handleUpdated={handleUpdated}
         ></UpdateProduct>
       )}
       {isReviewActive && (
@@ -202,6 +217,12 @@ const ChangeProduct = ({ categories }) => {
           id={selectedProduct.id}
         />
       )}
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </>
   );
 };

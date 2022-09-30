@@ -1,12 +1,16 @@
 import ImageEditor from "../../pages/imageEditor/ImageEditor";
 import { useRef, useState } from "react";
 import axios from "axios";
+import SnackBar from "../snackbar/Snackbar";
 
 const ChangeCategory = ({ categories, setCategories }) => {
   const [isImageEditorActive, setIsImageEditorActive] = useState(false);
   const [saveCategory, setSaveCategory] = useState(false);
   const [indexCategory, setIndexCategory] = useState(null);
   const [categoryName, setCategoryName] = useState("");
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState({
     id: 0,
     name: "",
@@ -28,14 +32,38 @@ const ChangeCategory = ({ categories, setCategories }) => {
   };
 
   const handleUpdateCategory = async (category, index) => {
+    const returnCategory = {
+      categoryPictureData: category.picture.data,
+      categoryPictureName: category.picture.name,
+      categoryName: category.name,
+    };
+
     category.picture.data = selectedImage.data;
     category.picture.name = selectedImage.name;
     category.name = categoryName;
-    await axios.put("https://localhost:7113/Category/UpdateCategory", category);
+    try {
+      console.log(category.name);
+      await axios.put(
+        "https://localhost:7113/Category/UpdateCategory",
+        category
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      category.picture.data = returnCategory.categoryPictureData;
+      category.picture.name = returnCategory.categoryPictureName;
+      category.name = returnCategory.categoryName;
+      return;
+    }
     setSelectedImage({ id: 0, name: "", data: null });
     setCategoryName("");
     setIndexCategory(index);
     setSaveCategory(false);
+
+    setMessage("Uspešno ažurirana kategorija");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const inputCategory = async () => {
@@ -43,12 +71,22 @@ const ChangeCategory = ({ categories, setCategories }) => {
       name: categoryName,
       picture: selectedImage,
     };
-
-    const response = await axios.post(
-      "https://localhost:7113/Category/InputCategory",
-      newCategory
-    );
+    let response;
+    try {
+      response = await axios.post(
+        "https://localhost:7113/Category/InputCategory",
+        newCategory
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     setCategories([...categories, response.data]);
+    setMessage("Uspešno dodata kategorija");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleDeleteCategory = async (ca) => {
@@ -60,6 +98,10 @@ const ChangeCategory = ({ categories, setCategories }) => {
     setCategories(newProductInformation);
     setSelectedImage({ id: 0, name: "", data: null });
     setCategoryName("");
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   const handleEditImage = async (image) => {
@@ -178,6 +220,12 @@ const ChangeCategory = ({ categories, setCategories }) => {
           handleEditImage={handleEditImage}
         />
       )}
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </section>
   );
 };

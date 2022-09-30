@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ImageEditor from "../../pages/imageEditor/ImageEditor";
 import Review from "../review/Review";
+import SnackBar from "../snackbar/Snackbar";
 import "./changeUser.css";
 
 const ChangeUser = () => {
@@ -12,6 +13,9 @@ const ChangeUser = () => {
   const [updateUser, setUpdateUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [isReviewActive, setIsReviewActive] = useState(false);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSetUser = (u) => {
     setSelectedUser(u);
@@ -35,6 +39,9 @@ const ChangeUser = () => {
       else return user;
     });
     setUsers(newUsers);
+    setMessage("Uspešno izmenjena slika");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleChangeInformation = () => {
@@ -52,10 +59,17 @@ const ChangeUser = () => {
   };
 
   const handleUpdateInfo = async () => {
-    await axios.put(
-      "https://localhost:7113/User/UpdateUserProductInformation",
-      updateUser
-    );
+    try {
+      await axios.put(
+        "https://localhost:7113/User/UpdateUserProductInformation",
+        updateUser
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     setSelectedUser({ ...selectedUser, userInformation: updateUser });
     setSelectedInfo(false);
     const newUsers = users.map((user) => {
@@ -65,6 +79,9 @@ const ChangeUser = () => {
     });
     setUpdateUser(null);
     setUsers(newUsers);
+    setMessage("Uspešno izmenjene informacije korisnika");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleDelete = async (id) => {
@@ -76,22 +93,38 @@ const ChangeUser = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await axios.get(
-        "https://localhost:7113/User/FetchAllUsers"
-      );
-
+      let response;
+      try {
+        response = await axios.get("https://localhost:7113/User/FetchAllUsers");
+      } catch (error) {
+        setMessage(error.response.data);
+        setSeverity("info");
+        setUpdated(true);
+        return;
+      }
       setUsers(response.data);
     };
 
     const fetchPlaces = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/Place/FetchPlace`
-      );
+      let response;
+      try {
+        response = await axios.get(`https://localhost:7113/Place/FetchPlace`);
+      } catch (error) {
+        setMessage(error.response.data);
+        setSeverity("info");
+        setUpdated(true);
+        return;
+      }
+
       setPlaces([{ name: "" }, ...response.data]);
     };
     fetchPlaces();
     fetchUsers();
   }, []);
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
+  };
 
   return (
     <>
@@ -300,6 +333,12 @@ const ChangeUser = () => {
           id={selectedUser.id}
         />
       )}
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </>
   );
 };
