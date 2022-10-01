@@ -219,6 +219,7 @@ const UpdateProduct = ({
                 </label>
                 <input
                   name="price"
+                  type="number"
                   className="add-product-input"
                   placeholder="Cena"
                   defaultValue={selectedPr.price}

@@ -34,6 +34,7 @@ const ProductInfo = ({
           </label>
           <input
             name="price"
+            type="number"
             className="add-product-input"
             placeholder="Cena"
             onChange={(e) => setProduct({ ...product, price: e.target.value })}

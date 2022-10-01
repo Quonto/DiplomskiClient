@@ -36,6 +36,11 @@
     margin: 50px 0;
 }
 
+.search-settings
+{
+    margin: 0px 10px;
+}
+
 .subscribe-line > hr{
     width: 100%;
     color: #b1a7a7
