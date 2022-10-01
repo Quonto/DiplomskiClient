@@ -1,30 +1,64 @@
 import "../user-products/userproducts.css";
+import { useState } from "react";
 import "./cart.css";
 import { useGlobalContext } from "../../context/Context";
 import axios from "axios";
+import SnackBar from "../../components/snackbar/Snackbar";
 
 const Cart = () => {
   const { cart, setCart, user } = useGlobalContext();
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleRemove = async (id_product) => {
-    await axios.put(`https://localhost:7113/Product/InputPurchase/${id_product}`, {
-      addToCart: false,
-    });
+    try {
+      await axios.put(
+        `https://localhost:7113/Product/InputPurchase/${id_product}`,
+        {
+          addToCart: false,
+        }
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     let newCart = cart.filter((cartItem) => cartItem.id !== id_product);
     setCart(newCart);
+    setMessage("Proizvod je izbačen iz korpe");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleBuyProducts = async () => {
-    await axios.put(`https://localhost:7113/Product/InputBuy/${user.id}`, cart);
-    setCart([]);
+    try {
+      await axios.put(
+        `https://localhost:7113/Product/InputBuy/${user.id}`,
+        cart
+      );
+      setCart([]);
+    } catch (error) {
+      setMessage(error.data.value);
+      setSeverity("success");
+      setUpdated(true);
+    }
+    setMessage("Uspešno kupljen proizvod");
+    setSeverity("success");
+    setUpdated(true);
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   return (
     <div className="cart">
       {cart ? (
-        cart.map((cartItem) => {
+        cart.map((cartItem, index) => {
           return (
-            <article className="cart-article">
+            <article className="cart-article" key={index}>
               <div className="product-image">
                 <img
                   src={
@@ -68,6 +102,12 @@ const Cart = () => {
       >
         Kupovina
       </button>
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </div>
   );
 };

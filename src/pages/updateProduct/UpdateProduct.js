@@ -171,9 +171,15 @@ const UpdateProduct = ({
 
   useEffect(() => {
     const fetchPlaces = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/Place/FetchPlace`
-      );
+      let response;
+      try {
+        response = await axios.get(`https://localhost:7113/Place/FetchPlace`);
+      } catch (error) {
+        setMessage(error.response.data);
+        setSeverity("error");
+        setUpdate(true);
+        return;
+      }
       setPlaces([{ name: "" }, ...response.data]);
     };
     fetchPlaces();

@@ -29,10 +29,18 @@ const ChangeUser = () => {
   };
 
   const handleEditImage = async (image) => {
-    await axios.put(`https://localhost:7113/User/UpdateUserPicture`, {
-      id: selectedUser.id,
-      picture: image,
-    });
+    try {
+      await axios.put(`https://localhost:7113/User/UpdateUserPicture`, {
+        id: selectedUser.id,
+        picture: image,
+      });
+    } catch (error) {
+      console.log(error);
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     setSelectedUser({ ...selectedUser, picture: image });
     const newUsers = users.map((user) => {
       if (user.id === selectedUser.id) return { ...user, picture: image };

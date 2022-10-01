@@ -29,10 +29,19 @@
     margin: 0px 5px;
     list-style: none;
 }
+.current
+{
+    background-color: #1ad1d1;
+    color: white;
+    border: none;
+}
 
 .page-link
 {
     display: flex;
     justify-content: center;
     font-size:larger;
+    width: 100%;
+    border: none;
+    background-color: transparent;
 }

@@ -21,6 +21,7 @@ const AdminPanel = () => {
   const [groups, setGroups] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [value, setValue] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleChangeCategory = (index) => {
     setValue(index);
@@ -28,62 +29,76 @@ const AdminPanel = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(
-        "https://localhost:7113/Category/FetchCategoriesAndGroups"
-      );
+      setLoading(true);
+      let response;
+      try {
+        response = await axios.get(
+          "https://localhost:7113/Category/FetchCategoriesAndGroups"
+        );
+      } catch (error) {
+        return;
+      }
       response && setCategories([{ name: "" }, ...response.data]);
+      setLoading(false);
     };
     fetchCategories();
-    console.log("Pribavljene kategorije");
   }, []);
 
   useEffect(() => {
     if (selectedCategory) setGroups([{ name: "" }, ...selectedCategory.groups]);
-    console.log("Setovane grupe");
   }, [selectedCategory]);
 
   return (
     <div className="admin-panel-component">
-      <div className="ap-categories">
-        {names.map((name, index) => {
-          return (
-            <button
-              className={`ap-category-button ${index === value && "active"} `}
-              key={index}
-              onClick={() => handleChangeCategory(index)}
-            >
-              {name}
-            </button>
-          );
-        })}
-      </div>
-      <section className="admin-panel">
-        {value === 0 && (
-          <>
-            <ChangeProductInformation
-              groups={groups}
-              setSelectedCategory={setSelectedCategory}
-              categories={categories}
-              setGroups={setGroups}
-              selectedCategory={selectedCategory}
-            />
-            <ChangePlace />
-          </>
-        )}
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <>
+          {" "}
+          <div className="ap-categories">
+            {names.map((name, index) => {
+              return (
+                <button
+                  className={`ap-category-button ${
+                    index === value && "active"
+                  } `}
+                  key={index}
+                  onClick={() => handleChangeCategory(index)}
+                >
+                  {name}
+                </button>
+              );
+            })}
+          </div>
+          <section className="admin-panel">
+            {value === 0 && (
+              <>
+                <ChangeProductInformation
+                  groups={groups}
+                  setSelectedCategory={setSelectedCategory}
+                  categories={categories}
+                  setGroups={setGroups}
+                  selectedCategory={selectedCategory}
+                />
+                <ChangePlace />
+              </>
+            )}
 
-        {categories.length !== 0 && value === 1 && (
-          <ChangeCategory
-            categories={categories}
-            setCategories={setCategories}
-          />
-        )}
-        {value === 2 && <ChangeGroups categories={categories} />}
+            {categories.length !== 0 && value === 1 && (
+              <ChangeCategory
+                categories={categories}
+                setCategories={setCategories}
+              />
+            )}
+            {value === 2 && <ChangeGroups categories={categories} />}
 
-        {value === 3 && (
-          <ChangeProduct categories={categories} groups={groups} />
-        )}
-        {value === 4 && <ChangeUser />}
-      </section>
+            {value === 3 && (
+              <ChangeProduct categories={categories} groups={groups} />
+            )}
+            {value === 4 && <ChangeUser />}
+          </section>{" "}
+        </>
+      )}
     </div>
   );
 };

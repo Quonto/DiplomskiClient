@@ -6,6 +6,7 @@ import ImageEditor from "../imageEditor/ImageEditor";
 import UpdateProduct from "../updateProduct/UpdateProduct";
 import { useGlobalContext } from "../../context/Context";
 import Pagination from "../../components/pagination/Pagination";
+import SnackBar from "../../components/snackbar/Snackbar";
 
 const Profile = () => {
   const { id_user } = useParams();
@@ -34,6 +35,9 @@ const Profile = () => {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = userProducts.slice(indexOfFirstPost, indexOfLastPost);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const { user, setUser } = useGlobalContext();
 
@@ -45,39 +49,61 @@ const Profile = () => {
   };
 
   const handleSavePassword = async () => {
+    if (password.new === "") {
+      setMessage("Niste uneli šifru");
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
+
+    const newUser = {
+      id: updateUser.id,
+      password: password.current,
+    };
     try {
-      if (password.new === "") {
-        console.log("Niste uneli sifru");
-        return;
-      }
-
-      const newUser = {
-        id: updateUser.id,
-        password: password.current,
-      };
       await axios.post(`https://localhost:7113/User/CheckPassword`, newUser);
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
 
-      if (password.new !== password.confirm) {
-        console.log("Sifre nisu jednake");
-        return;
-      }
+    if (password.new !== password.confirm) {
+      setMessage("Šifre nisu jednake");
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
 
-      if (password.current === password.new) {
-        console.log("Uneli ste istu sifru kao trenutnu");
-        return;
-      }
+    if (password.current === password.new) {
+      setMessage("Uuneli ste istu šifru kao trenutnu");
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
 
+    try {
       await axios.put("https://localhost:7113/User/UpdatePassword", {
         ...newUser,
         password: password.new,
       });
-      setUser({ ...user, password: password.new });
-      setIsChangePassword(false);
-      setPassword({ current: "", new: "", confirm: "" });
-      console.log("Sifra je izmenjena");
     } catch (e) {
-      console.log("Trenutna sifra nije validna");
+      setMessage("Trenutna šifra nije validna");
+      setSeverity("error");
+      setUpdated(true);
     }
+    setUser({ ...user, password: password.new });
+    setIsChangePassword(false);
+    setPassword({ current: "", new: "", confirm: "" });
+
+    setMessage("Uspešno ste izmenili šifru");
+    setSeverity("success");
+    setUpdated(true);
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   const handleTime = (time) => {
@@ -87,37 +113,6 @@ const Profile = () => {
     return da[0] + ":" + da[1];
   };
 
-  useEffect(() => {
-    if (isChangeEmail) {
-      setMail(updateUser.email);
-    }
-  }, [isChangeEmail]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/User/FetchUser/${id_user}`
-      );
-      setUserProfile(response.data);
-      setUpdateUser(response.data.userInformation);
-    };
-    fetchProfile();
-  }, [id_user]);
-
-  useEffect(() => {
-    const fetchUserProducts = async () => {
-      setLoading(true);
-      const response = await axios.get(
-        `https://localhost:7113/Product/GetUserProducts/${id_user}`
-      );
-      setUserProducts(response.data);
-      setLoading(false);
-    };
-    if (userProfile) {
-      fetchUserProducts();
-    }
-  }, [userProfile, id_user]);
-
   const handleOpenUpdate = (p) => {
     setSelectedProduct(p);
     setIsChangeActive(true);
@@ -125,11 +120,21 @@ const Profile = () => {
 
   const handleEditImage = async (image) => {
     setUserProfile({ ...userProfile, picture: image });
-    await axios.put(`https://localhost:7113/User/UpdateUserPicture`, {
-      id: userProfile.id,
-      picture: image,
-    });
+    try {
+      await axios.put(`https://localhost:7113/User/UpdateUserPicture`, {
+        id: userProfile.id,
+        picture: image,
+      });
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     setUser({ ...user, picture: image });
+    setMessage("Uspešno ste izmenili sliku profila");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleDelete = async (id) => {
@@ -158,19 +163,25 @@ const Profile = () => {
       console.log("Mejl je isti");
       return;
     }
+    const newUser = {
+      id: userProfile.id,
+      email: mail,
+    };
     try {
-      const newUser = {
-        id: userProfile.id,
-        email: mail,
-      };
       await axios.put("https://localhost:7113/User/UpdateUserMail", newUser);
       setUser({ ...user, email: mail });
       setUserProfile({ ...userProfile, email: mail });
     } catch (error) {
-      console.log("Uneti mejl vec postoji");
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
     }
     setIsChangeEmail(false);
     setMail("");
+    setMessage("Uspešno ste izmenili mail");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleCancelMail = () => {
@@ -180,18 +191,22 @@ const Profile = () => {
 
   const handleEditUsername = async () => {
     if (username === "") {
-      console.log("Username je prazan");
+      setMessage("Korisničko ime je prazno");
+      setSeverity("error");
+      setUpdated(true);
       return;
     }
     if (username === userProfile.username) {
-      console.log("Username je isti");
+      setMessage("Korisničko ime je isto");
+      setSeverity("error");
+      setUpdated(true);
       return;
     }
+    const newUser = {
+      id: userProfile.id,
+      username,
+    };
     try {
-      const newUser = {
-        id: userProfile.id,
-        username,
-      };
       await axios.put(
         "https://localhost:7113/User/UpdateUserUsername",
         newUser
@@ -199,10 +214,16 @@ const Profile = () => {
       setUser({ ...user, username });
       setUserProfile({ ...userProfile, username });
     } catch (error) {
-      console.log("Uneti username vec postoji");
+      setMessage("Korisničko ime već postoji");
+      setSeverity("error");
+      setUpdated(true);
+      return;
     }
     setIsChangeUsername(false);
     setUsername("");
+    setMessage("Uspešno ste izmenili korisničko ime");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const handleCancelUsername = () => {
@@ -221,25 +242,82 @@ const Profile = () => {
   };
 
   const handleUpdateInfo = async () => {
-    const response = await axios.put(
-      "https://localhost:7113/User/UpdateUserProductInformation",
-      updateUser
-    );
+    let response;
+    try {
+      response = await axios.put(
+        "https://localhost:7113/User/UpdateUserProductInformation",
+        updateUser
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     if (response) {
       setUserProfile({ ...userProfile, userInformation: updateUser });
+      setMessage("Uspešno ste izmenili informacije o korisniku");
+      setSeverity("success");
+      setUpdated(true);
+      setSelectedPI(false);
     }
-    setSelectedPI(false);
   };
 
   useEffect(() => {
     const fetchPlaces = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/Place/FetchPlace`
-      );
+      let response;
+      try {
+        response = await axios.get(`https://localhost:7113/Place/FetchPlace`);
+      } catch (error) {
+        return;
+      }
       setPlaces([{ name: "" }, ...response.data]);
     };
     fetchPlaces();
   }, []);
+
+  useEffect(() => {
+    if (isChangeEmail) {
+      setMail(updateUser.email);
+    }
+  }, [isChangeEmail]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      let response;
+      try {
+        response = await axios.get(
+          `https://localhost:7113/User/FetchUser/${id_user}`
+        );
+      } catch (error) {
+        return;
+      }
+      setUserProfile(response.data);
+      setUpdateUser(response.data.userInformation);
+      setLoading(false);
+    };
+    fetchProfile();
+  }, [id_user]);
+
+  useEffect(() => {
+    const fetchUserProducts = async () => {
+      setLoading(true);
+      let response;
+      try {
+        response = await axios.get(
+          `https://localhost:7113/Product/GetUserProducts/${id_user}`
+        );
+      } catch (error) {
+        return;
+      }
+      setUserProducts(response.data);
+      setLoading(false);
+    };
+    if (userProfile) {
+      fetchUserProducts();
+    }
+  }, [userProfile, id_user]);
 
   if (userProfile) {
     return (
@@ -611,6 +689,7 @@ const Profile = () => {
               postsPerPage={postsPerPage}
               totalPosts={userProducts.length}
               paginate={paginate}
+              currentPage={currentPage}
             />
           )}
         </div>
@@ -623,6 +702,12 @@ const Profile = () => {
             userProducts={userProducts}
           ></UpdateProduct>
         )}
+        <SnackBar
+          boolean={updated}
+          handleClose={handleCloseSnackbarUpdated}
+          severity={severity}
+          message={message}
+        />
       </>
     );
   }

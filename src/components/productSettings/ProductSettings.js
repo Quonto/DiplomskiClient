@@ -9,6 +9,7 @@ const ProductSettings = ({
   setFilteredProducts,
   fetchProducts,
   loading,
+  setLoading,
   currentFilteredProducts,
 }) => {
   const sortMethods = [
@@ -33,10 +34,17 @@ const ProductSettings = ({
   };
 
   const handleProductName = async () => {
-    const response = await axios.get(
-      `https://localhost:7113/Product/FetchProductName/${group.id}/${inputRef.current.value}`
-    );
+    let response;
+    setLoading(true);
+    try {
+      response = await axios.get(
+        `https://localhost:7113/Product/FetchProductName/${group.id}/${inputRef.current.value}`
+      );
+    } catch (error) {
+      return;
+    }
     setFilteredProducts(response.data);
+    setLoading(false);
   };
 
   const handleSort = (sort) => {

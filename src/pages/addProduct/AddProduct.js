@@ -4,6 +4,7 @@ import { useGlobalContext } from "../../context/Context";
 import axios from "axios";
 import ImageEditor from "../imageEditor/ImageEditor";
 import ProductInfo from "../../components/productInformation/ProductInfo";
+import SnackBar from "../../components/snackbar/Snackbar";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -19,14 +20,19 @@ const AddProduct = () => {
   const [place, setPlace] = useState({
     name: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
   const [isImageEditorActive, setIsImageEditorActive] = useState(false);
   const [productInformation, setProductInformation] = useState([]);
   const [product, setProduct] = useState({
     name: "",
     price: 0,
     details: "",
-    place: null,
+    place: "",
     auction: false,
+    phone: "",
   });
   const [places, setPlaces] = useState(null);
 
@@ -132,7 +138,7 @@ const AddProduct = () => {
     currentTime.setHours(currentTime.getHours() + 2);
     const newProduct = {
       name: product.name,
-      price: product.price,
+      price: product.price === "" ? 0 : parseInt(product.price),
       phone: product.phone,
       picture: images,
       place: place,
@@ -141,25 +147,35 @@ const AddProduct = () => {
       data: productInformation,
       auction: product.auction,
     };
-    console.log(newProduct);
 
-    const response = await axios.post(
-      `https://localhost:7113/Product/InputProductBuy/${user.id}/${selectedGroup.id}`,
-      newProduct
-    );
-    console.log(response);
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/Product/InputProductBuy/${user.id}/${selectedGroup.id}`,
+        newProduct
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+    }
+
     if (product.auction) {
       currentTime.setDate(currentTime.getDate() + time);
       const newAuction = {
         time: currentTime,
         minimumPrice: parseInt((product.price / 100) * 5),
       };
-      console.log(newAuction);
-      const responseAuction = await axios.post(
-        `https://localhost:7113/Auction/InputAuction/${response.data}`,
-        newAuction
-      );
-      console.log(responseAuction);
+      try {
+        await axios.post(
+          `https://localhost:7113/Auction/InputAuction/${response.data}`,
+          newAuction
+        );
+      } catch (error) {
+        setMessage(error.response.data);
+        setSeverity("error");
+        setUpdated(true);
+      }
     }
 
     response &&
@@ -178,16 +194,32 @@ const AddProduct = () => {
     setSelectedGroup(groups[e.target.value]);
   };
 
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await axios.get(
-        "https://localhost:7113/Category/FetchCategories"
-      );
+      setLoading(true);
+      let response;
+      try {
+        response = await axios.get(
+          "https://localhost:7113/Category/FetchCategories"
+        );
+      } catch (error) {
+        return;
+      }
       setCategories([{ name: "" }, ...response.data]);
-      const response2 = await axios.get(
-        `https://localhost:7113/Place/FetchPlace`
-      );
-      setPlaces([{ name: "" }, ...response2.data]);
+      let responsePlace;
+      try {
+        responsePlace = await axios.get(
+          `https://localhost:7113/Place/FetchPlace`
+        );
+      } catch (error) {
+        return;
+      }
+      setPlaces([{ name: "" }, ...responsePlace.data]);
+      setLoading(false);
     };
     fetchCategories();
   }, []);
@@ -195,10 +227,17 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       if (selectedCategory) {
-        const response = await axios.get(
-          `https://localhost:7113/Group/FetchGroups/${selectedCategory?.id}`
-        );
+        setLoading(true);
+        let response;
+        try {
+          response = await axios.get(
+            `https://localhost:7113/Group/FetchGroups/${selectedCategory?.id}`
+          );
+        } catch (error) {
+          return;
+        }
         setGroups([{ name: "" }, ...response.data]);
+        setLoading(false);
       }
     };
     fetchGroups();
@@ -207,9 +246,15 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchPi = async () => {
       if (selectedGroup) {
-        const response = await axios.get(
-          `https://localhost:7113/ProductInformation/FetchProductInformation/${selectedGroup?.id}`
-        );
+        setLoading(true);
+        let response;
+        try {
+          response = await axios.get(
+            `https://localhost:7113/ProductInformation/FetchProductInformation/${selectedGroup?.id}`
+          );
+        } catch (error) {
+          return;
+        }
         setProductInformation(
           response.data.map((item) => {
             return {
@@ -219,6 +264,7 @@ const AddProduct = () => {
             };
           })
         );
+        setLoading(false);
       }
     };
     fetchPi();
@@ -227,33 +273,40 @@ const AddProduct = () => {
   return (
     <>
       <form className="add-product-form" onSubmit={handleSubmit}>
-        <div className="select-container">
-          {categories.length !== 0 && (
-            <select
-              onChange={handleChangeCategory}
-              className="add-product-select"
-            >
-              {categories.map((category, i) => {
-                return (
-                  <option key={i} value={i}>
-                    {category.name}
-                  </option>
-                );
-              })}
-            </select>
-          )}
-          {groups?.length !== 0 && (
-            <select className="add-product-select" onChange={handleChangeGroup}>
-              {groups.map((group, i) => {
-                return (
-                  <option key={i} value={i}>
-                    {group.name}
-                  </option>
-                );
-              })}
-            </select>
-          )}
-        </div>
+        {loading ? (
+          <h2>Loading...</h2>
+        ) : (
+          <div className="select-container">
+            {categories.length !== 0 && (
+              <select
+                onChange={handleChangeCategory}
+                className="add-product-select"
+              >
+                {categories.map((category, i) => {
+                  return (
+                    <option key={i} value={i}>
+                      {category.name}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+            {groups?.length !== 0 && (
+              <select
+                className="add-product-select"
+                onChange={handleChangeGroup}
+              >
+                {groups.map((group, i) => {
+                  return (
+                    <option key={i} value={i}>
+                      {group.name}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+          </div>
+        )}
         {selectedGroup && (
           <ProductInfo
             product={product}
@@ -291,6 +344,12 @@ const AddProduct = () => {
           handleEditImage={handleEditImage}
         />
       )}
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </>
   );
 };

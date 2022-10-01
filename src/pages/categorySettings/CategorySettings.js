@@ -28,9 +28,14 @@ const CategorySettings = () => {
 
   const fetchProducts = async () => {
     setLoading(true);
-    const response = await axios.get(
-      `https://localhost:7113/Product/FetchProducts/${id_group}`
-    );
+    let response;
+    try {
+      response = await axios.get(
+        `https://localhost:7113/Product/FetchProducts/${id_group}`
+      );
+    } catch (error) {
+      return;
+    }
     setFilteredProducts(response.data);
     setLoading(false);
 
@@ -39,11 +44,18 @@ const CategorySettings = () => {
 
   useEffect(() => {
     const fetchGroup = async () => {
-      const response = await axios.get(
-        `https://localhost:7113/Group/FetchGroup/${id_group}`
-      );
+      setLoading(true);
+      let response;
+      try {
+        response = await axios.get(
+          `https://localhost:7113/Group/FetchGroup/${id_group}`
+        );
+      } catch (error) {
+        return;
+      }
       setGroup(response.data);
       setProductInformation(response.data.productInformation);
+      setLoading(false);
     };
     fetchProducts();
     fetchGroup();
@@ -71,12 +83,14 @@ const CategorySettings = () => {
               setFilteredProducts={setFilteredProducts}
               fetchProducts={fetchProducts}
               loading={loading}
+              setLoading={setLoading}
             />
             {!loading && (
               <Pagination
                 postsPerPage={postsPerPage}
                 totalPosts={filteredProducts.length}
                 paginate={paginate}
+                currentPage={currentPage}
               />
             )}
           </div>

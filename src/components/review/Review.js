@@ -41,9 +41,8 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
   };
 
   const handleUpdate = async () => {
-    let response;
     try {
-      response = await axios.put(
+      await axios.put(
         "https://localhost:7113/User/UpdateReview ",
         updateReview
       );
@@ -197,6 +196,7 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
               postsPerPage={postsPerPage}
               totalPosts={reviews.length}
               paginate={paginate}
+              currentPage={currentPage}
             />
           </section>
           <SnackBar

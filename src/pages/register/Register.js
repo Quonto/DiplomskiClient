@@ -1,9 +1,14 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import SnackBar from "../../components/snackbar/Snackbar";
 import "./register.css";
 
 const Register = () => {
-  const [places, setPlaces] = useState({ name: "" });
+  const [places, setPlaces] = useState([]);
+  const [place, setPlace] = useState({});
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const [registeredUser, setRegisteredUser] = useState({
     username: "",
@@ -16,17 +21,21 @@ const Register = () => {
     nameUser: "",
     surename: "",
     phone: "",
-    place: "",
+    place: {},
     date: new Date(),
     data: "",
   });
 
   useEffect(() => {
     const fetchPlace = async () => {
-      const response = await axios.get(
-        "https://localhost:7113/Place/FetchPlace"
-      );
+      let response;
+      try {
+        response = await axios.get("https://localhost:7113/Place/FetchPlace");
+      } catch (error) {
+        return;
+      }
       setPlaces(response.data);
+      setPlace(response.data[0]);
     };
     fetchPlace();
   }, []);
@@ -37,7 +46,7 @@ const Register = () => {
 
     const newUseInf = {
       ...userInformation,
-      place: places,
+      place: place,
     };
 
     const newUser = {
@@ -49,10 +58,22 @@ const Register = () => {
       userInformation: newUseInf,
     };
 
-    const response = await axios.post(
-      "https://localhost:7113/User/InputUser",
-      newUser
-    );
+    let response;
+    try {
+      response = await axios.post(
+        "https://localhost:7113/User/InputUser",
+        newUser
+      );
+    } catch (error) {
+      console.log(error);
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
+    setMessage("Uspešno dodat korisnik");
+    setSeverity("success");
+    setUpdated(true);
     response && window.location.replace("/login");
   };
 
@@ -78,6 +99,14 @@ const Register = () => {
     readFileDataAsBase64(e).then((data) => {
       setRegisteredUser({ ...registeredUser, picture: data });
     });
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
+  };
+
+  const handleChangePlaces = (e) => {
+    setPlace(places[e.target.value]);
   };
 
   return (
@@ -153,12 +182,21 @@ const Register = () => {
         <label htmlFor="place" className="register-label">
           Place
         </label>
-        <input
-          name="place"
-          className="register-input"
-          placeholder="Place"
-          onChange={(e) => setPlaces({ name: e.target.value })}
-        ></input>
+        {places && (
+          <select
+            className="register-input"
+            name="place"
+            onChange={handleChangePlaces}
+          >
+            {places?.map((p, i) => {
+              return (
+                <option key={i} value={i}>
+                  {p.name}
+                </option>
+              );
+            })}
+          </select>
+        )}
         <button type="submit" className="register-button">
           Register
         </button>
@@ -194,6 +232,12 @@ const Register = () => {
           }
         ></textarea>
       </section>
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </section>
   );
 };

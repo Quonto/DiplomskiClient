@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
+import SnackBar from "../../components/snackbar/Snackbar";
 import { useGlobalContext } from "../../context/Context";
+
 import "./login.css";
 
 const Login = () => {
@@ -8,18 +10,33 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   const { setUser } = useGlobalContext();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await axios.post(
-      "https://localhost:7113/User/FetchUser",
-      login
-    );
+    let response;
+    try {
+      response = await axios.post(
+        "https://localhost:7113/User/FetchUser",
+        login
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
 
     setUser(response.data);
     setTimeout(() => window.location.replace("/"), 500);
+  };
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
   };
 
   return (
@@ -48,6 +65,12 @@ const Login = () => {
           Login
         </button>
       </form>
+      <SnackBar
+        boolean={updated}
+        handleClose={handleCloseSnackbarUpdated}
+        severity={severity}
+        message={message}
+      />
     </div>
   );
 };

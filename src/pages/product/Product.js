@@ -7,6 +7,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import * as signalR from "@microsoft/signalr";
 import ImageSlider from "../../components/imageSlider/ImageSlider";
 import Pagination from "../../components/pagination/Pagination";
+import SnackBar from "../../components/snackbar/Snackbar";
 
 const Product = () => {
   const [isAddActive, setIsAddActive] = useState(false);
@@ -19,6 +20,9 @@ const Product = () => {
   const [connection, setConnection] = useState(null);
   const [newPrice, setNewPrice] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [updated, setUpdated] = useState(null);
+  const [severity, setSeverity] = useState("");
+  const [message, setMessage] = useState("");
 
   let interval;
 
@@ -60,9 +64,6 @@ const Product = () => {
     });
   };
 
-  //console.log(product);
-  // console.log(auction);
-  // console.log(auctionTime);
   const handleDate = (date) => {
     const d = date.split("T");
     const da = d[0].split("-");
@@ -91,11 +92,20 @@ const Product = () => {
       id: product.id,
       price: parseInt(newPrice),
     };
-
-    await axios.put(
-      `https://localhost:7113/Auction/UpdateAuction/${user.id}`,
-      newProduct
-    );
+    try {
+      await axios.put(
+        `https://localhost:7113/Auction/UpdateAuction/${user.id}`,
+        newProduct
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
+    setMessage("Uspešno ažurirana aukcija");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const convertMinutes = (totalMinutes) => {
@@ -119,19 +129,28 @@ const Product = () => {
     const currentTime = new Date().toISOString();
 
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
+
     if (auction) {
       if (remainingTime < 0) {
-        window.location.replace("/");
         if (auction.user === null) {
-          await axios.put(`https://localhost:7113/Product/InputBuy/${0}`, [
-            product,
-          ]);
+          try {
+            await axios.put(`https://localhost:7113/Product/InputBuy/${0}`, [
+              product,
+            ]);
+          } catch (error) {
+            return;
+          }
         } else {
-          await axios.put(
-            `https://localhost:7113/Product/InputBuy/${auction.user.id}`,
-            [product]
-          );
+          try {
+            await axios.put(
+              `https://localhost:7113/Product/InputBuy/${auction.user.id}`,
+              [product]
+            );
+          } catch (error) {
+            return;
+          }
         }
+        window.location.replace("/");
       }
     }
 
@@ -139,10 +158,18 @@ const Product = () => {
   };
 
   const handleAddReview = async () => {
-    const response = await axios.post(
-      `https://localhost:7113/User/InputReview/${id_product}/${user.id}`,
-      addReview
-    );
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/User/InputReview/${id_product}/${user.id}`,
+        addReview
+      );
+    } catch (error) {
+      setMessage(error.response.data);
+      setSeverity("error");
+      setUpdated(true);
+      return;
+    }
     const newReview = {
       id: response.data.id,
       mark: parseInt(addReview.mark),
@@ -152,6 +179,9 @@ const Product = () => {
     const newReviews = [...product.reviews, newReview];
     setProduct({ ...product, reviews: newReviews });
     setIsAddActive(false);
+    setMessage("Uspešno ste dodali komentar");
+    setSeverity("success");
+    setUpdated(true);
   };
 
   const checkIfWishlist = () => {
@@ -164,10 +194,15 @@ const Product = () => {
   };
 
   const handleWish = async () => {
-    const response = await axios.post(
-      `https://localhost:7113/Product/InputNumberOfWish/${id_product}`,
-      { idUser: user.id }
-    );
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/Product/InputNumberOfWish/${id_product}`,
+        { idUser: user.id }
+      );
+    } catch (error) {
+      return;
+    }
     let newWishlist = [
       ...product.numberOfWish,
       { id: response.data, idUser: user.id },
@@ -176,10 +211,15 @@ const Product = () => {
   };
 
   const handleLike = async () => {
-    const response = await axios.post(
-      `https://localhost:7113/Product/InputNumberOfLike/${id_product}`,
-      { idUser: user.id }
-    );
+    let response;
+    try {
+      response = await axios.post(
+        `https://localhost:7113/Product/InputNumberOfLike/${id_product}`,
+        { idUser: user.id }
+      );
+    } catch (error) {
+      return;
+    }
     let newLikelist = [
       ...product.numberOfLike,
       { id: response.data, idUser: user.id },
@@ -189,19 +229,26 @@ const Product = () => {
 
   const handleUnwish = async () => {
     let wish = product.numberOfWish.find((nm) => nm.idUser === user.id);
-
-    await axios.delete(
-      `https://localhost:7113/Product/RemoveNumberOfWish/${wish.id}`
-    );
+    try {
+      await axios.delete(
+        `https://localhost:7113/Product/RemoveNumberOfWish/${wish.id}`
+      );
+    } catch (error) {
+      return;
+    }
     let newWishlist = product.numberOfWish.filter((wsh) => wsh.id !== wish.id);
     setProduct({ ...product, numberOfWish: newWishlist });
   };
 
   const handleDislike = async () => {
     let like = product.numberOfLike.find((nm) => nm.idUser === user.id);
-    await axios.delete(
-      `https://localhost:7113/Product/RemoveNumberOfLike/${like.id}`
-    );
+    try {
+      await axios.delete(
+        `https://localhost:7113/Product/RemoveNumberOfLike/${like.id}`
+      );
+    } catch (error) {
+      return;
+    }
 
     let newLikelist = product.numberOfLike.filter((nmb) => nmb.id !== like.id);
     setProduct({ ...product, numberOfLike: newLikelist });
@@ -238,15 +285,25 @@ const Product = () => {
     const fetchProduct = async () => {
       setLoading(true);
       if (user !== null) {
-        await axios.post(
-          `https://localhost:7113/Product/InputNumberOfView/${id_product}`,
-          { idUser: user.id }
-        );
+        try {
+          await axios.post(
+            `https://localhost:7113/Product/InputNumberOfView/${id_product}`,
+            { idUser: user.id }
+          );
+        } catch (error) {
+          return;
+        }
       }
 
-      const response = await axios.get(
-        `https://localhost:7113/Product/FetchSingleProduct/${id_product} `
-      );
+      let response;
+      try {
+        setLoading(true);
+        response = await axios.get(
+          `https://localhost:7113/Product/FetchSingleProduct/${id_product} `
+        );
+      } catch (error) {
+        return;
+      }
 
       if (response.data.auction === true) {
         const responseAuction = await axios.get(
@@ -266,9 +323,9 @@ const Product = () => {
     if (product) {
       setAddedToCart(checkAddedToCart());
       setSelectedImage({
-        name: product.picture[0].name,
+        name: product?.picture[0]?.name,
         index: 0,
-        data: product.picture[0].data,
+        data: product?.picture[0]?.data,
       });
     }
   }, [product]);
@@ -303,6 +360,10 @@ const Product = () => {
 
     return () => clearInterval(interval);
   }, [auction]);
+
+  const handleCloseSnackbarUpdated = () => {
+    setUpdated(false);
+  };
 
   if (product) {
     return (
@@ -349,7 +410,7 @@ const Product = () => {
                     )}
                   </div>
                 )}
-                {product.auction && product.user.id !== user?.id && (
+                {product.auction && (
                   <div className="purchase-container">
                     <label className="product-price">
                       Trenutna cena:
@@ -357,7 +418,7 @@ const Product = () => {
                         {parseInt(product.price)} RSD
                       </span>
                     </label>
-                    {user !== null && (
+                    {user !== null && product.user.id !== user?.id && (
                       <div className="auction-input-price">
                         <input
                           className="price-input"
@@ -563,12 +624,13 @@ const Product = () => {
                   </article>
                 );
               })}
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={product?.reviews.length}
-                paginate={paginate}
-              />
             </section>
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={product?.reviews.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
             {isAddActive && (
               <div className="section-modal-wrapper">
                 <section className="section-modal">
@@ -602,6 +664,12 @@ const Product = () => {
                 </section>
               </div>
             )}
+            <SnackBar
+              boolean={updated}
+              handleClose={handleCloseSnackbarUpdated}
+              severity={severity}
+              message={message}
+            />
           </>
         )}
       </>

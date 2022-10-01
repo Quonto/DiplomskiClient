@@ -15,25 +15,40 @@ const Home = () => {
   useEffect(() => {
     const handleMostWanted = async () => {
       setLoadingMostWanted(true);
-      const response = await axios.get(
-        "https://localhost:7113/Product/FetchMostWanted"
-      );
+      let response;
+      try {
+        response = await axios.get(
+          "https://localhost:7113/Product/FetchMostWanted"
+        );
+      } catch (error) {
+        return;
+      }
       setMostWanted(response.data);
       setLoadingMostWanted(false);
     };
     const handleMostLiked = async () => {
       setLoadingLikeProduct(true);
-      const response = await axios.get(
-        "https://localhost:7113/Product/FetchLikeProduct"
-      );
+      let response;
+      try {
+        response = await axios.get(
+          "https://localhost:7113/Product/FetchLikeProduct"
+        );
+      } catch (error) {
+        return;
+      }
       setLoadingLikeProduct(false);
       setMostLiked(response.data);
     };
     const handleMostPopular = async () => {
       setLoadingPopularGroup(true);
-      const response = await axios.get(
-        "https://localhost:7113/Group/FetchPopularGroup"
-      );
+      let response;
+      try {
+        response = await axios.get(
+          "https://localhost:7113/Group/FetchPopularGroup"
+        );
+      } catch (error) {
+        return;
+      }
       setLoadingPopularGroup(false);
       setMostPopular(response.data);
     };

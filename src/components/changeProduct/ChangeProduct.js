@@ -38,9 +38,14 @@ const ChangeProduct = ({ categories }) => {
 
   const fetchProducts = async () => {
     setLoading(true);
-    const response = await axios.get(
-      `https://localhost:7113/Product/FetchProducts/${selectedGroup.id}`
-    );
+    let response;
+    try {
+      response = await axios.get(
+        `https://localhost:7113/Product/FetchProducts/${selectedGroup.id}`
+      );
+    } catch (error) {
+      return;
+    }
     setProducts(response.data);
     setLoading(false);
   };
@@ -62,10 +67,14 @@ const ChangeProduct = ({ categories }) => {
   };
 
   const handleProductName = async () => {
-    const response = await axios.get(
-      `https://localhost:7113/Product/FetchProductName/${selectedGroup.id}/${inputRef.current.value}`
-    );
-
+    let response;
+    try {
+      response = await axios.get(
+        `https://localhost:7113/Product/FetchProductName/${selectedGroup.id}/${inputRef.current.value}`
+      );
+    } catch (error) {
+      return;
+    }
     setProducts(response.data);
   };
 
@@ -158,7 +167,7 @@ const ChangeProduct = ({ categories }) => {
                           to={`/categories/group/${product.group}/product/${product.id}`}
                         >
                           <img
-                            src={product.picture[0].data}
+                            src={product.picture[0]?.data}
                             alt=""
                             className="ap-product-image"
                           />
@@ -193,6 +202,7 @@ const ChangeProduct = ({ categories }) => {
                     postsPerPage={postsPerPage}
                     totalPosts={products.length}
                     paginate={paginate}
+                    currentPage={currentPage}
                   />
                 </section>
               </section>

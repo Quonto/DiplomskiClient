@@ -78,9 +78,12 @@ const ChangePlace = () => {
   useEffect(() => {
     const fetchPlace = async () => {
       setLoading(true);
-      const response = await axios.get(
-        "https://localhost:7113/Place/FetchPlace"
-      );
+      let response;
+      try {
+        response = await axios.get("https://localhost:7113/Place/FetchPlace");
+      } catch (error) {
+        return;
+      }
       setPlace(response.data);
       setLoading(false);
     };

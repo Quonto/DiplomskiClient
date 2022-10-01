@@ -42,7 +42,6 @@ const ChangeCategory = ({ categories, setCategories }) => {
     category.picture.name = selectedImage.name;
     category.name = categoryName;
     try {
-      console.log(category.name);
       await axios.put(
         "https://localhost:7113/Category/UpdateCategory",
         category
