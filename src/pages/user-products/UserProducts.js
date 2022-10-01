@@ -15,6 +15,7 @@ const UserProducts = () => {
   const [severity, setSeverity] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [auctionProduct, setAuctionProduct] = useState({});
   const { user } = useGlobalContext();
 
   const handleBackProduct = async (id) => {
@@ -28,8 +29,8 @@ const UserProducts = () => {
     }
     let newProducts = myProducts.filter((product) => product.id !== id);
     setMyProducts(newProducts);
-    console.log("vracen");
-    setMessage("Proizvod je vraćen u ponudi");
+
+    setMessage("Uspešno dodat proizvod");
     setSeverity("success");
     setUpdated(true);
   };
@@ -110,7 +111,8 @@ const UserProducts = () => {
     return Math.round(parseFloat(sum / product.reviews.length));
   };
 
-  const handleAuctionReturn = () => {
+  const handleAuctionReturn = (product) => {
+    setAuctionProduct(product);
     setIsReturnActive(true);
   };
 
@@ -118,11 +120,12 @@ const UserProducts = () => {
     setAuctionTime(parseInt(e.target.value));
   };
 
-  const handleAuction = async (product) => {
+  const handleAuction = async () => {
+    console.log(auctionProduct);
     let auction;
     try {
       auction = await axios.get(
-        `https://localhost:7113/Auction/FetchAuction/${product.id}`
+        `https://localhost:7113/Auction/FetchAuction/${auctionProduct.id}`
       );
     } catch (error) {
       return;
@@ -132,7 +135,7 @@ const UserProducts = () => {
     currentTime.setHours(currentTime.getHours() + 2);
 
     const newProduct = {
-      id: product.id,
+      id: auctionProduct.id,
       price: parseInt(productPrice === "" ? 0 : productPrice),
       date: currentTime,
       buy: false,
@@ -170,7 +173,7 @@ const UserProducts = () => {
       return;
     }
 
-    let newProducts = myProducts.filter((p) => p.id !== product.id);
+    let newProducts = myProducts.filter((p) => p.id !== auctionProduct.id);
     setMyProducts(newProducts);
     setMessage("Uspešno dodat proizvod");
     setSeverity("success");
@@ -269,7 +272,7 @@ const UserProducts = () => {
                       className="sell-btn"
                       onClick={() =>
                         product.auction
-                          ? handleAuctionReturn()
+                          ? handleAuctionReturn(product)
                           : handleBackProduct(product.id)
                       }
                     >
@@ -315,7 +318,7 @@ const UserProducts = () => {
                         </div>
                         <button
                           className="sell-button"
-                          onClick={() => handleAuction(product)}
+                          onClick={() => handleAuction()}
                         >
                           Vrati u ponudu
                         </button>
