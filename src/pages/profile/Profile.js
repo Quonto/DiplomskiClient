@@ -402,15 +402,12 @@ const Profile = () => {
                   <select
                     className="add-product-select"
                     onChange={handleChangePlaces}
+                    defaultValue={updateUser.place.name}
                   >
                     {places.length !== 0 &&
                       places.map((p, i) => {
                         return (
-                          <option
-                            selected={updateUser.place.name === p.name}
-                            key={i}
-                            value={i}
-                          >
+                          <option key={i} value={i}>
                             {p.name}
                           </option>
                         );
@@ -634,9 +631,6 @@ const Profile = () => {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="current-information-wrapper">
-              <div className="current-information"></div>
             </div>
           </section>
         </div>

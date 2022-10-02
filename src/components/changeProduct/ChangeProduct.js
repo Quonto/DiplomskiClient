@@ -68,6 +68,7 @@ const ChangeProduct = ({ categories }) => {
 
   const handleProductName = async () => {
     let response;
+    setCurrentPage(1);
     try {
       response = await axios.get(
         `https://localhost:7113/Product/FetchProductName/${selectedGroup.id}/${inputRef.current.value}`
@@ -75,6 +76,7 @@ const ChangeProduct = ({ categories }) => {
     } catch (error) {
       return;
     }
+
     setProducts(response.data);
   };
 

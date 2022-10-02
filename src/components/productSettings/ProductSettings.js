@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
+import "../../pages/categorySettings/categorySettings.css";
 import axios from "axios";
 
 const ProductSettings = ({
@@ -11,6 +12,7 @@ const ProductSettings = ({
   loading,
   setLoading,
   currentFilteredProducts,
+  setCurrentPage,
 }) => {
   const sortMethods = [
     { label: "Opadajuci po ceni", method: "oc" },
@@ -35,16 +37,19 @@ const ProductSettings = ({
 
   const handleProductName = async () => {
     let response;
-    setLoading(true);
-    try {
-      response = await axios.get(
-        `https://localhost:7113/Product/FetchProductName/${group.id}/${inputRef.current.value}`
-      );
-    } catch (error) {
-      return;
+    if (inputRef.current.value !== "") {
+      setCurrentPage(1);
+      setLoading(true);
+      try {
+        response = await axios.get(
+          `https://localhost:7113/Product/FetchProductName/${group.id}/${inputRef.current.value}`
+        );
+      } catch (error) {
+        return;
+      }
+      setFilteredProducts(response.data);
+      setLoading(false);
     }
-    setFilteredProducts(response.data);
-    setLoading(false);
   };
 
   const handleSort = (sort) => {
@@ -161,17 +166,19 @@ const ProductSettings = ({
       <div className="header-sort">
         <h3>{group.name}</h3>
         <div className="search-settings">
-          Pretraga:
+          <h4>Pretraga</h4>
           <input className="search-input" ref={inputRef} />
-          <button className="ap-btn" onClick={handleProductName}>
-            Pretraga
-          </button>
-          <button className="ap-btn" onClick={handleRefresh}>
-            Osvezi
-          </button>
+          <div className="search-button">
+            <button className="search-btn" onClick={handleProductName}>
+              Pretraga
+            </button>
+            <button className="search-btn" onClick={handleRefresh}>
+              Osvezi
+            </button>
+          </div>
         </div>
         <div className="sort">
-          <label htmlFor="select">Sortiraj</label>
+          <h4 htmlFor="select">Sortiraj</h4>
           <select
             className="select-sort"
             name="select"

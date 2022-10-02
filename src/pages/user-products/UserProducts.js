@@ -316,10 +316,7 @@ const UserProducts = () => {
                             <option value={4}>Cetiri dana</option>
                           </select>
                         </div>
-                        <button
-                          className="sell-button"
-                          onClick={() => handleAuction()}
-                        >
+                        <button className="sell-button" onClick={handleAuction}>
                           Vrati u ponudu
                         </button>
                       </div>

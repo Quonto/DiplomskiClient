@@ -18,7 +18,7 @@ const Product = () => {
   const [auction, setAuction] = useState(null);
   const [auctionTime, setAuctionTime] = useState(null);
   const [connection, setConnection] = useState(null);
-  const [newPrice, setNewPrice] = useState(null);
+  const [newPrice, setNewPrice] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [updated, setUpdated] = useState(null);
   const [severity, setSeverity] = useState("");
@@ -90,8 +90,9 @@ const Product = () => {
   const handleAuction = async () => {
     const newProduct = {
       id: product.id,
-      price: parseInt(newPrice),
+      price: parseInt(newPrice === "" ? 0 : newPrice),
     };
+
     try {
       await axios.put(
         `https://localhost:7113/Auction/UpdateAuction/${user.id}`,
@@ -412,16 +413,17 @@ const Product = () => {
                 )}
                 {product.auction && (
                   <div className="purchase-container">
-                    <label className="product-price">
-                      Trenutna cena:
+                    <div className="product-price-div">
+                      <label className="product-price">Trenutna cena:</label>
                       <span className="product-price-span">
                         {parseInt(product.price)} RSD
                       </span>
-                    </label>
+                    </div>
                     {user !== null && product.user.id !== user?.id && (
                       <div className="auction-input-price">
                         <input
                           className="price-input"
+                          type="number"
                           placeholder="Cena"
                           onChange={(e) => {
                             setNewPrice(e.target.value);
@@ -444,7 +446,7 @@ const Product = () => {
                       {auction.user !== null && (
                         <Link
                           to={`/profile/${auction.user.id}`}
-                          className="user-header-product"
+                          className="user-header-user"
                         >
                           <label className="user-auction-information">
                             Korisnik: {auction.user.username}
@@ -501,6 +503,8 @@ const Product = () => {
                   {handleTime(product.date)} {handleDate(product.date)}
                 </label>
               </div>
+            </section>
+            <section className="section-product-info">
               <div className="user-information">
                 <div className="user-header">
                   <h3>User information</h3>
@@ -511,60 +515,60 @@ const Product = () => {
                     <img src={product.user.picture} alt="" />
                   </Link>
                 </div>
-                <label className="user-information-label">
-                  Korisnicko ime:
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      color: "black",
-
-                      justifyContent: "right",
-                    }}
-                    to={`/profile/${product.user.id}`}
-                  >
-                    <span>{product.user.username}</span>
-                  </Link>
-                </label>
-                <label className="user-information-label">
-                  Ime:
-                  <span className="product-information-span">
-                    {product.user.userInformation?.nameUser}
-                  </span>
-                </label>
-                <label className="user-information-label">
-                  Prezime:
-                  <span className="product-information-span">
-                    {product.user.userInformation?.surename}
-                  </span>
-                </label>
-                <label className="user-information-label">
-                  Mesto:
-                  <span className="product-information-span">
-                    {product.user.userInformation?.place.name}
-                  </span>
-                </label>
-                <label className="user-information-label">
-                  Broj telefona:
-                  <span className="product-information-span">
-                    {product.user.userInformation?.phone}
-                  </span>
-                </label>
-                <div className="user-information-label">
+                <div className="user-information-labels">
                   <label className="user-information-label">
-                    Vreme kreiranja naloga:
+                    Korisnicko ime:
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                        color: "black",
+
+                        justifyContent: "right",
+                      }}
+                      to={`/profile/${product.user.id}`}
+                    >
+                      <span>{product.user.username}</span>
+                    </Link>
                   </label>
-                  <div className="user-information-data-time">
-                    <span>
-                      {handleTime(product.user.userInformation.date)}{" "}
+                  <label className="user-information-label">
+                    Ime:
+                    <span className="product-information-span">
+                      {product.user.userInformation?.nameUser}
                     </span>
-                    <span>
-                      {handleDate(product.user.userInformation.date)}{" "}
+                  </label>
+                  <label className="user-information-label">
+                    Prezime:
+                    <span className="product-information-span">
+                      {product.user.userInformation?.surename}
                     </span>
+                  </label>
+                  <label className="user-information-label">
+                    Mesto:
+                    <span className="product-information-span">
+                      {product.user.userInformation?.place.name}
+                    </span>
+                  </label>
+                  <label className="user-information-label">
+                    Broj telefona:
+                    <span className="product-information-span">
+                      {product.user.userInformation?.phone}
+                    </span>
+                  </label>
+                  <div className="user-information-label">
+                    <label className="user-information-label">
+                      Vreme kreiranja naloga:
+                    </label>
+                    <div className="user-information-data-time">
+                      <span>
+                        {handleTime(product.user.userInformation.date)}{" "}
+                      </span>
+                      <span>
+                        {handleDate(product.user.userInformation.date)}{" "}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </section>
-            <section className="section-product-details">
               <div className="product-info">
                 <h3>Detalji proizvoda</h3>
                 <div className="product-inform">
@@ -572,7 +576,7 @@ const Product = () => {
                     return (
                       <article key={index}>
                         <div className="product-information">
-                          <label>{p.productInformation.name} </label>
+                          <label>{p.productInformation.name + " "} </label>
                           <label>{p.data}</label>
                         </div>
                         <hr className="product-hr" />
@@ -581,6 +585,8 @@ const Product = () => {
                   })}
                 </div>
               </div>
+            </section>
+            <section className="section-product-details">
               <div className="product-details-text">
                 <h3>Opis proizvoda</h3>
                 <p>{product.details}</p>
@@ -591,7 +597,6 @@ const Product = () => {
                 Add review
               </button>
             )}
-            <hr className="line-comment"></hr>
             <section className="review-section">
               {currentPosts.map((p, index) => {
                 return (
