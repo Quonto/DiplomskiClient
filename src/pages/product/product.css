@@ -62,26 +62,58 @@
 
 .product-buy-button
 {
-    width: 80%;
+    width: 70%;
     height: 40px;
     margin: auto;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+   
+    border-radius: 5px;
 }
+
+.product-buy-button:hover{
+    background-color: #fff;
+    color: #4eace6;
+}
+
 
 .product-buy-button-auction
 {
     width: 30%;
     height: 30px;
     align-self:center;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
     
+}
+
+.product-buy-button-auction:hover{
+    background-color: #fff;
+    color: #4eace6;
+   
 }
 
 
 
-
 .product-wish-button{
-    width: 80%;
+    width: 70%;
     margin: 0 auto;
     height: 40px;
+    border: 1px solid #4eace6;
+    background-color: #fff;
+    color: #4eace6;
+    border-radius: 5px;
+}
+
+.product-wish-button:hover
+{
+    color: #fff;
+    background-color: #4eace6;
+    
+  
 }
 
 .number-of-like-wish
@@ -405,17 +437,17 @@
 {
     width: 50px;
     height: 25px;
-    background-color: rgb(165, 165, 245) ;
     border: none;
-    color: #fff;
-    border-radius: 5px ;   
+    background-color: #fff;
+    color: #4eace6;
+    border-radius: 5px; 
+    border: 1px solid #4eace6; 
 }
 
 .like-product:hover
 {
-    background-color: #fff;
-    color: rgb(165, 165, 245) ;
-    border-radius: 5px ;
+    color: #fff;
+    background-color: #4eace6;
 }
 
 .purchase-container{

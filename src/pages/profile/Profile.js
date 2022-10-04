@@ -18,16 +18,19 @@ const Profile = () => {
   const [isChangeUsername, setIsChangeUsername] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedPI, setSelectedPI] = useState(false);
-  const [updateUser, setUpdateUser] = useState(null);
   const [userProducts, setUserProducts] = useState([]);
+  const [updateUser, setUpdateUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [password, setPassword] = useState({
     current: "",
     new: "",
     confirm: "",
   });
-  const [mail, setMail] = useState("");
-  const [username, setUsername] = useState("");
+  const { user, setUser } = useGlobalContext();
+
+  const [mail, setMail] = useState(user.email);
+
+  const [username, setUsername] = useState(user.username);
 
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,8 +41,6 @@ const Profile = () => {
   const [updated, setUpdated] = useState(null);
   const [severity, setSeverity] = useState("");
   const [message, setMessage] = useState("");
-
-  const { user, setUser } = useGlobalContext();
 
   const handleDate = (date) => {
     const d = date.split("T");
@@ -154,15 +155,19 @@ const Profile = () => {
   };
 
   const handleEditMail = async () => {
-    console.log(mail);
     if (mail === "") {
-      console.log("Mail je prazan");
+      setMessage("Niste uneli mejl");
+      setSeverity("error");
+      setUpdated(true);
       return;
     }
     if (mail === userProfile.email) {
-      console.log("Mejl je isti");
+      setMessage("Isti mejl");
+      setSeverity("error");
+      setUpdated(true);
       return;
     }
+
     const newUser = {
       id: userProfile.id,
       email: mail,
@@ -177,6 +182,7 @@ const Profile = () => {
       setUpdated(true);
       return;
     }
+
     setIsChangeEmail(false);
     setMail("");
     setMessage("Uspešno ste izmenili mail");
@@ -277,12 +283,6 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    if (isChangeEmail) {
-      setMail(updateUser.email);
-    }
-  }, [isChangeEmail]);
-
-  useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       let response;
@@ -334,7 +334,7 @@ const Profile = () => {
             <img src={userProfile.picture} alt="" className="profile-image" />
             {user !== null && user?.id === userProfile.id && (
               <button
-                className="edit-button"
+                className="edit-button-image"
                 onClick={() => setIsImageEditorActive(true)}
               >
                 Izmeni sliku
@@ -342,148 +342,21 @@ const Profile = () => {
             )}
             <div className="time-create-user">
               {" "}
-              <label htmlFor="" className="time-create-user-label">
+              <h4 htmlFor="" className="time-create-user-label">
                 Vreme kreiranja naloga
-              </label>
+              </h4>
               <label className="date-create-profile">
                 {handleTime(updateUser.date) + " "}
                 {handleDate(updateUser.date)}
               </label>
             </div>
           </section>
-          <section className="profile-information">
-            <div className="current-information-wrapper">
-              <div className="current-information">
-                <label htmlFor="name" className="profile-name-label">
-                  Ime
-                </label>
-                {selectedPI ? (
-                  <input
-                    defaultValue={updateUser.nameUser}
-                    onChange={(e) =>
-                      setUpdateUser({ ...updateUser, nameUser: e.target.value })
-                    }
-                    placeholder="Ime"
-                  />
-                ) : (
-                  <div className="profile-name" htmlFor="name">
-                    {userProfile.userInformation.nameUser}
-                  </div>
-                )}
-              </div>
-              <div className="current-information">
-                <label htmlFor="name" className="profile-name-label">
-                  Prezime
-                </label>
-                {selectedPI ? (
-                  <input
-                    placeholder="Prezime"
-                    defaultValue={updateUser.surename}
-                    onChange={(e) =>
-                      setUpdateUser({
-                        ...updateUser,
-                        surename: e.target.value,
-                      })
-                    }
-                  />
-                ) : (
-                  <div className="profile-name" htmlFor="name">
-                    {userProfile.userInformation.surename}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="current-information-wrapper">
-              <div className="current-information">
-                <label htmlFor="name" className="profile-name-label">
-                  Mesto
-                </label>
-                {selectedPI ? (
-                  <select
-                    className="add-product-select"
-                    onChange={handleChangePlaces}
-                    defaultValue={updateUser.place.name}
-                  >
-                    {places.length !== 0 &&
-                      places.map((p, i) => {
-                        return (
-                          <option key={i} value={i}>
-                            {p.name}
-                          </option>
-                        );
-                      })}
-                  </select>
-                ) : (
-                  <div className="profile-name" htmlFor="name">
-                    {userProfile.userInformation.place.name}
-                  </div>
-                )}
-              </div>
-              <div className="current-information">
-                <label htmlFor="name" className="profile-name-label">
-                  Broj Telefona
-                </label>
-                {selectedPI ? (
-                  <input
-                    placeholder="Phone"
-                    defaultValue={updateUser.phone}
-                    onChange={(e) =>
-                      setUpdateUser({
-                        ...updateUser,
-                        phone: e.target.value,
-                      })
-                    }
-                  />
-                ) : (
-                  <div className="profile-name" htmlFor="name">
-                    {userProfile.userInformation.phone}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="current-information-details">
-              <div className="current-information">
-                <label className="profile-name-label">Opis</label>
-                {selectedPI ? (
-                  <textarea
-                    className="user-data"
-                    defaultValue={updateUser.data}
-                    onChange={(e) =>
-                      setUpdateUser({
-                        ...updateUser,
-                        data: e.target.value,
-                      })
-                    }
-                  ></textarea>
-                ) : (
-                  <p className="user-data">
-                    <i>{`"${updateUser.data}"`}</i>
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="current-information-wrapper">
-              {" "}
-              <div className="current-information">
-                {user !== null && user?.id === userProfile.id && (
-                  <button
-                    className="edit-button"
-                    onClick={
-                      selectedPI ? handleUpdateInfo : handleChangeProfileInfo
-                    }
-                  >
-                    {selectedPI ? "Sacuvaj" : "Izmeni"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </section>
-          <section className="profile-information">
+          <section className="profile-information-user">
             <div className="current-information">
               <div className="current-information-info">
-                <label htmlFor="name" className="profile-name-label">
+                <h4 htmlFor="name" className="profile-name-label">
                   Korisničko ime
-                </label>
+                </h4>
                 {isChangeUsername ? (
                   <input
                     className="change-username"
@@ -521,9 +394,9 @@ const Profile = () => {
             </div>
             <div className="current-information">
               <div className="current-information-info">
-                <label htmlFor="name" className="profile-name-label">
+                <h4 htmlFor="name" className="profile-name-label">
                   Izmena mejla
-                </label>
+                </h4>
                 {isChangeEmail ? (
                   <input
                     className="change-mail"
@@ -562,9 +435,9 @@ const Profile = () => {
             <div className="current-information">
               <div className="current-information-info">
                 {user !== null && user?.id === userProfile.id && (
-                  <label htmlFor="name" className="profile-name-password">
+                  <h4 htmlFor="name" className="profile-name-password">
                     Izmena Sifre
-                  </label>
+                  </h4>
                 )}
                 {isChangePassword && (
                   <>
@@ -631,6 +504,141 @@ const Profile = () => {
                   </div>
                 )}
               </div>
+            </div>
+          </section>
+          <section className="profile-information">
+            <div className="current-information-wrapper">
+              <div className="current-information">
+                <h4 htmlFor="name" className="profile-name-label">
+                  Ime
+                </h4>
+                {selectedPI ? (
+                  <input
+                    defaultValue={updateUser.nameUser}
+                    onChange={(e) =>
+                      setUpdateUser({ ...updateUser, nameUser: e.target.value })
+                    }
+                    placeholder="Ime"
+                  />
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.userInformation.nameUser}
+                  </div>
+                )}
+              </div>
+              <div className="current-information">
+                <h4 htmlFor="name" className="profile-name-label">
+                  Prezime
+                </h4>
+                {selectedPI ? (
+                  <input
+                    placeholder="Prezime"
+                    defaultValue={updateUser.surename}
+                    onChange={(e) =>
+                      setUpdateUser({
+                        ...updateUser,
+                        surename: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.userInformation.surename}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="current-information-wrapper">
+              <div className="current-information">
+                <h4 htmlFor="name" className="profile-name-label">
+                  Mesto
+                </h4>
+                {selectedPI ? (
+                  <select
+                    className="profile-place-select"
+                    onChange={handleChangePlaces}
+                    defaultValue={updateUser.place.name}
+                  >
+                    {places.length !== 0 &&
+                      places.map((p, i) => {
+                        return (
+                          <option key={i} value={i}>
+                            {p.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.userInformation.place.name}
+                  </div>
+                )}
+              </div>
+              <div className="current-information">
+                <h4 htmlFor="name" className="profile-name-label">
+                  Broj Telefona
+                </h4>
+                {selectedPI ? (
+                  <input
+                    placeholder="Phone"
+                    defaultValue={updateUser.phone}
+                    onChange={(e) =>
+                      setUpdateUser({
+                        ...updateUser,
+                        phone: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <div className="profile-name" htmlFor="name">
+                    {userProfile.userInformation.phone}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="current-information-details">
+              <div className="current-information">
+                <h4 className="profile-name-label">Opis</h4>
+                {selectedPI ? (
+                  <textarea
+                    className="user-data"
+                    defaultValue={updateUser.data}
+                    onChange={(e) =>
+                      setUpdateUser({
+                        ...updateUser,
+                        data: e.target.value,
+                      })
+                    }
+                  ></textarea>
+                ) : (
+                  <p className="user-data-p">
+                    <i>{`"${updateUser.data}"`}</i>
+                  </p>
+                )}
+              </div>
+            </div>{" "}
+            <div className="current-information-button">
+              {user !== null && user?.id === userProfile.id && (
+                <>
+                  <button
+                    className="edit-button-information"
+                    onClick={
+                      selectedPI ? handleUpdateInfo : handleChangeProfileInfo
+                    }
+                  >
+                    {selectedPI ? "Sacuvaj" : "Izmeni"}
+                  </button>
+
+                  {selectedPI && (
+                    <button
+                      className="edit-button-information"
+                      onClick={() => setSelectedPI(!selectedPI)}
+                    >
+                      Otkaži
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           </section>
         </div>

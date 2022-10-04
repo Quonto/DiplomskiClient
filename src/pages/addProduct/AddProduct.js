@@ -308,6 +308,15 @@ const AddProduct = () => {
           </div>
         )}
         {selectedGroup && (
+          <button
+            className="add-product-btn"
+            onClick={handleSubmit}
+            type="submit"
+          >
+            Dodaj Proizvod
+          </button>
+        )}
+        {selectedGroup && (
           <ProductInfo
             product={product}
             setProduct={setProduct}
@@ -326,15 +335,6 @@ const AddProduct = () => {
             productInformation={productInformation}
             inputRef={inputRef}
           ></ProductInfo>
-        )}
-        {selectedGroup && (
-          <button
-            className="add-product-btn"
-            onClick={handleSubmit}
-            type="submit"
-          >
-            Dodaj Proizvod
-          </button>
         )}
       </form>
       {isImageEditorActive && (

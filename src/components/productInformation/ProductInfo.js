@@ -109,16 +109,6 @@ const ProductInfo = ({
           />
         </div>
         <div className="middle-container">
-          <label htmlFor="input-slika" className="input-btn">
-            Dodaj sliku
-            <input
-              style={{ display: "none" }}
-              id="input-slika"
-              ref={inputRef}
-              type="file"
-              onChange={handleUploadFile}
-            />
-          </label>
           {images && (
             <>
               <div className="image-preview">
@@ -128,13 +118,25 @@ const ProductInfo = ({
                   alt=""
                 />
               </div>
-              <button
-                className="image-edit-btn"
-                onClick={() => setIsImageEditorActive(true)}
-                type="button"
-              >
-                Image edit
-              </button>
+              <div className="add-product-picture-input">
+                <button
+                  className="image-edit-btn"
+                  onClick={() => setIsImageEditorActive(true)}
+                  type="button"
+                >
+                  Image edit
+                </button>
+                <label htmlFor="input-slika" className="input-btn">
+                  Dodaj sliku
+                  <input
+                    style={{ display: "none" }}
+                    id="input-slika"
+                    ref={inputRef}
+                    type="file"
+                    onChange={handleUploadFile}
+                  />
+                </label>
+              </div>
               <ImageSlider
                 images={images}
                 handleSelectedImage={handleSelectedImage}

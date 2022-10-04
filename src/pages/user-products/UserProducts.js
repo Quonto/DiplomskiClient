@@ -74,7 +74,6 @@ const UserProducts = () => {
           return user === null ? user : user.data;
         });
         setUserBuy(userData);
-        console.log(userData);
       }
     };
     fetchUsers();
@@ -121,7 +120,6 @@ const UserProducts = () => {
   };
 
   const handleAuction = async () => {
-    console.log(auctionProduct);
     let auction;
     try {
       auction = await axios.get(
@@ -148,7 +146,6 @@ const UserProducts = () => {
         newProduct
       );
     } catch (error) {
-      console.log(error);
       setMessage(error.response.data);
       setSeverity("error");
       setUpdated(true);
@@ -237,7 +234,7 @@ const UserProducts = () => {
                       <div className="user-buy-information">
                         <label>Korisnik: </label>
                         <Link
-                          to={`/profile/${userBuy.id}`}
+                          to={`/profile/${userBuy[index].id}`}
                           className="user-buy-information-link"
                         >
                           <span>{userBuy[index].username}</span>
