@@ -49,39 +49,66 @@ const Navbar = () => {
             className="navbar-container"
             style={{ display: openMenu ? "flex" : "none" }}
           >
-            <CloseIcon
-              style={{
-                color: "#fff",
-                position: "absolute",
-                top: "0",
-                right: "0",
-              }}
-              onClick={handleOpenMenu}
-            />
-            <Link to="/categories" className="menu-item-link">
-              Kategorije
-            </Link>
-            <Link className="menu-item-link" to={`/profile/${user.id}`}>
-              <img
-                className="menu-item-img"
-                src={user.picture}
-                alt="profilna"
-              />{" "}
-              Profil
-            </Link>
-            <Link className="menu-item-link" to="/add-product">
-              <AddCircleIcon style={{ marginRight: "10px" }} /> Dodaj proizvod
-            </Link>
-            <Link className="menu-item-link" to="/user-products">
-              <AddShoppingCartIcon style={{ marginRight: "10px" }} /> Kupljeni
-              proizvodi
-            </Link>
-            <Link className="menu-item-link" to="/cart ">
-              <ShoppingCartIcon style={{ marginRight: "10px" }} /> Korpa
-            </Link>
-            <button className="menu-item-link" onClick={handleLogout}>
-              <LogoutIcon style={{ marginRight: "10px" }} /> Odjavi se
-            </button>
+            {user ? (
+              <>
+                {" "}
+                <CloseIcon
+                  style={{
+                    color: "#fff",
+                    position: "absolute",
+                    top: "0",
+                    right: "0",
+                  }}
+                  onClick={handleOpenMenu}
+                />
+                <Link to="/categories" className="menu-item-link">
+                  Kategorije
+                </Link>
+                {user && (
+                  <>
+                    <Link className="menu-item-link" to={`/profile/${user.id}`}>
+                      <img
+                        className="menu-item-img"
+                        src={user?.picture}
+                        alt="profilna"
+                      />{" "}
+                      Profil
+                    </Link>{" "}
+                  </>
+                )}
+                <Link className="menu-item-link" to="/add-product">
+                  <AddCircleIcon style={{ marginRight: "10px" }} /> Dodaj
+                  proizvod
+                </Link>
+                <Link className="menu-item-link" to="/user-products">
+                  <AddShoppingCartIcon style={{ marginRight: "10px" }} />{" "}
+                  Kupljeni proizvodi
+                </Link>
+                <Link className="menu-item-link" to="/cart ">
+                  <ShoppingCartIcon style={{ marginRight: "10px" }} /> Korpa
+                </Link>
+                <button className="menu-item-link" onClick={handleLogout}>
+                  <LogoutIcon style={{ marginRight: "10px" }} /> Odjavi se
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="navbar-link"
+                  onClick={handleOpenMenu}
+                >
+                  Register
+                </Link>
+                <Link
+                  to="/login"
+                  className="navbar-link"
+                  onClick={handleOpenMenu}
+                >
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </>
       ) : (

@@ -108,42 +108,6 @@ const ProductInfo = ({
             }
           />
         </div>
-        <div className="middle-container">
-          {images && (
-            <>
-              <div className="image-preview">
-                <img
-                  className="add-product-image"
-                  src={selectedImage?.data}
-                  alt=""
-                />
-              </div>
-              <div className="add-product-picture-input">
-                <button
-                  className="image-edit-btn"
-                  onClick={() => setIsImageEditorActive(true)}
-                  type="button"
-                >
-                  Image edit
-                </button>
-                <label htmlFor="input-slika" className="input-btn">
-                  Dodaj sliku
-                  <input
-                    style={{ display: "none" }}
-                    id="input-slika"
-                    ref={inputRef}
-                    type="file"
-                    onChange={handleUploadFile}
-                  />
-                </label>
-              </div>
-              <ImageSlider
-                images={images}
-                handleSelectedImage={handleSelectedImage}
-              ></ImageSlider>
-            </>
-          )}
-        </div>
         {productInformation && (
           <div className="right-container">
             {productInformation.map((pi, index) => {
@@ -163,6 +127,42 @@ const ProductInfo = ({
             })}
           </div>
         )}
+        <div className="middle-container">
+          {images && (
+            <>
+              <div className="image-preview">
+                <img
+                  className="add-product-image"
+                  src={selectedImage?.data}
+                  alt=""
+                />
+              </div>
+              <div className="add-product-picture-input">
+                <button
+                  className="input-btn"
+                  onClick={() => setIsImageEditorActive(true)}
+                  type="button"
+                >
+                  Izmena slike
+                </button>
+                <label htmlFor="input-slika" className="input-btn">
+                  Dodaj sliku
+                  <input
+                    style={{ display: "none" }}
+                    id="input-slika"
+                    ref={inputRef}
+                    type="file"
+                    onChange={handleUploadFile}
+                  />
+                </label>
+              </div>
+              <ImageSlider
+                images={images}
+                handleSelectedImage={handleSelectedImage}
+              ></ImageSlider>
+            </>
+          )}
+        </div>
       </section>
     </>
   );

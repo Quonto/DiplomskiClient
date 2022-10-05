@@ -1,6 +1,5 @@
 .add-product-form{
     width: 100%;
-    height: 550px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,14 +8,15 @@
 
 .input-btn{
     width: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     background-color: #4eace6;
     color: #fff;
-    margin: 10px auto;
+    margin: 10px 0px;
+    font-size: small;
     border: none;
     border-radius: 5px;
     
@@ -69,8 +69,9 @@
 
 .add-product-picture-input
 {
+    margin: 10px 0px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 
@@ -87,22 +88,22 @@
 
 .image-preview{
     width: 100%;
-    height: 200px;
+    height: 250px;
     margin-top: 10px;
 }
 
 .add-product-image{
-    height: 100%;
+    height: 250px;
     width: 100%;
     object-fit: cover;
 }
 
 .middle-container{
-    width: 300px;
+    width: 340px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin: 20px 20px;
+    margin: 20px 0px;
 }
 
 .right-container{
@@ -112,7 +113,7 @@
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    margin-top: 20px;
+    margin: 20px;
 }
 
 .pi-input
@@ -123,10 +124,20 @@
 
 .add-product-btn
 {
-    height: 40px;
     width: 150px;
-    border-radius: 5px ;
-    border: 1px solid black;
+    height: 40px;
+    margin: auto;
+    border: none;
+    color: #fff;
+    background-color: #4eace6;
+   
+    border-radius: 5px;
+}
+
+.add-product-btn:hover{
+    background-color: white;
+    color: #4eace6;
+    border: 1px solid #4eace6;
 }
 
 .add-product-select
@@ -141,4 +152,23 @@
     width: 100px;
     height: 30px;
     margin: 10px auto ;
+}
+
+@media (max-width: 1050px)
+{
+    .middle-container
+    {
+        height: 400px;
+    }
+
+    .add-product-information{
+        height: auto;
+    }
+
+    .left-container{
+        height: 50%;
+    }
+    .right-container{
+        height: 50%;
+    }
 }
