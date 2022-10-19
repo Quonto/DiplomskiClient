@@ -132,7 +132,7 @@ const ChangePlace = () => {
       )}
       <div className="groups-place-add">
         <label htmlFor="name" className="add-place-label">
-          Name
+          Naziv
         </label>
         <input
           className="add-place-input"

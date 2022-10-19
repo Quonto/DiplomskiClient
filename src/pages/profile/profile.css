@@ -87,6 +87,16 @@
     width: 80px;
     height: 30px;
     margin: 5px auto;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
+}
+
+.edit-button-information:hover{
+    cursor: pointer;
+    background-color: #fff;
+    color: #4eace6;
 }
 
 .current-information-button
@@ -146,12 +156,32 @@
     width: 80px;
     height: 30px;
     margin: 5px auto;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
+}
+
+.edit-button:hover{
+    cursor: pointer;
+    background-color: #fff;
+    color: #4eace6;
 }
 
 .edit-button-image{
     width: 80px;
     height: 30px;
     margin: 20px auto;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
+}
+
+.edit-button-image:hover{
+    cursor: pointer;
+    background-color: #fff;
+    color: #4eace6;
 }
 
 .profile-product-name
@@ -183,7 +213,7 @@
     flex-wrap:wrap;
     width: 100%;
     height: 90%;
-    margin: 25px auto;
+    margin: 10px auto;
 }
 
 .current-profile-product
@@ -212,7 +242,18 @@
 .change-product{
     width: 50px;
     height: 30px;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
 }
+
+.change-product:hover{
+    cursor: pointer;
+    background-color: #fff;
+    color: #4eace6;
+}
+
 
 .change-password-div{
     display: flex;

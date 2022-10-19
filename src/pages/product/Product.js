@@ -471,7 +471,7 @@ const Product = () => {
                   <div className="number-of-like-wish">
                     <label className="number-of-like">
                       {`${product.numberOfLike.length} ${
-                        product.numberOfLike.length === 1 ? "lajk" : "lajkovi"
+                        product.numberOfLike.length === 1 ? "lajk" : "lajkova"
                       }`}
                     </label>
                     <label className="number-of-wish">

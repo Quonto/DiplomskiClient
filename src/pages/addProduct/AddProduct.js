@@ -278,32 +278,38 @@ const AddProduct = () => {
         ) : (
           <div className="select-container">
             {categories.length !== 0 && (
-              <select
-                onChange={handleChangeCategory}
-                className="add-product-select"
-              >
-                {categories.map((category, i) => {
-                  return (
-                    <option key={i} value={i}>
-                      {category.name}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="add-product-category">
+                <h4>Kategorije</h4>
+                <select
+                  onChange={handleChangeCategory}
+                  className="add-product-select"
+                >
+                  {categories.map((category, i) => {
+                    return (
+                      <option key={i} value={i}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             )}
             {groups?.length !== 0 && (
-              <select
-                className="add-product-select"
-                onChange={handleChangeGroup}
-              >
-                {groups.map((group, i) => {
-                  return (
-                    <option key={i} value={i}>
-                      {group.name}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="add-product-group">
+                <h4>Grupe</h4>
+                <select
+                  className="add-product-select"
+                  onChange={handleChangeGroup}
+                >
+                  {groups.map((group, i) => {
+                    return (
+                      <option key={i} value={i}>
+                        {group.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             )}
           </div>
         )}

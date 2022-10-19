@@ -191,7 +191,7 @@ const UserProducts = () => {
           {myProducts.map((product, index) => {
             return (
               <article key={index}>
-                <article className="product" key={product.id}>
+                <article className="product-user" key={product.id}>
                   <div className="product-image">
                     <img
                       src={
@@ -214,6 +214,27 @@ const UserProducts = () => {
                       <label>Ocena:</label>
                       <span>{calculateMark(product)}</span>
                     </div>
+                  </div>
+                  <div className="button-list-sell">
+                    <button
+                      className="sell-btn"
+                      onClick={() => handleSoldProduct(product.id)}
+                    >
+                      {userBuy[index] !== null ? "Prodato" : "Izbrisi Proizvod"}
+                    </button>
+                    <button
+                      className="sell-btn"
+                      onClick={() =>
+                        product.auction
+                          ? handleAuctionReturn(product)
+                          : handleBackProduct(product.id)
+                      }
+                    >
+                      Vrati ponudu
+                    </button>
+                    <div className="button-info-sell">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
+                    <div className="button-info-sell">{`${product.numberOfViewers.length} pregleda`}</div>
+                    <div className="button-info-sell">{`${product.numberOfLike.length} lajkova`}</div>
                   </div>
                   {userBuy[index] && (
                     <div className="user-buy">
@@ -258,27 +279,6 @@ const UserProducts = () => {
                       </div>
                     </div>
                   )}
-                  <div className="button-list-sell">
-                    <button
-                      className="sell-btn"
-                      onClick={() => handleSoldProduct(product.id)}
-                    >
-                      {userBuy[index] !== null ? "Prodato" : "Izbrisi Proizvod"}
-                    </button>
-                    <button
-                      className="sell-btn"
-                      onClick={() =>
-                        product.auction
-                          ? handleAuctionReturn(product)
-                          : handleBackProduct(product.id)
-                      }
-                    >
-                      Vrati ponudu
-                    </button>
-                    <div className="button-info-sell">{`${product.numberOfWish.length} zeli ovaj proizvod`}</div>
-                    <div className="button-info-sell">{`${product.numberOfViewers.length} pregleda`}</div>
-                    <div className="button-info-sell">{`${product.numberOfLike.length} lajkova`}</div>
-                  </div>
                 </article>
                 <div>
                   {isReturnActive && (

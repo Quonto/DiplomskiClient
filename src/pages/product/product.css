@@ -67,7 +67,6 @@
     border: 1px solid #4eace6;
     color: #fff;
     background-color: #4eace6;
-   
     border-radius: 5px;
 }
 
@@ -119,6 +118,7 @@
 {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     margin-left:5px;
 }
@@ -272,19 +272,17 @@
 
 
 .input-review{
-    text-decoration: none;
-    z-index: 2;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    height: 80px;
-    width: 80px;
-    border-radius: 50%;
-    border: none;
-    background-color: cornflowerblue;
-    font-size: 15px;
-    color:#fff;
-    padding: 5px;
+    
+    height: 40px;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    border: 1px solid #4eace6;
+  color: #fff;
+  background-color: #4eace6;
+  border-radius: 5px;
 }
 
 .section-modal-wrapper{
@@ -344,6 +342,7 @@
 
 .modal-content
 {   display: flex;
+    flex-wrap: wrap;
     height: 70%;
     width: 100%;
 }
@@ -363,7 +362,17 @@
 .add-review-btn{
     width: 160px;
     height: 30px;
-    border-radius: 5px solid;
+    border: 1px solid #4eace6;
+    color: #fff;
+    background-color: #4eace6;
+    border-radius: 5px;
+}
+
+.add-review-btn:hover
+{
+  cursor: pointer;
+  background-color: #fff;
+  color: #4eace6;
 }
 
 .review-section{
@@ -571,6 +580,10 @@
     {
         width: 70%;
         height: auto;
+    }
+
+    .section-modal{
+        width: 80%;
     }
 }
 

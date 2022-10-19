@@ -161,7 +161,7 @@ const ChangeCategory = ({ categories, setCategories }) => {
                 onClick={() => setIsImageEditorActive(true)}
                 type="button"
               >
-                Image edit
+                Izmeni sliku
               </button>
             </>
           </div>

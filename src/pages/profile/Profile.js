@@ -395,7 +395,7 @@ const Profile = () => {
             <div className="current-information">
               <div className="current-information-info">
                 <h4 htmlFor="name" className="profile-name-label">
-                  Izmena mejla
+                  Mejl
                 </h4>
                 {isChangeEmail ? (
                   <input
@@ -436,7 +436,7 @@ const Profile = () => {
               <div className="current-information-info">
                 {user !== null && user?.id === userProfile.id && (
                   <h4 htmlFor="name" className="profile-name-password">
-                    Izmena Sifre
+                    Sifra
                   </h4>
                 )}
                 {isChangePassword && (

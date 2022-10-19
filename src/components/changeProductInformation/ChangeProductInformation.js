@@ -191,7 +191,7 @@ const ChangeProductInformation = ({
           )}
           <div className="groups-pi-add">
             <label htmlFor="name" className="add-pi-label">
-              Name
+              Naziv
             </label>
             <input
               className="add-pi-input"
