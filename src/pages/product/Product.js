@@ -5,6 +5,7 @@ import "./product.css";
 import { useGlobalContext } from "../../context/Context";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import * as signalR from "@microsoft/signalr";
+import { CircularProgress } from "@mui/material";
 import ImageSlider from "../../components/imageSlider/ImageSlider";
 import Pagination from "../../components/pagination/Pagination";
 import SnackBar from "../../components/snackbar/Snackbar";
@@ -129,6 +130,7 @@ const Product = () => {
   const handleAuctionTime = async (au) => {
     const currentTime = new Date().toISOString();
 
+    console.log(Date(au));
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
 
     if (auction) {
@@ -370,7 +372,7 @@ const Product = () => {
     return (
       <>
         {loading ? (
-          <h2>Loading...</h2>
+          <CircularProgress />
         ) : (
           <>
             <section className="section-product">
@@ -507,7 +509,7 @@ const Product = () => {
             <section className="section-product-info">
               <div className="user-information">
                 <div className="user-header">
-                  <h3>User information</h3>
+                  <h3>Informacije korisnika</h3>
                   <Link
                     to={`/profile/${product.user.id}`}
                     className="user-header-product"

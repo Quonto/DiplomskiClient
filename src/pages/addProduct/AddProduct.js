@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./addProduct.css";
 import { useGlobalContext } from "../../context/Context";
 import axios from "axios";
+import { CircularProgress } from "@mui/material";
 import ImageEditor from "../imageEditor/ImageEditor";
 import ProductInfo from "../../components/productInformation/ProductInfo";
 import SnackBar from "../../components/snackbar/Snackbar";
@@ -135,7 +136,7 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const currentTime = new Date();
-    currentTime.setHours(currentTime.getHours() + 2);
+    currentTime.setHours(currentTime.getHours() + 1); //C# convert time zone
     const newProduct = {
       name: product.name,
       price: product.price === "" ? 0 : parseInt(product.price),
@@ -274,7 +275,7 @@ const AddProduct = () => {
     <>
       <form className="add-product-form" onSubmit={handleSubmit}>
         {loading ? (
-          <h2>Loading...</h2>
+          <CircularProgress />
         ) : (
           <div className="select-container">
             {categories.length !== 0 && (

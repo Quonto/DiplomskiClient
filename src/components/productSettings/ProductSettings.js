@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./productSettings.css";
 import "../../pages/categorySettings/categorySettings.css";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 const ProductSettings = ({
@@ -161,10 +162,12 @@ const ProductSettings = ({
     sort !== "" && handleSort(sort);
   }, [sort]);
 
+  console.log(loading);
+
   return (
     <section className="product-list">
       <div className="header-sort">
-        <h3>{group.name}</h3>
+        <h3>{group?.name}</h3>
         <div className="search-settings">
           <h4>Pretraga</h4>
           <input className="search-input" ref={inputRef} />
@@ -194,82 +197,81 @@ const ProductSettings = ({
           </select>
         </div>
       </div>
-      {filteredProducts.length !== 0 && (
-        <div className="products" ref={nekiRef}>
-          {loading ? (
-            <h2>Loading...</h2>
-          ) : (
-            <>
-              {filteredProducts.map((product, index) => {
-                return (
-                  <article className="product" key={index}>
+
+      <div className="products" ref={nekiRef}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <>
+            {filteredProducts.map((product, index) => {
+              return (
+                <article className="product" key={index}>
+                  <Link
+                    className="product-image"
+                    to={`${pathname}/product/${product.id}`}
+                  >
+                    <img
+                      src={
+                        product.picture.length === 0
+                          ? ""
+                          : product.picture[0].data
+                      }
+                      alt=""
+                    />
+                  </Link>
+                  <div className="product-details">
                     <Link
-                      className="product-image"
+                      style={{
+                        textDecoration: "none",
+                        color: "black",
+                        margin: "0px 10px",
+                      }}
                       to={`${pathname}/product/${product.id}`}
                     >
-                      <img
-                        src={
-                          product.picture.length === 0
-                            ? ""
-                            : product.picture[0].data
-                        }
-                        alt=""
-                      />
+                      <h4>{product.name}</h4>
                     </Link>
-                    <div className="product-details">
+                    <div className="product-details-info">
+                      <label>Cena:</label>
+                      <span>{product.price}</span>
+                    </div>
+                    <div className="product-details-info">
+                      <label>Ocena:</label>
+                      <span>{calculateMark(product)}</span>
+                    </div>
+                    <div className="product-details-info">
+                      <label>Korisnik:</label>
                       <Link
                         style={{
                           textDecoration: "none",
                           color: "black",
-                          margin: "0px 10px",
+                          margin: "5px auto",
                         }}
-                        to={`${pathname}/product/${product.id}`}
+                        to={`/profile/${product.user.id}`}
                       >
-                        <h4>{product.name}</h4>
+                        <span>{product.user.username}</span>
                       </Link>
-                      <div className="product-details-info">
-                        <label>Cena:</label>
-                        <span>{product.price}</span>
-                      </div>
-                      <div className="product-details-info">
-                        <label>Ocena:</label>
-                        <span>{calculateMark(product)}</span>
-                      </div>
-                      <div className="product-details-info">
-                        <label>Korisnik:</label>
-                        <Link
-                          style={{
-                            textDecoration: "none",
-                            color: "black",
-                            margin: "5px auto",
-                          }}
-                          to={`/profile/${product.user.id}`}
-                        >
-                          <span>{product.user.username}</span>
-                        </Link>
-                      </div>
                     </div>
-                    <div className="product-contact">
-                      <label>Grad/Mesto</label>
-                      <span>{product.place.name}</span>
-                      <label>Kontakt</label>
-                      <span>{product.phone} </span>
-                      <label>Vreme</label>
-                      <span>{handleTime(product.date)} </span>
-                      <span>{handleDate(product.date)} </span>
-                    </div>
-                    <div className="button-list">
-                      <div className="button-info">{`${product.numberOfWish.length} zeli `}</div>
-                      <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
-                      <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
-                    </div>
-                  </article>
-                );
-              })}
-            </>
-          )}
-        </div>
-      )}
+                  </div>
+                  <div className="product-contact">
+                    <label>Grad/Mesto</label>
+                    <span>{product.place.name}</span>
+                    <label>Kontakt</label>
+                    <span>{product.phone} </span>
+                    <label>Vreme</label>
+                    <span>{handleTime(product.date)} </span>
+                    <span>{handleDate(product.date)} </span>
+                  </div>
+                  <div className="button-list">
+                    <div className="button-info">{`${product.numberOfWish.length} zeli `}</div>
+                    <div className="button-info">{`${product.numberOfViewers.length} pregleda`}</div>
+                    <div className="button-info">{`${product.numberOfLike.length} lajkova`}</div>
+                  </div>
+                </article>
+              );
+            })}
+          </>
+        )}
+      </div>
     </section>
   );
 };

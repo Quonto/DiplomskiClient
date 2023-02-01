@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageEditor from "../imageEditor/ImageEditor";
 import UpdateProduct from "../updateProduct/UpdateProduct";
+import { CircularProgress } from "@mui/material";
 import { useGlobalContext } from "../../context/Context";
 import Pagination from "../../components/pagination/Pagination";
 import SnackBar from "../../components/snackbar/Snackbar";
@@ -644,7 +645,7 @@ const Profile = () => {
         </div>
         <div className="profile-product">
           {loading ? (
-            <h2>Loading...</h2>
+            <CircularProgress />
           ) : (
             <>
               {currentPosts.map((product, index) => {
@@ -656,7 +657,7 @@ const Profile = () => {
                     >
                       <div className="profile-product">
                         <img
-                          src={product.picture[0].data}
+                          src={product.picture[0]?.data}
                           alt=""
                           className="profile-product-image"
                         />

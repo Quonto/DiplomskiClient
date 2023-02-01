@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import "./home.css";
 
@@ -64,7 +65,7 @@ const Home = () => {
       <section className="wanted">
         <h3>Najtrazeniji predmeti</h3>
         {loadingMostWanted ? (
-          <h2>Loading...</h2>
+          <CircularProgress />
         ) : (
           <div className="wanted-list">
             {mostWanted.map((product, index) => {
@@ -94,7 +95,7 @@ const Home = () => {
       <section className="wanted">
         <h3>Istaknuti predmeti</h3>
         {loadingLikeProduct ? (
-          <h2>Loading...</h2>
+          <CircularProgress />
         ) : (
           <div className="wanted-list">
             {mostLiked.map((product, index) => {
@@ -122,9 +123,9 @@ const Home = () => {
       </section>
       {/*Categories */}
       <section className="popular-categories">
-        <h3>Popularne kategorije</h3>
+        <h3>Popularne grupe</h3>
         {loadingPopularGroup ? (
-          <h2>Loadig...</h2>
+          <CircularProgress />
         ) : (
           <div className="popular-categories-list">
             {mostPopular.map((group, index) => {

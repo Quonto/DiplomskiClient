@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SnackBar from "../snackbar/Snackbar";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 const ChangePlace = () => {
@@ -98,7 +99,7 @@ const ChangePlace = () => {
     <section className="place-settings">
       <h3> Mesta </h3>
       {loading ? (
-        <h2>Loading...</h2>
+        <CircularProgress />
       ) : (
         <div className="groups-review">
           {place.length !== 0 &&
@@ -145,7 +146,7 @@ const ChangePlace = () => {
             })
           }
         />
-        <button className="add-place-btn" onClick={addPlace}>
+        <button className="add-btn" onClick={addPlace}>
           Dodaj
         </button>
       </div>

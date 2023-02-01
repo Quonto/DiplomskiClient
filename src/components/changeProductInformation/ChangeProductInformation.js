@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useRef, useState } from "react";
+import { CircularProgress } from "@mui/material";
 import SnackBar from "../snackbar/Snackbar";
 
 const ChangeProductInformation = ({
@@ -148,7 +149,7 @@ const ChangeProductInformation = ({
       {selectedGroup && (
         <>
           {loading ? (
-            <h2>Loading...</h2>
+            <CircularProgress />
           ) : (
             <div className="groups-review">
               {productInformation?.length !== 0 &&
@@ -204,7 +205,7 @@ const ChangeProductInformation = ({
                 })
               }
             />
-            <button className="add-pi-btn" onClick={addProductInformation}>
+            <button className="add-btn" onClick={addProductInformation}>
               Dodaj
             </button>
           </div>

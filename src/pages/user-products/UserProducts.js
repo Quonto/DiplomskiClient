@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../context/Context";
+import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import "./userproducts.css";
 import SnackBar from "../../components/snackbar/Snackbar";
@@ -185,7 +186,7 @@ const UserProducts = () => {
   return (
     <div className="user-product-div">
       {loading ? (
-        <h2>Loading...</h2>
+        <CircularProgress />
       ) : (
         <>
           {myProducts.map((product, index) => {
@@ -238,7 +239,6 @@ const UserProducts = () => {
                   </div>
                   {userBuy[index] && (
                     <div className="user-buy">
-                      {console.log(userBuy)}
                       <div className="user-buy-information">
                         <label>Slika: </label>
                         <Link to={`/profile/${userBuy[index].id}`}>

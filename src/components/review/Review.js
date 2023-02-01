@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "../pagination/Pagination";
+import { CircularProgress } from "@mui/material";
 import SnackBar from "../snackbar/Snackbar";
 import "./review.css";
 
@@ -100,7 +101,7 @@ const Review = ({ setIsReviewActive, isProduct, id }) => {
   return (
     <section className="modal-return-review">
       {loading && reviews.length !== 0 ? (
-        <h2>Loading...</h2>
+        <CircularProgress />
       ) : (
         <div className="modal-wrapper-review">
           <button

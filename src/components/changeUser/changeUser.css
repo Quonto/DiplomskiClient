@@ -1,14 +1,14 @@
 .change-user{
-    width: 100%;
-    height: 500px;
+    width: 1400px;
     display: flex;
-    align-self: center;
-    
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .change-user-list{
     height: 400px;
-    flex: 3;
+    width: 400px;
     overflow-y: scroll;
 }
 
@@ -55,14 +55,16 @@
 
 
 .change-user-info{
-    flex: 4;
     display: flex;
+    flex-wrap: wrap;
     margin-left: 20px;
-    height: 500px;
+    justify-content: center;
+    width: 550px;
+
 }
 
 .change-user-info-image-container{
-    flex: 1;
+    width: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,23 +101,34 @@
 .change-user-info-userInfo{
     display: flex;
     height: 100%;
+    width: 250px;
+    align-items: center;
     flex-direction: column;
-    flex: 2;
     padding: 10px;
 }
 
 .change-user-time-text
 {
-    height: 30px;
-    width: 50%;
-    margin: 5px 0px;
+    
+    width: 90%;
+    margin: 10px 0px;
     font-weight: 400;
     display: flex;
-    flex-direction: column;
+    text-align: center;
     justify-content: center;
 }
 
 .change-user-info-label
 {
     font-weight: bold;
+}
+
+@media (max-width: 600px)
+{
+    .change-user-info {
+        width: 100%;
+    }
+    .change-user-list {
+        width: 100%
+    }
 }

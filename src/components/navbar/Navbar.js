@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useGlobalContext } from "../../context/Context";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useState } from "react";
@@ -81,8 +82,8 @@ const Navbar = () => {
                   proizvod
                 </Link>
                 <Link className="menu-item-link" to="/user-products">
-                  <AddShoppingCartIcon style={{ marginRight: "10px" }} />{" "}
-                  Kupljeni proizvodi
+                  <DoneAllIcon style={{ marginRight: "10px" }} /> Kupljeni
+                  proizvodi
                 </Link>
                 <Link className="menu-item-link" to="/cart ">
                   <ShoppingCartIcon style={{ marginRight: "10px" }} /> Korpa
@@ -134,7 +135,7 @@ const Navbar = () => {
                 <AddCircleIcon />
               </Link>
               <Link className="user-product" to="/user-products">
-                <AddShoppingCartIcon />
+                <DoneAllIcon />
               </Link>
               <Link className="navbar-cart" to="/cart ">
                 <ShoppingCartIcon />

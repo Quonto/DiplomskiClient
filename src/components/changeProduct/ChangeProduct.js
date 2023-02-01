@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./changeProduct.css";
 import Review from "../review/Review";
 import { Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import UpdateProduct from "../../pages/updateProduct/UpdateProduct";
 
 import axios from "axios";
@@ -145,19 +146,21 @@ const ChangeProduct = ({ categories }) => {
               className="ap-search-input"
               ref={inputRef}
             />
-            <button className="ap-btn" onClick={handleProductName}>
-              Pretraga
-            </button>
-            <button className="ap-btn" onClick={handleRefresh}>
-              Osvezi
-            </button>
+            <div className="search-button">
+              <button className="ap-btn" onClick={handleProductName}>
+                Pretraga
+              </button>
+              <button className="ap-btn" onClick={handleRefresh}>
+                Osvezi
+              </button>
+            </div>
           </div>
         )}
 
         {currentPosts.length !== 0 && (
           <>
             {loading ? (
-              <h2>Loading...</h2>
+              <CircularProgress />
             ) : (
               <section className="section-products-pagination">
                 <section className="ap-section-products">

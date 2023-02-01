@@ -38,8 +38,8 @@
 }
 
 .group-settings{
-    height: 300px;
-    width: 50%;
+    height: 400px;
+    width: 400px;
     padding: 10px 30px;
     display: flex;
     align-items: center;
@@ -56,7 +56,9 @@
 }
 
 .group-settings > h3{
+   
     margin: 5px 0px;
+    text-align: center;
 }
 
 .place-settings >h3{
@@ -71,8 +73,8 @@
 .groups-review
 {
     overflow-y: scroll;
-    margin: 10px 0px;
-    width: 90%;
+    margin: 20px 0px;
+    width: 250px;
 }
 
 .groups-review > article
@@ -99,16 +101,47 @@
     display: flex;
     justify-content: center;
     margin: 0px 2px;
-    width: 20%;
+    width: 50px;
+    border: none;
+    background-color: #1ad1d1;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
     
 }
+
+.add-btn
+{
+    height: 25px;
+    width: 50px;
+    border: none;
+    background-color: #1ad1d1;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-btn:hover
+{
+    background-color:  white;
+    color: #1ad1d1; 
+    border: 1px solid #1ad1d1;  
+}
+
+.groups-review > article > button:hover
+{
+    background-color:  white;
+    color: #1ad1d1; 
+    border: 1px solid #1ad1d1;   
+}
+
 .add-category
 {
-    height: 350px;
     width: 100%;
     padding: 10px 30px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .category-container > h3{
@@ -126,9 +159,15 @@
 .category-item
 {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
-    height: 95%;
+    justify-content: center;
     
+}
+
+.category-name-label
+{
+    text-align: center;
 }
 
 .category-picture
@@ -136,8 +175,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
-    width: 40%;
+    height: 400px;
+    width: 300px;
 }
 .category-name-input
 {
@@ -151,36 +190,55 @@
     margin: 0px auto ;
     height: 30px;
     width: 60px;  
+    border: none;
+    background-color: #1ad1d1;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.category-input-button:hover
+{
+    background-color:  white;
+    color: #1ad1d1; 
+    border: 1px solid #1ad1d1; 
+
 }
 
 .category-name
 {
     display: flex;
     flex-direction: column;
-    width: 30%;
-    height: 100%;
+    width: 250px;
     margin: 10px 10px;
 }
 .categories-group{
     display: flex;
-    height: 100%;
-    width: 30%;
+    width: 250px;
     margin: 5px 10px;
     flex-direction: column;
+}
+
+.categories-group > h3
+{
+    align-self: center;
 }
 
 .admin-panel
 {
     display: flex;
-    flex: 8;
+   
+   
+    flex-wrap: wrap;
+    justify-content:center;
     padding: 20px;
 
 }
 
 .place-settings
 {
-    height: 300px;
-    width: 50%;
+    height: 400px;
+    width: 400px;
     padding: 10px 30px;
     display: flex;
     align-items: center;

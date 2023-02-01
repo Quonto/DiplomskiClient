@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./categories.css";
 import { Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 const Categories = () => {
@@ -52,7 +53,7 @@ const Categories = () => {
     return (
       <>
         {loading ? (
-          <h2>Loading</h2>
+          <CircularProgress />
         ) : (
           <section className="categories">
             {categories.map((category, index) => {
@@ -81,7 +82,7 @@ const Categories = () => {
     return (
       <>
         {loading ? (
-          <h2>Loading...</h2>
+          <CircularProgress />
         ) : (
           <>
             <section className="categories">

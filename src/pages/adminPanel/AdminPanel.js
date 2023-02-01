@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./adminPanel.css";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 import ChangeCategory from "../../components/changeCategory/ChangeCategory";
@@ -51,7 +52,7 @@ const AdminPanel = () => {
   return (
     <div className="admin-panel-component">
       {loading ? (
-        <h2>Loading...</h2>
+        <CircularProgress />
       ) : (
         <>
           {" "}

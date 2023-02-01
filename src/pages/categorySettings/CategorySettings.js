@@ -68,36 +68,34 @@ const CategorySettings = () => {
 
   return (
     <section className="category-settings">
-      {group && (
-        <>
-          <FilterSettings
-            productInformation={productInformation}
-            filteredProducts={filteredProducts}
+      <>
+        <FilterSettings
+          productInformation={productInformation}
+          filteredProducts={filteredProducts}
+          setFilteredProducts={setFilteredProducts}
+          products={products}
+        />
+        <div className="product-settings">
+          <ProductSettings
+            group={group}
+            filteredProducts={currentPosts}
+            currentFilteredProducts={filteredProducts}
             setFilteredProducts={setFilteredProducts}
-            products={products}
+            fetchProducts={fetchProducts}
+            loading={loading}
+            setLoading={setLoading}
+            setCurrentPage={setCurrentPage}
           />
-          <div className="product-settings">
-            <ProductSettings
-              group={group}
-              filteredProducts={currentPosts}
-              currentFilteredProducts={filteredProducts}
-              setFilteredProducts={setFilteredProducts}
-              fetchProducts={fetchProducts}
-              loading={loading}
-              setLoading={setLoading}
-              setCurrentPage={setCurrentPage}
+          {!loading && (
+            <Pagination
+              postsPerPage={postsPerPage}
+              totalPosts={filteredProducts.length}
+              paginate={paginate}
+              currentPage={currentPage}
             />
-            {!loading && (
-              <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={filteredProducts.length}
-                paginate={paginate}
-                currentPage={currentPage}
-              />
-            )}
-          </div>
-        </>
-      )}
+          )}
+        </div>
+      </>
     </section>
   );
 };

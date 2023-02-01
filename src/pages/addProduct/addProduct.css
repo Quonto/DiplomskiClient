@@ -15,7 +15,7 @@
     cursor: pointer;
     background-color: #4eace6;
     color: #fff;
-    margin: 10px 0px;
+    margin: 10px 10px;
     font-size: small;
     border: none;
     border-radius: 5px;
@@ -42,7 +42,8 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    height: 70%;
+    overflow-y: scroll;
+    height: 80%;
 }
 
 .purchase-product
@@ -64,6 +65,7 @@
     width: 300px;
     display: flex;
     margin-top: 20px;
+    margin-right: 10px;
     flex-direction: column;
 }
 
@@ -125,7 +127,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin: 20px 0px;
+    align-items: center;
+    margin: 20px 10px;
 }
 
 .right-container{
@@ -135,7 +138,7 @@
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    margin: 20px;
+    margin: 20px 10px;
 }
 
 .pi-input
@@ -152,7 +155,6 @@
     border: none;
     color: #fff;
     background-color: #4eace6;
-   
     border-radius: 5px;
 }
 
@@ -174,6 +176,18 @@
     width: 100px;
     height: 30px;
     margin: 10px auto ;
+    border: none;
+    background-color: #1ad1d1;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;  
+}
+
+.image-edit-btn:hover
+{
+    background-color:  white;
+    color: #1ad1d1; 
+    border: 1px solid #1ad1d1; 
 }
 
 @media (max-width: 1050px)
@@ -188,7 +202,7 @@
     }
 
     .left-container{
-        height: 50%;
+        height: 80%;
     }
     .right-container{
         height: 50%;
