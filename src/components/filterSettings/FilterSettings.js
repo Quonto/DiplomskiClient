@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./filterSettings.css";
 
 const FilterSettings = ({
@@ -14,6 +14,11 @@ const FilterSettings = ({
   const [place, setPlace] = useState("");
   const [auction, setAuction] = useState(false);
   const [buy, setBuy] = useState(false);
+
+  const cenaOdRef = useRef();
+  const cenaDoRef = useRef();
+  const korisnikRef = useRef();
+  const mestoRef = useRef();
 
   const handleFilters = () => {
     let newProducts = products;
@@ -55,6 +60,11 @@ const FilterSettings = ({
   };
 
   const handleResetFilter = () => {
+    cenaOdRef.current.value = "";
+    cenaDoRef.current.value = "";
+    korisnikRef.current.value = "";
+    mestoRef.current.value = "";
+
     setFilteredProducts(products);
     setCena({
       od: "",
@@ -107,6 +117,7 @@ const FilterSettings = ({
               <div className="checkbox">
                 <label htmlFor="od">od</label>
                 <input
+                  ref={cenaOdRef}
                   type="text"
                   className="cena-input"
                   onChange={(e) => setCena({ ...cena, od: e.target.value })}
@@ -116,6 +127,7 @@ const FilterSettings = ({
               <div className="checkbox">
                 <label htmlFor="od">do</label>
                 <input
+                  ref={cenaDoRef}
                   type="text"
                   className="cena-input"
                   onChange={(e) => setCena({ ...cena, do: e.target.value })}
@@ -127,6 +139,7 @@ const FilterSettings = ({
               <h4>Korisnik</h4>
               <div className="checkbox">
                 <input
+                  ref={korisnikRef}
                   className="korisnik-input"
                   onChange={(e) => setKorisnik(e.target.value)}
                 />
@@ -136,6 +149,7 @@ const FilterSettings = ({
               <h4>Mesto</h4>
               <div className="checkbox">
                 <input
+                  ref={mestoRef}
                   className="korisnik-input"
                   onChange={(e) => setPlace(e.target.value)}
                 />

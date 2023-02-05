@@ -56,7 +56,7 @@ const ChangeProductInformation = ({
 
     setIndexProductInformation(index);
     setSaveProductInformation(false);
-    setMessage("Uspešno ste izmenili naziv mesta");
+    setMessage("Uspešno ste izmenili informacije o proizvodu");
     setSeverity("success");
     setUpdated(true);
   };

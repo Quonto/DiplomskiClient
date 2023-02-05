@@ -115,7 +115,7 @@ const ChangeProduct = ({ categories }) => {
   return (
     <>
       <div className="ap-change-product">
-        <h3>Izmena proizvod</h3>
+        <h3>Izmena proizvoda</h3>
         <div className="product-category-container">
           <select className="group-settings-select" onChange={changeCategory}>
             {categories.map((category, index) => {

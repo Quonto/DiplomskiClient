@@ -131,7 +131,7 @@ const UserProducts = () => {
     }
 
     const currentTime = new Date();
-    currentTime.setHours(currentTime.getHours() + 2);
+    currentTime.setHours(currentTime.getHours() + 1); //C# modifikacija baze
 
     const newProduct = {
       id: auctionProduct.id,

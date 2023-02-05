@@ -9,8 +9,7 @@ import "./categorySettings.css";
 const CategorySettings = () => {
   const [group, setGroup] = useState(null);
   const [productInformation, setProductInformation] = useState([]);
-  let screenWidth = window.innerWidth; // smesti u state
-  console.log(screenWidth);
+
   const [products, setProducts] = useState([]);
 
   const [filteredProducts, setFilteredProducts] = useState([]);

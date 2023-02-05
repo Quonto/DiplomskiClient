@@ -130,7 +130,7 @@ const Product = () => {
   const handleAuctionTime = async (au) => {
     const currentTime = new Date().toISOString();
 
-    console.log(Date(au));
+ 
     let remainingTime = (new Date(au) - new Date(currentTime)) / 1000;
 
     if (auction) {

@@ -135,7 +135,7 @@ const ChangeGroups = ({ categories }) => {
   };
 
   useEffect(() => {
-    if (selectedCategory) setGroups([{ name: "" }, ...selectedCategory.groups]);
+    if (selectedCategory) setGroups(selectedCategory.groups);
   }, [selectedCategory]);
 
   return (

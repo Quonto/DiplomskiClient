@@ -162,8 +162,6 @@ const ProductSettings = ({
     sort !== "" && handleSort(sort);
   }, [sort]);
 
-  console.log(loading);
-
   return (
     <section className="product-list">
       <div className="header-sort">

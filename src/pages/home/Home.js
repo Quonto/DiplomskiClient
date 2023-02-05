@@ -112,7 +112,7 @@ const Home = () => {
                     />
                     <div className="wanted-info">
                       <h4> {product.price} RSD</h4>
-                      <p>{product.numberOfLike.length} lajkovanih</p>
+                      <p>{product.numberOfLike.length} lajkova</p>
                     </div>
                   </Link>
                 </article>

@@ -82,6 +82,7 @@ const ChangeCategory = ({ categories, setCategories }) => {
       setUpdated(true);
       return;
     }
+    response.data.groups = [];
     setCategories([...categories, response.data]);
     setMessage("Uspešno dodata kategorija");
     setSeverity("success");

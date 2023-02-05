@@ -13,7 +13,6 @@ const UpdateProduct = ({
   setSelectedPr,
   setUserProducts,
   userProducts,
-  handleUpdated,
 }) => {
   const [places, setPlaces] = useState(null);
   const [place, setPlace] = useState(selectedPr.place);
@@ -166,7 +165,6 @@ const UpdateProduct = ({
       });
     });
     setIsChangeActive(false);
-    handleUpdated();
   };
 
   useEffect(() => {
